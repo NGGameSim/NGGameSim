@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <Name>NGGameSim</Name>
+  <DefaultAction>sync</DefaultAction>
+  <GenerateNuGetRepositories>true</GenerateNuGetRepositories>
+</Module>

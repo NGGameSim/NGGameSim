@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Name="SimRenderer" Path="SimRenderer" Type="Console">
+  <Properties>
+    <RootNamespace>NGSim</RootNamespace>
+  </Properties>
+  <References>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Monogame.Framework" />
+  </References>
+  <Files>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="MonoGame.Framework.dll.config" />
+    <None Include="packages.config" />
+  </Files>
+</Project>

@@ -1,6 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Module>
   <Name>NGGameSim</Name>
   <DefaultAction>sync</DefaultAction>
+  <DefaultLinuxPlatforms>Linux</DefaultLinuxPlatforms>
+  <DefaultMacOSPlatforms>MacOS</DefaultMacOSPlatforms>
+  <DefaultWindowsPlatforms>Windows</DefaultWindowsPlatforms>
+  <SupportedPlatforms>Windows,Linux,MacOS</SupportedPlatforms>
+  <DisableSynchronisation>false</DisableSynchronisation>
   <GenerateNuGetRepositories>true</GenerateNuGetRepositories>
 </Module>

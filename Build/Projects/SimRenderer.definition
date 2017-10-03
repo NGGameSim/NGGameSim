@@ -2,6 +2,7 @@
 <Project Name="SimRenderer" Path="SimRenderer" Type="Console">
   <Properties>
     <RootNamespace>NGSim</RootNamespace>
+    <NoWarn>1591</NoWarn>
   </Properties>
   <References>
     <Reference Include="System" />
@@ -11,6 +12,7 @@
   <Files>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimRenderer.cs" />
     <None Include="MonoGame.Framework.dll.config" />
     <None Include="packages.config" />
     <None Include="x64\libopenal.1.dylib">

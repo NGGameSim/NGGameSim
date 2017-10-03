@@ -1,5 +1,8 @@
+<!-- Needed to get Monogame content projects running and building properly. -->
 <xsl:if test="/Input/Generation/ProjectName = 'SimRenderer'">
 	<PropertyGroup>
+		<!-- Fixes a bug in MonoDevelop 6.2 that prevents this project from building. -->
+		<UseMSBuildEngine>false</UseMSBuildEngine>
 		<MonoGamePlatform>DesktopGL</MonoGamePlatform>
 	</PropertyGroup>
 	<Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props"/>

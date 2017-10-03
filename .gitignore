@@ -10,3 +10,5 @@ packages/**
 .vs/
 
 *.user
+
+*.userprefs

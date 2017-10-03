@@ -7,13 +7,16 @@
   <References>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Monogame.Framework" />
+    <!-- May not actually be explicitly needed, may be automatically referenced from the NuGet packages. -->
+    <!--<Reference Include="Monogame.Framework" />-->
   </References>
   <Files>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimRenderer.cs" />
-    <None Include="MonoGame.Framework.dll.config" />
+    <None Include="MonoGame.Framework.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="x64\libopenal.1.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

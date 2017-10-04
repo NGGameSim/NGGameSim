@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Name="SimCommon" Path="SimCommon" Type="Library">
+  <Properties>
+    <RootNamespace>NGSim</RootNamespace>
+    <NoWarn>1591</NoWarn>
+  </Properties>
+  <References>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </References>
+  <Files>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </Files>
+</Project>

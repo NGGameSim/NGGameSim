@@ -4,10 +4,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SimClient")]
+[assembly: AssemblyTitle("SimCommon")]
 [assembly: AssemblyProduct("NGGameSim")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyDescription("Application for visualizing the simulation managed by a SimServer instance.")]
+[assembly: AssemblyDescription("Common library for shared code between SimClient and SimServer.")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyCopyright("Copyright © [TODO] 2017")]
 [assembly: AssemblyTrademark("")]

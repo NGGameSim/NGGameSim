@@ -7,6 +7,7 @@
   <References>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="SimCommon" />
     <!-- May not actually be explicitly needed, may be automatically referenced from the NuGet packages. -->
     <!--<Reference Include="Monogame.Framework" />-->
   </References>

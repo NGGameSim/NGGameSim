@@ -1,5 +1,5 @@
 <!-- Needed to get Monogame content projects running and building properly. -->
-<xsl:if test="/Input/Generation/ProjectName = 'SimRenderer'">
+<xsl:if test="/Input/Generation/ProjectName = 'SimClient'">
 	<PropertyGroup>
 		<!-- Fixes a bug in MonoDevelop 6.2 that prevents this project from building. -->
 		<UseMSBuildEngine>false</UseMSBuildEngine>

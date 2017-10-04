@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Name="SimRenderer" Path="SimRenderer" Type="Console">
+<Project Name="SimClient" Path="SimClient" Type="Console">
   <Properties>
     <RootNamespace>NGSim</RootNamespace>
     <NoWarn>1591</NoWarn>
@@ -13,7 +13,7 @@
   <Files>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimRenderer.cs" />
+    <Compile Include="SimClient.cs" />
     <None Include="MonoGame.Framework.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -7,7 +7,7 @@ namespace NGSim
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			using (SimClient game = new SimClient())
+			using (SimViewer game = new SimViewer())
 				game.Run();
 		}
 	}

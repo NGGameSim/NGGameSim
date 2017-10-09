@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework;
 
 namespace NGSim
 {
-	public class SimClient : Game
+	public class SimViewer : Game
 	{
 		private GraphicsDeviceManager _graphics;
 
-		public SimClient() :
+		public SimViewer() :
 			base()
 		{
 			_graphics = new GraphicsDeviceManager(this);

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Name="SimClient" Path="SimClient" Type="Console">
+<Project Name="SimViewer" Path="SimViewer" Type="Console">
   <Properties>
     <RootNamespace>NGSim</RootNamespace>
     <NoWarn>1591</NoWarn>
@@ -7,14 +7,11 @@
   <References>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="SimCommon" />
-    <!-- May not actually be explicitly needed, may be automatically referenced from the NuGet packages. -->
-    <!--<Reference Include="Monogame.Framework" />-->
   </References>
   <Files>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimClient.cs" />
+    <Compile Include="SimViewer.cs" />
     <None Include="MonoGame.Framework.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

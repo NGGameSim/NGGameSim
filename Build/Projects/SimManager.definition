@@ -7,9 +7,11 @@
   <References>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="Eto.Forms" />
   </References>
   <Files>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="packages.config" />
   </Files>
 </Project>

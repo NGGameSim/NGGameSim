@@ -10,6 +10,7 @@
     <Reference Include="Eto.Forms" />
   </References>
   <Files>
+    <Compile Include="MainWindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="packages.config" />

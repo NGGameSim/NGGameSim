@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ExternalProject Name="Eto.Forms">
+<ExternalProject Name="Eto.Forms.External">
   <Platform Type="Windows">
     <Binary Name="Eto.Wpf.dll" Path="DLL/Eto.Wpf.dll" />
   </Platform>

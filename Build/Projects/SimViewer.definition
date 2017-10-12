@@ -8,6 +8,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Monogame.Framework" />
+    <Reference Include="SimCommon" />
   </References>
   <Files>
     <Compile Include="Program.cs" />

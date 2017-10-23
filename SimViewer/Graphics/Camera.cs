@@ -72,14 +72,14 @@ namespace NGSim.Graphics
 				_viewDirty = true;
 			}
 		}
-		private Vector3 _up = Vector3.Up;
-		// The up direction of the camera, to define the roll point around the line between the position and target
-		public Vector3 Up
+		private float _roll = 0f;
+		// The roll of the camera around the line between the target and camera, in degrees
+		public float Roll
 		{
-			get { return _up; }
+			get { return _roll; }
 			set
 			{
-				_up = value;
+				_roll = value;
 				_viewDirty = true;
 			}
 		}
@@ -179,7 +179,13 @@ namespace NGSim.Graphics
 
 		protected virtual void updateViewMatrix(ref Matrix matrix)
 		{
-			Matrix.CreateLookAt(ref _position, ref _target, ref _up, out matrix);
+			Vector3 forward = _target - _position;
+			Vector3 right = Vector3.Cross(forward, Vector3.Up);
+			Vector3 up = Vector3.Cross(right, forward);
+			Matrix rollMat;
+			Matrix.CreateFromAxisAngle(ref forward, MathHelper.ToRadians(_roll), out rollMat);
+			Vector3.Transform(ref up, ref rollMat, out up);
+			Matrix.CreateLookAt(ref _position, ref _target, ref up, out matrix);
 		}
 
 		protected virtual void updateProjectionMatrix(ref Matrix matrix)

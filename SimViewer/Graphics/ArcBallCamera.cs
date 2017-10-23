@@ -129,10 +129,13 @@ namespace NGSim.Graphics
 		}
 		#endregion // Members
 
-		public ArcBallCamera(GraphicsDevice device) :
+		public ArcBallCamera(GraphicsDevice device, float distance = 5f, float yaw = 0f, float pitch = 0f) :
 			base(device)
 		{
-
+			_distance = distance;
+			_yaw = yaw;
+			_pitch = pitch;
+			updatePosition();
 		}
 
 		protected virtual void updatePosition()

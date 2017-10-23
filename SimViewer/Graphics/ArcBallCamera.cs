@@ -142,7 +142,7 @@ namespace NGSim.Graphics
 		{
 			Vector3 diff = Vector3.Backward * _distance;
 			Matrix rotMat;
-			Matrix.CreateFromYawPitchRoll(_yaw, _pitch, 0.0f, out rotMat);
+			Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(_yaw), MathHelper.ToRadians(-_pitch), 0.0f, out rotMat);
 			Vector3.Transform(ref diff, ref rotMat, out diff);
 			Position = Target + diff;
 		}

@@ -83,6 +83,30 @@ namespace NGSim.Graphics
 				_viewDirty = true;
 			}
 		}
+		protected float _rollMin = 0.0f;
+		protected float _rollMax = 360.0f;
+		public virtual float MinRoll
+		{
+			get { return _rollMin; }
+			set
+			{
+				_rollMin = MathHelper.Clamp(value, 0.0f, 360.0f);
+				if (_rollMax < _rollMin)
+					_rollMax = _rollMin;
+				Roll = _roll;
+			}
+		}
+		public virtual float MaxRoll
+		{
+			get { return _rollMax; }
+			set
+			{
+				_rollMax = MathHelper.Clamp(value, 0.0f, 360.0f);
+				if (_rollMin > _rollMax)
+					_rollMin = _rollMax;
+				Roll = _roll;
+			}
+		}
 		#endregion // Camera View Components
 
 		#region Camera Projection Components
@@ -179,7 +203,7 @@ namespace NGSim.Graphics
 
 		protected virtual void updateViewMatrix(ref Matrix matrix)
 		{
-			Vector3 forward = _target - _position;
+			Vector3 forward = Vector3.Normalize(_target - _position);
 			Vector3 right = Vector3.Cross(forward, Vector3.Up);
 			Vector3 up = Vector3.Cross(right, forward);
 			Matrix rollMat;
@@ -191,7 +215,7 @@ namespace NGSim.Graphics
 		protected virtual void updateProjectionMatrix(ref Matrix matrix)
 		{
 			if (Style == CameraStyle.Perspective)
-				Matrix.CreatePerspectiveFieldOfView(_fov, _aspectRatio, _nearPlane, _farPlane, out matrix);
+				Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(_fov), _aspectRatio, _nearPlane, _farPlane, out matrix);
 			else
 				Matrix.CreateOrthographic(_viewSize.X, _viewSize.Y, _nearPlane, _farPlane, out matrix);
 		}

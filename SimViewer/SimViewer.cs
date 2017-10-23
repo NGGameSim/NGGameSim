@@ -24,6 +24,12 @@ namespace NGSim
 		{
 			base.Initialize();
 
+			// Setup graphics device settings
+			_graphics.GraphicsProfile = GraphicsProfile.HiDef;
+			_graphics.PreferMultiSampling = true;
+			GraphicsDevice.PresentationParameters.MultiSampleCount = 4;
+			_graphics.ApplyChanges();
+
 			// Create basic shader
 			_effect = new BasicEffect(GraphicsDevice);
 			_effect.VertexColorEnabled = true;
@@ -57,11 +63,15 @@ namespace NGSim
 			});
 
 			// Create the camera
-			_camera = new ArcBallCamera(GraphicsDevice, yaw: 45f, pitch: 45f);
+			_camera = new ArcBallCamera(GraphicsDevice, yaw: 0f, pitch: 0f);
 		}
 
 		protected override void Update(GameTime gameTime)
 		{
+			_camera.Pitch += (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
+			_camera.Yaw += (float)gameTime.ElapsedGameTime.TotalSeconds * 12f;
+			_camera.Distance += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
 			base.Update(gameTime);
 		}
 
@@ -72,10 +82,8 @@ namespace NGSim
 			GraphicsDevice.SetVertexBuffer(_vBuffer);
 			GraphicsDevice.Indices = _iBuffer;
 
-			//_effect.View = _camera.ViewMatrix;
-			//_effect.Projection = _camera.ProjectionMatrix;
-			_effect.View = Matrix.CreateLookAt(new Vector3(5, 5, 5), Vector3.Zero, Vector3.Up);
-			_effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 16f / 9f, 0.001f, 1000f);
+			_effect.View = _camera.ViewMatrix;
+			_effect.Projection = _camera.ProjectionMatrix;
 			_effect.World = Matrix.Identity;
 
 			_effect.CurrentTechnique.Passes[0].Apply();

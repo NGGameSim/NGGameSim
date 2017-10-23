@@ -45,36 +45,36 @@ namespace NGSim.Graphics
 			}
 		}
 
-		private bool _viewDirty = true;
-		private bool _projectionDirty = true;
+		protected bool _viewDirty = true;
+		protected bool _projectionDirty = true;
 		#endregion // Camera Matrices
 
 		#region Camera View Components
-		private Vector3 _position = Vector3.UnitZ;
+		protected Vector3 _position = Vector3.UnitZ;
 		// The position of the camera
-		public Vector3 Position
+		public virtual Vector3 Position
 		{
 			get { return _position; }
-			set
+			protected set
 			{
 				_position = value;
 				_viewDirty = true;
 			}
 		}
-		private Vector3 _target = Vector3.Zero;
+		protected Vector3 _target = Vector3.Zero;
 		// The position that the camera is looking at
-		public Vector3 Target
+		public virtual Vector3 Target
 		{
 			get { return _target; }
-			set
+			protected set
 			{
 				_target = value;
 				_viewDirty = true;
 			}
 		}
-		private float _roll = 0f;
+		protected float _roll = 0f;
 		// The roll of the camera around the line between the target and camera, in degrees
-		public float Roll
+		public virtual float Roll
 		{
 			get { return _roll; }
 			set
@@ -86,7 +86,7 @@ namespace NGSim.Graphics
 		#endregion // Camera View Components
 
 		#region Camera Projection Components
-		private CameraStyle _style = CameraStyle.Perspective;
+		protected CameraStyle _style = CameraStyle.Perspective;
 		// The projection style of the camera
 		public CameraStyle Style
 		{
@@ -97,7 +97,7 @@ namespace NGSim.Graphics
 				_projectionDirty = true;
 			}
 		}
-		private float _fov = 45.0f;
+		protected float _fov = 45.0f;
 		// The field of view, assuming a perspective projection
 		public float FieldOfView
 		{
@@ -108,7 +108,7 @@ namespace NGSim.Graphics
 				_projectionDirty = true;
 			}
 		}
-		private float _aspectRatio = 0.0f;
+		protected float _aspectRatio = 0.0f;
 		// The aspect ratio of the camera, assuming a perspective projection
 		public float AspectRatio
 		{
@@ -119,7 +119,7 @@ namespace NGSim.Graphics
 				_projectionDirty = true;
 			}
 		}
-		private float _nearPlane = 1e-4f;
+		protected float _nearPlane = 1e-4f;
 		// The distance to the camera near plane, for both perspective and orthographic projections
 		public float NearPlane
 		{
@@ -130,7 +130,7 @@ namespace NGSim.Graphics
 				_projectionDirty = true;
 			}
 		}
-		private float _farPlane = 1e4f;
+		protected float _farPlane = 1e4f;
 		// The distance to the camera far plane, for both perspective and orthographic projections
 		public float FarPlane
 		{
@@ -141,7 +141,7 @@ namespace NGSim.Graphics
 				_projectionDirty = true;
 			}
 		}
-		private Vector2 _viewSize = Vector2.Zero;
+		protected Vector2 _viewSize = Vector2.Zero;
 		// The dimensions of the view, assuming an orthographic projection
 		public Vector2 ViewSize
 		{
@@ -166,12 +166,12 @@ namespace NGSim.Graphics
 		public Viewport Viewport;
 
 		// The cached graphics device manager
-		protected readonly GraphicsDevice graphicsDevice = null;
+		protected readonly GraphicsDevice _graphicsDevice = null;
 		#endregion // Members
 
 		protected Camera(GraphicsDevice device)
 		{
-			graphicsDevice = device;
+			_graphicsDevice = device;
 			_aspectRatio = (float)device.DisplayMode.Width / device.DisplayMode.Height;
 			_viewSize = new Vector2(device.DisplayMode.Width, device.DisplayMode.Height);
 			ResetViewport();
@@ -198,7 +198,7 @@ namespace NGSim.Graphics
 
 		public void ResetViewport()
 		{
-			Viewport = new Viewport(0, 0, graphicsDevice.DisplayMode.Width, graphicsDevice.DisplayMode.Height);
+			Viewport = new Viewport(0, 0, _graphicsDevice.DisplayMode.Width, _graphicsDevice.DisplayMode.Height);
 		}
 	}
 }

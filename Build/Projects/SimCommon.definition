@@ -7,6 +7,9 @@
   <References>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="NLog" />
+    <Reference Include="NLog.Config" />
+    <Reference Include="NLog.Schema" />
   </References>
   <Files>
     <Compile Include="Properties\AssemblyInfo.cs" />

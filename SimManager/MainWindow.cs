@@ -10,8 +10,7 @@ namespace NGSim
         private static Logger logger = LogManager.GetCurrentClassLogger();
 		public MainWindow()
 		{
-            logger.Info("Sample info error message");
-
+            logger.Info("Sample Log Message");
 			ClientSize = new Size(400, 300);
 			Title = "SimManager";
 		}

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyDescription("Shared code between the SimManager and SimViewer projects.")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright © [TODO] 2017")]
+[assembly: AssemblyCopyright("Copyright © NGGameSim Team 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

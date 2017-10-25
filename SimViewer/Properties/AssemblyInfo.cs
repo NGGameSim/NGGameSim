@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyDescription("Application for visualizing the simulation managed by a SimManager instance.")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright © [TODO] 2017")]
+[assembly: AssemblyCopyright("Copyright © NGGameSim Team 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

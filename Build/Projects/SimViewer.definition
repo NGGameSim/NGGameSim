@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Name="SimViewer" Path="SimViewer" Type="Console">
   <Properties>
     <RootNamespace>NGSim</RootNamespace>
@@ -7,11 +7,15 @@
   <References>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Monogame.Framework" />
+    <Reference Include="Eto.Forms.External" />
+    <Reference Include="Lidgren.Network.External" />
+    <Reference Include="MonoGame.Framework.External" />
     <Reference Include="SimCommon" />
     <Reference Include="NLog.External" />
   </References>
   <Files>
+    <Compile Include="Graphics\ArcBallCamera.cs" />
+    <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimViewer.cs" />
@@ -24,7 +28,6 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
     <None Include="x64\libopenal.1.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

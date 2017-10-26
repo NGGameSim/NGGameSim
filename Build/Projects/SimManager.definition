@@ -9,9 +9,7 @@
     <Reference Include="System.Core" />
     <Reference Include="Eto.Forms.External" />
     <Reference Include="SimCommon" />
-    <Reference Include="NLog" />
-    <Reference Include="NLog.Config" />
-    <Reference Include="NLog.Schema" />
+    <Reference Include="NLog.External" />
   </References>
   <Files>
     <Compile Include="MainWindow.cs" />

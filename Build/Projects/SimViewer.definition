@@ -9,9 +9,7 @@
     <Reference Include="System.Core" />
     <Reference Include="Monogame.Framework" />
     <Reference Include="SimCommon" />
-    <Reference Include="NLog" />
-    <Reference Include="NLog.Config" />
-    <Reference Include="Nlog.Schema" />
+    <Reference Include="NLog.External" />
   </References>
   <Files>
     <Compile Include="Program.cs" />

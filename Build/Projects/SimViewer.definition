@@ -7,7 +7,8 @@
   <References>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Monogame.Framework" />
+    <Reference Include="Eto.Forms.External" />
+    <Reference Include="Lidgren.Network.External" />
     <Reference Include="SimCommon" />
   </References>
   <Files>

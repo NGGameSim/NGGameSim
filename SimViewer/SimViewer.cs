@@ -1,13 +1,15 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NGSim.Graphics;
+using Lidgren.Network;
 
 namespace NGSim
 {
 	public class SimViewer : Game
 	{
 		private GraphicsDeviceManager _graphics;
+		private NetClient _client;
 
 		private BasicEffect _effect;
 		private IndexBuffer _iBuffer;
@@ -64,13 +66,45 @@ namespace NGSim
 
 			// Create the camera
 			_camera = new ArcBallCamera(GraphicsDevice, yaw: 0f, pitch: 0f);
+      
+			// Setup the network stuff
+			NetPeerConfiguration config = new NetPeerConfiguration("NGGameSim");
+			_client = new NetClient(config);
+			_client.Start();
+			_client.Connect("127.0.0.1", 8100);
 		}
 
+		double _lastSendTime = 0;
+		int _lastMessage = 0;
 		protected override void Update(GameTime gameTime)
 		{
+			// Update the camera
 			_camera.Pitch += (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
 			_camera.Yaw += (float)gameTime.ElapsedGameTime.TotalSeconds * 12f;
 			_camera.Distance += (float)gameTime.ElapsedGameTime.TotalSeconds;
+      
+			// Send messages to the server
+			_lastSendTime += gameTime.ElapsedGameTime.TotalSeconds;
+			if (_lastSendTime > 1.0f) // Send a message every second
+			{
+				NetOutgoingMessage msg = _client.CreateMessage();
+				msg.Write(_lastMessage);
+				msg.Write("This is message " + (_lastMessage++));
+				_client.SendMessage(msg, NetDeliveryMethod.ReliableOrdered);
+				_lastSendTime = 0;
+			}
+      
+			// Process messages from the server, if needed
+			NetIncomingMessage inmsg;
+			while ((inmsg = _client.ReadMessage()) != null)
+			{
+				Console.WriteLine("Got Packet!");
+				if (inmsg.MessageType == NetIncomingMessageType.Data)
+				{
+					Console.WriteLine("Data: {{ '{0}' }}", inmsg.ReadString());
+				}
+				_client.Recycle(inmsg);
+			}
 
 			base.Update(gameTime);
 		}
@@ -90,6 +124,13 @@ namespace NGSim
 			GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 12);
 
 			base.Draw(gameTime);
+		}
+    
+		protected override void OnExiting(object sender, EventArgs args)
+		{
+			_client.Disconnect("Client Disconnecting...");
+
+			base.OnExiting(sender, args);
 		}
 	}
 }

@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ExternalProject Name="NLog.External">
+  <Binary Name="NLog.dll" Path="DLL/NLog.dll"/>
+</ExternalProject>

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NGSim.Graphics;
 using Lidgren.Network;
+using NLog;
 
 namespace NGSim
 {

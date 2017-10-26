@@ -9,6 +9,7 @@
     <Reference Include="System.Core" />
     <Reference Include="Eto.Forms.External" />
     <Reference Include="Lidgren.Network.External" />
+    <Reference Include="MonoGame.Framework.External" />
     <Reference Include="SimCommon" />
   </References>
   <Files>
@@ -20,7 +21,6 @@
     <None Include="MonoGame.Framework.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
     <None Include="x64\libopenal.1.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

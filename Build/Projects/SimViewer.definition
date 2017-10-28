@@ -17,6 +17,7 @@
     <Compile Include="Graphics\ArcBallCamera.cs" />
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Input\InputEvent.cs" />
+    <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\MouseButton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

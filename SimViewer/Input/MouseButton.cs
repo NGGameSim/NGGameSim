@@ -12,7 +12,8 @@ namespace NGSim.Input
 		Middle = 0x02,
 		Right = 0x04,
 		X1 = 0x08,
-		X2 = 0x10
+		X2 = 0x10,
+		Any = Left | Middle | Right | X1 | X2
 	}
 
 	// Extension methods for easily mapping between MonoGame and MouseButton states

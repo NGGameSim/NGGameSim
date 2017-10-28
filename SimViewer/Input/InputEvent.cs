@@ -26,8 +26,8 @@ namespace NGSim.Input
 	// Delegate for MousePressed, MouseReleased, MouseClicked, and MouseDoubleClicked
 	public delegate void ButtonEvent(ButtonEventType type, MouseButton button);
 
-	// Delegate for MouseMoved and MouseDragged
-	public delegate void MouseMoveEvent(MouseButton buttons, Point lastPos, Point currPos);
+	// Delegate for MouseMoved
+	public delegate void MouseMoveEvent(MouseButton buttons, Point lastPos, Point currPos, bool isDrag);
 
 	// Delegate for MouseScroll
 	public delegate void MouseScrollEvent(int lastVal, int currVal);

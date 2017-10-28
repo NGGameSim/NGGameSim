@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NGSim.Graphics;
+using NGSim.Input;
 using Lidgren.Network;
 using NLog;
 
@@ -32,6 +33,9 @@ namespace NGSim
 			_graphics.PreferMultiSampling = true;
 			GraphicsDevice.PresentationParameters.MultiSampleCount = 4;
 			_graphics.ApplyChanges();
+
+			// Initialize the custom input manager
+			InputManager.Initialize();
 
 			// Create basic shader
 			_effect = new BasicEffect(GraphicsDevice);
@@ -79,6 +83,9 @@ namespace NGSim
 		int _lastMessage = 0;
 		protected override void Update(GameTime gameTime)
 		{
+			// Update the custom input manager
+			InputManager.Update(gameTime);
+
 			// Update the camera
 			_camera.Pitch += (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
 			_camera.Yaw += (float)gameTime.ElapsedGameTime.TotalSeconds * 12f;

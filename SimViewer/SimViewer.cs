@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using NGSim.Graphics;
 using NGSim.Input;
 using Lidgren.Network;
@@ -22,6 +23,8 @@ namespace NGSim
 			base()
 		{
 			_graphics = new GraphicsDeviceManager(this);
+			IsFixedTimeStep = true;
+			TargetElapsedTime = TimeSpan.FromSeconds(1f / 30);
 		}
 
 		protected override void Initialize()
@@ -71,6 +74,7 @@ namespace NGSim
 
 			// Create the camera
 			_camera = new ArcBallCamera(GraphicsDevice, yaw: 0f, pitch: 0f);
+			_camera.MinDistance = 2f;
       
 			// Setup the network stuff
 			NetPeerConfiguration config = new NetPeerConfiguration("NGGameSim");
@@ -87,10 +91,20 @@ namespace NGSim
 			InputManager.Update(gameTime);
 
 			// Update the camera
-			_camera.Pitch += (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
-			_camera.Yaw += (float)gameTime.ElapsedGameTime.TotalSeconds * 12f;
-			_camera.Distance += (float)gameTime.ElapsedGameTime.TotalSeconds;
-      
+			if (InputManager.IsKeyDown(Keys.W))
+				_camera.Pitch += (float)gameTime.ElapsedGameTime.TotalSeconds * 20f;
+			if (InputManager.IsKeyDown(Keys.S))
+				_camera.Pitch -= (float)gameTime.ElapsedGameTime.TotalSeconds * 20f;
+			if (InputManager.IsKeyDown(Keys.D))
+				_camera.Yaw += (float)gameTime.ElapsedGameTime.TotalSeconds * 30f;
+			if (InputManager.IsKeyDown(Keys.A))
+				_camera.Yaw -= (float)gameTime.ElapsedGameTime.TotalSeconds * 30f;
+			if (InputManager.IsKeyDown(Keys.Q))
+				_camera.Distance += (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
+			if (InputManager.IsKeyDown(Keys.E))
+				_camera.Distance -= (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
+			_camera.Distance += InputManager.GetScrollDelta() * 0.005f;
+
 			// Send messages to the server
 			_lastSendTime += gameTime.ElapsedGameTime.TotalSeconds;
 			if (_lastSendTime > 1.0f) // Send a message every second

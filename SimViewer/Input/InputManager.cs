@@ -142,8 +142,104 @@ namespace NGSim.Input
 			CurrentKeyState = Keyboard.GetState();
 			CurrentMouseState = Mouse.GetState();
 
+			// Extract time info
+			double totalSeconds = gameTime.TotalGameTime.TotalSeconds;
+			double totalMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
+			double elapsedSeconds = gameTime.ElapsedGameTime.TotalSeconds;
+			double elapsedMilliseconds = gameTime.ElapsedGameTime.TotalMilliseconds;
+
+			// Check for one-off mouse events
+			MouseButton pressedButtons = GetPressedButtons();
+			MouseButton draggingButtons = GetDraggingButtons();
+			if (CurrentMouseState.Position != PreviousMouseState.Position)
+			{
+				mouseMoveEvent = new MouseMoveEventArgs()
+				{
+					Buttons = pressedButtons,
+					LastPoint = PreviousMouseState.Position,
+					CurrPoint = CurrentMouseState.Position,
+					IsDrag = draggingButtons != MouseButton.None
+				};
+			}
+			if (CurrentMouseState.ScrollWheelValue != PreviousMouseState.ScrollWheelValue)
+			{
+				mouseScrollEvent = new MouseScrollEventArgs()
+				{
+					LastVal = PreviousMouseState.ScrollWheelValue,
+					CurrVal = CurrentMouseState.ScrollWheelValue
+				};
+			}
+
+			// Detect key events
+			foreach (Keys key in Enum.GetValues(typeof(Keys)))
+			{
+				if (IsKeyDown(key))
+				{
+					double htime = holdTimes[key] += elapsedSeconds;
+					if (htime > KeyHoldTime)
+						keyEventList.Add(new KeyEventArgs() { Type = KeyEventType.Held, Key = key });
+					if (IsKeyPreviouslyUp(key))
+						keyEventList.Add(new KeyEventArgs() { Type = KeyEventType.Pressed, Key = key });
+				}
+				else if (IsKeyPreviouslyDown(key))
+				{
+					keyEventList.Add(new KeyEventArgs() { Type = KeyEventType.Released, Key = key });
+					holdTimes[key] = 0.0;
+				}
+			}
+
+			// Detect mouse events
+			foreach (MouseButton button in Enum.GetValues(typeof(MouseButton)))
+			{
+				if (button == MouseButton.None || button == MouseButton.Any)
+					continue;
+
+				if (IsButtonDown(button))
+				{
+					if (IsButtonPreviouslyUp(button))
+					{
+						buttonEventList.Add(new ButtonEventArgs() { Type = ButtonEventType.Pressed, Button = button });
+						lastPressTime[button] = totalSeconds;
+					}
+				}
+				else if (IsButtonPreviouslyDown(button))
+				{
+					buttonEventList.Add(new ButtonEventArgs() { Type = ButtonEventType.Released, Button = button });
+					lastReleaseTime[button] = totalSeconds;
+
+					if (doubleClickNext[button] && canDoubleClick(button))
+					{
+						buttonEventList.Add(new ButtonEventArgs() { Type = ButtonEventType.DoubleClicked, Button = button });
+						lastClickTime[button] = totalSeconds;
+						doubleClickNext[button] = false;
+					}
+					else if (canClick(button))
+					{
+						buttonEventList.Add(new ButtonEventArgs() { Type = ButtonEventType.Clicked, Button = button });
+						lastClickTime[button] = totalSeconds;
+						doubleClickNext[button] = true;
+					}
+					else
+					{
+						doubleClickNext[button] = false; // The double click timed out
+					}
+				}
+			}
+
 			// Fire off the events
 			flushEvents();
+		}
+
+		private static bool canClick(MouseButton button)
+		{
+			double time = lastReleaseTime[button] - lastPressTime[button];
+			return (time > 0.0 && time < ClickTime);
+		}
+
+		private static bool canDoubleClick(MouseButton button)
+		{
+			double time = lastReleaseTime[button] - lastClickTime[button];
+			return (time > 0.0 && time < DoubleClickTime);
 		}
 
 		private static void flushEvents()
@@ -209,9 +305,9 @@ namespace NGSim.Input
 				doubleClickNext.Add(b, false);
 			}
 
-			// Create the event data
-			keyEventList = new List<KeyEventArgs>();
-			buttonEventList = new List<ButtonEventArgs>();
+			// Create the event data (initial capacity for 10 events)
+			keyEventList = new List<KeyEventArgs>(10);
+			buttonEventList = new List<ButtonEventArgs>(10);
 			mouseMoveEvent = null;
 			mouseScrollEvent = null;
 
@@ -231,25 +327,25 @@ namespace NGSim.Input
 		// Private structs for queueing up input events
 		private struct KeyEventArgs
 		{
-			public readonly KeyEventType Type;
-			public readonly Keys Key;
+			public KeyEventType Type;
+			public Keys Key;
 		}
 		private struct ButtonEventArgs
 		{
-			public readonly ButtonEventType Type;
-			public readonly MouseButton Button;
+			public ButtonEventType Type;
+			public MouseButton Button;
 		}
 		private struct MouseMoveEventArgs
 		{
-			public readonly MouseButton Buttons;
-			public readonly Point LastPoint;
-			public readonly Point CurrPoint;
-			public readonly bool IsDrag;
+			public MouseButton Buttons;
+			public Point LastPoint;
+			public Point CurrPoint;
+			public bool IsDrag;
 		}
 		private struct MouseScrollEventArgs
 		{
-			public readonly int LastVal;
-			public readonly int CurrVal;
+			public int LastVal;
+			public int CurrVal;
 		}
 #pragma warning restore 0649
 	}

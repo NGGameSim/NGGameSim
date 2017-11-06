@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NGApi
 {
-    class Simulation
+    internal class Simulation
     {
         private static int uavx;
         private static int uavy;

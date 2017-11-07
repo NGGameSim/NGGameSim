@@ -8,12 +8,9 @@ namespace NGApi
 {
     internal class Simulation
     {
-        private static int uavx;
-        private static int uavy;
-        private static int tankx;
-        private static int tanky;
-        private static bool isDetected;
-
-        //Entity Classes Will Exist here once built
+        UAV uav1 = new UAV();
+        UAV uav2 = new UAV();
+        Tank tank1 = new Tank();
+        Tank tank2 = new Tank();
     }
 }

@@ -8,8 +8,8 @@ namespace NGApi
 {
     internal class UAV
     {
-        private static int xPos;
-        private static int yPos;
-        private static int viewRadius;
+        private int xPos;
+        private int yPos;
+        private int viewRadius;
     }
 }

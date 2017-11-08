@@ -14,14 +14,14 @@ namespace NGSim
 		private GraphicsDeviceManager _graphics;
 		private NetClient _client;
 
-		private BasicEffect _effect;
-		private IndexBuffer _iBuffer;
-		private VertexBuffer _vBuffer;
 		private ArcBallCamera _camera;
+		private CModel _uavModel;
+		private CModel _tankModel;
 
 		public SimViewer() :
 			base()
 		{
+			Content.RootDirectory = "Content";
 			_graphics = new GraphicsDeviceManager(this);
 			IsFixedTimeStep = true;
 			TargetElapsedTime = TimeSpan.FromSeconds(1f / 30);
@@ -40,41 +40,14 @@ namespace NGSim
 			// Initialize the custom input manager
 			InputManager.Initialize();
 
-			// Create basic shader
-			_effect = new BasicEffect(GraphicsDevice);
-			_effect.VertexColorEnabled = true;
-			_effect.LightingEnabled = false;
-			_effect.TextureEnabled = false;
-
-			// Populate the vertex buffer
-			_vBuffer = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, 8, BufferUsage.None);
-			_vBuffer.SetData(new VertexPositionColor[8]
-			{
-				new VertexPositionColor(new Vector3(-1, -1, -1), Color.White),
-				new VertexPositionColor(new Vector3( 1, -1, -1), Color.Blue),
-				new VertexPositionColor(new Vector3( 1, -1,  1), Color.Yellow),
-				new VertexPositionColor(new Vector3(-1, -1,  1), Color.Red),
-				new VertexPositionColor(new Vector3(-1,  1, -1), Color.Green),
-				new VertexPositionColor(new Vector3( 1,  1, -1), Color.Magenta),
-				new VertexPositionColor(new Vector3( 1,  1,  1), Color.Cyan),
-				new VertexPositionColor(new Vector3(-1,  1,  1), Color.Pink)
-			});
-
-			// Populate the index buffer
-			_iBuffer = new IndexBuffer(GraphicsDevice, IndexElementSize.SixteenBits, 36, BufferUsage.None);
-			_iBuffer.SetData(new ushort[36]
-			{
-				6, 5, 1, 6, 1, 2, // +x
-				4, 7, 3, 4, 3, 0, // -x
-				4, 5, 6, 4, 6, 7, // +y
-				1, 0, 3, 1, 3, 2, // -y
-				7, 6, 2, 7, 2, 3, // +z
-				5, 4, 0, 5, 0, 1  // -z
-			});
-
 			// Create the camera
 			_camera = new ArcBallCamera(GraphicsDevice, yaw: 0f, pitch: 0f);
 			_camera.MinDistance = 2f;
+
+			// Load the models
+			Texture2D checker = Content.Load<Texture2D>("checkers");
+			_uavModel = new CModel(GraphicsDevice, Content.Load<Model>("UAV"), checker);
+			_tankModel = new CModel(GraphicsDevice, Content.Load<Model>("tank"), checker);
       
 			// Setup the network stuff
 			NetPeerConfiguration config = new NetPeerConfiguration("NGGameSim");
@@ -135,15 +108,8 @@ namespace NGSim
 		{
 			GraphicsDevice.Clear(Color.Black);
 
-			GraphicsDevice.SetVertexBuffer(_vBuffer);
-			GraphicsDevice.Indices = _iBuffer;
-
-			_effect.View = _camera.ViewMatrix;
-			_effect.Projection = _camera.ProjectionMatrix;
-			_effect.World = Matrix.Identity;
-
-			_effect.CurrentTechnique.Passes[0].Apply();
-			GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 12);
+			//_tankModel.Render(_camera, Vector3.Zero);
+			_uavModel.Render(_camera, Vector3.Zero);
 
 			base.Draw(gameTime);
 		}

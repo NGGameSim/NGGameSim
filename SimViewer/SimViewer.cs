@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using NGSim.Graphics;
 using NGSim.Network;
+using NGSim.Input;
 using NLog;
 
 namespace NGSim

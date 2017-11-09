@@ -8,9 +8,9 @@ namespace NGApi
 {
     internal class Tank
     {
-        private int xPos;
-        private int yPos;
-        private int misslesLeft;
-        private bool alive;
+        public int XPos;
+		public int YPos;
+		public int MisslesLeft;
+		public bool Alive;
     }
 }

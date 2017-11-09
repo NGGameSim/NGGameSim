@@ -16,6 +16,8 @@
   <Files>
     <Compile Include="Graphics\ArcBallCamera.cs" />
     <Compile Include="Graphics\Camera.cs" />
+    <Compile Include="Graphics\CameraBehavior.cs" />
+    <Compile Include="Graphics\CameraManager.cs" />
     <Compile Include="Graphics\CModel.cs" />
     <Compile Include="Input\InputEvent.cs" />
     <Compile Include="Input\InputManager.cs" />

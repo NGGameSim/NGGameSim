@@ -14,7 +14,6 @@ namespace NGSim
 		private GraphicsDeviceManager _graphics;
 		private NetClient _client;
 
-		private ArcBallCamera _camera;
 		private CModel _uavModel;
 		private CModel _tankModel;
 
@@ -68,8 +67,8 @@ namespace NGSim
 			_groundEffect.LightingEnabled = false;
 
 			// Create the camera
-			_camera = new ArcBallCamera(GraphicsDevice, distance: 20f, yaw: 0f, pitch: 45f);
-			_camera.MinDistance = 2f;
+			CameraManager.Set(new ArcBallCamera(GraphicsDevice, distance: 20f, yaw: 0f, pitch: 45f), new ArcBallCameraBehavior());
+			(CameraManager.ActiveCamera as ArcBallCamera).MinDistance = 2f;
 
 			// Load the models
 			_uavModel = new CModel(GraphicsDevice, Content.Load<Model>("UAV"));
@@ -89,20 +88,8 @@ namespace NGSim
 			// Update the custom input manager
 			InputManager.Update(gameTime);
 
-			// Update the camera
-			if (InputManager.IsKeyDown(Keys.W))
-				_camera.Pitch += (float)gameTime.ElapsedGameTime.TotalSeconds * 20f;
-			if (InputManager.IsKeyDown(Keys.S))
-				_camera.Pitch -= (float)gameTime.ElapsedGameTime.TotalSeconds * 20f;
-			if (InputManager.IsKeyDown(Keys.D))
-				_camera.Yaw += (float)gameTime.ElapsedGameTime.TotalSeconds * 30f;
-			if (InputManager.IsKeyDown(Keys.A))
-				_camera.Yaw -= (float)gameTime.ElapsedGameTime.TotalSeconds * 30f;
-			if (InputManager.IsKeyDown(Keys.Q))
-				_camera.Distance += (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
-			if (InputManager.IsKeyDown(Keys.E))
-				_camera.Distance -= (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
-			_camera.Distance += InputManager.GetScrollDelta() * 0.005f;
+			// Update the camera manager
+			CameraManager.Update(gameTime);
 
 			// Send messages to the server
 			_lastSendTime += gameTime.ElapsedGameTime.TotalSeconds;
@@ -127,8 +114,6 @@ namespace NGSim
 				_client.Recycle(inmsg);
 			}
 
-			Console.WriteLine(_camera.Position);
-
 			base.Update(gameTime);
 		}
 
@@ -136,16 +121,18 @@ namespace NGSim
 		{
 			GraphicsDevice.Clear(Color.Black);
 
+			Camera camera = CameraManager.ActiveCamera;
+
 			_groundEffect.World = Matrix.Identity;
-			_groundEffect.View = _camera.ViewMatrix;
-			_groundEffect.Projection = _camera.ProjectionMatrix;
+			_groundEffect.View = camera.ViewMatrix;
+			_groundEffect.Projection = camera.ProjectionMatrix;
 			GraphicsDevice.SetVertexBuffer(_vBuffer);
 			GraphicsDevice.Indices = _iBuffer;
 			_groundEffect.CurrentTechnique.Passes[0].Apply();
 			GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4);
 
-			_tankModel.Render(_camera, Vector3.Right * 3 + Vector3.Up * 2);
-			_uavModel.Render(_camera, Vector3.Left * 3 + Vector3.Up * 5);
+			_tankModel.Render(camera, Vector3.Right * 3 + Vector3.Up * 2);
+			_uavModel.Render(camera, Vector3.Left * 3 + Vector3.Up * 5);
 
 			base.Draw(gameTime);
 		}

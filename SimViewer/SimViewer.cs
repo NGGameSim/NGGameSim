@@ -1,8 +1,10 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using NGSim.Graphics;
 using NGSim.Network;
+using NGSim.Input;
 using NLog;
 
 namespace NGSim
@@ -12,15 +14,22 @@ namespace NGSim
 		private GraphicsDeviceManager _graphics;
         private Client _client;
 
-		private BasicEffect _effect;
-		private IndexBuffer _iBuffer;
+		private CModel _uavModel;
+		private CModel _tankModel;
+
+		// Temporary ground model
 		private VertexBuffer _vBuffer;
-		private ArcBallCamera _camera;
+		private IndexBuffer _iBuffer;
+		private BasicEffect _groundEffect;
+		private readonly int WORLD_SIZE = 50;
 
 		public SimViewer() :
 			base()
 		{
+			Content.RootDirectory = "Content";
 			_graphics = new GraphicsDeviceManager(this);
+			IsFixedTimeStep = true;
+			TargetElapsedTime = TimeSpan.FromSeconds(1f / 30);
 		}
 
 		protected override void Initialize()
@@ -33,40 +42,37 @@ namespace NGSim
 			GraphicsDevice.PresentationParameters.MultiSampleCount = 4;
 			_graphics.ApplyChanges();
 
-			// Create basic shader
-			_effect = new BasicEffect(GraphicsDevice);
-			_effect.VertexColorEnabled = true;
-			_effect.LightingEnabled = false;
-			_effect.TextureEnabled = false;
+			// Initialize the custom input manager
+			InputManager.Initialize();
 
-			// Populate the vertex buffer
-			_vBuffer = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, 8, BufferUsage.None);
-			_vBuffer.SetData(new VertexPositionColor[8]
+			// Initialize the ground
+			int won2 = WORLD_SIZE / 2;
+			VertexPositionColor[] vGround = new VertexPositionColor[4]
 			{
-				new VertexPositionColor(new Vector3(-1, -1, -1), Color.White),
-				new VertexPositionColor(new Vector3( 1, -1, -1), Color.Blue),
-				new VertexPositionColor(new Vector3( 1, -1,  1), Color.Yellow),
-				new VertexPositionColor(new Vector3(-1, -1,  1), Color.Red),
-				new VertexPositionColor(new Vector3(-1,  1, -1), Color.Green),
-				new VertexPositionColor(new Vector3( 1,  1, -1), Color.Magenta),
-				new VertexPositionColor(new Vector3( 1,  1,  1), Color.Cyan),
-				new VertexPositionColor(new Vector3(-1,  1,  1), Color.Pink)
-			});
+				new VertexPositionColor(new Vector3(-won2, 0, -won2), Color.Green),
+				new VertexPositionColor(new Vector3(won2, 0, -won2), Color.Green),
+				new VertexPositionColor(new Vector3(won2, 0, won2), Color.Green),
+				new VertexPositionColor(new Vector3(-won2, 0, won2), Color.Green)
+			};
+			_vBuffer = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, 4, BufferUsage.None);
+			_vBuffer.SetData(vGround);
+			ushort[] iGround = new ushort[6] { 0, 1, 3, 1, 2, 3 };
+			_iBuffer = new IndexBuffer(GraphicsDevice, IndexElementSize.SixteenBits, 6, BufferUsage.None);
+			_iBuffer.SetData(iGround);
 
-			// Populate the index buffer
-			_iBuffer = new IndexBuffer(GraphicsDevice, IndexElementSize.SixteenBits, 36, BufferUsage.None);
-			_iBuffer.SetData(new ushort[36]
-			{
-				6, 5, 1, 6, 1, 2, // +x
-				4, 7, 3, 4, 3, 0, // -x
-				4, 5, 6, 4, 6, 7, // +y
-				1, 0, 3, 1, 3, 2, // -y
-				7, 6, 2, 7, 2, 3, // +z
-				5, 4, 0, 5, 0, 1  // -z
-			});
+			// Initialize the ground shader
+			_groundEffect = new BasicEffect(GraphicsDevice);
+			_groundEffect.VertexColorEnabled = true;
+			_groundEffect.TextureEnabled = false;
+			_groundEffect.LightingEnabled = false;
 
 			// Create the camera
-			_camera = new ArcBallCamera(GraphicsDevice, yaw: 0f, pitch: 0f);
+			CameraManager.Set(new ArcBallCamera(GraphicsDevice, distance: 20f, yaw: 0f, pitch: 45f), new ArcBallCameraBehavior());
+			(CameraManager.ActiveCamera as ArcBallCamera).MinDistance = 2f;
+
+			// Load the models
+			_uavModel = new CModel(GraphicsDevice, Content.Load<Model>("UAV"));
+			_tankModel = new CModel(GraphicsDevice, Content.Load<Model>("tank"));
       
 			// Setup the network stuff
 			_client = new Client();
@@ -75,21 +81,21 @@ namespace NGSim
 		double _lastSendTime = 0;
 		protected override void Update(GameTime gameTime)
 		{
-			// Update the camera
-			_camera.Pitch += (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
-			_camera.Yaw += (float)gameTime.ElapsedGameTime.TotalSeconds * 12f;
-			_camera.Distance += (float)gameTime.ElapsedGameTime.TotalSeconds;
-      
+			// Update the custom input manager
+			InputManager.Update(gameTime);
+
+			// Update the camera manager
+			CameraManager.Update(gameTime);
+
 			// Send messages to the server
 			_lastSendTime += gameTime.ElapsedGameTime.TotalSeconds;
 			if (_lastSendTime > 1.0f) // Send a message every second
 			{
-                _client.SendMessage();
+        _client.SendMessage();
 				_lastSendTime = 0;
 			}
 
-            _client.ProcessMessage();
-			
+      _client.ProcessMessage();
 
 			base.Update(gameTime);
 		}
@@ -98,15 +104,18 @@ namespace NGSim
 		{
 			GraphicsDevice.Clear(Color.Black);
 
+			Camera camera = CameraManager.ActiveCamera;
+
+			_groundEffect.World = Matrix.Identity;
+			_groundEffect.View = camera.ViewMatrix;
+			_groundEffect.Projection = camera.ProjectionMatrix;
 			GraphicsDevice.SetVertexBuffer(_vBuffer);
 			GraphicsDevice.Indices = _iBuffer;
+			_groundEffect.CurrentTechnique.Passes[0].Apply();
+			GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4);
 
-			_effect.View = _camera.ViewMatrix;
-			_effect.Projection = _camera.ProjectionMatrix;
-			_effect.World = Matrix.Identity;
-
-			_effect.CurrentTechnique.Passes[0].Apply();
-			GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 12);
+			_tankModel.Render(camera, Vector3.Right * 3 + Vector3.Up * 2);
+			_uavModel.Render(camera, Vector3.Left * 3 + Vector3.Up * 5);
 
 			base.Draw(gameTime);
 		}

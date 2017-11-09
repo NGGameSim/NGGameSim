@@ -18,6 +18,12 @@ namespace NGSim
 		private CModel _uavModel;
 		private CModel _tankModel;
 
+		// Temporary ground model
+		private VertexBuffer _vBuffer;
+		private IndexBuffer _iBuffer;
+		private BasicEffect _groundEffect;
+		private readonly int WORLD_SIZE = 50;
+
 		public SimViewer() :
 			base()
 		{
@@ -40,14 +46,34 @@ namespace NGSim
 			// Initialize the custom input manager
 			InputManager.Initialize();
 
+			// Initialize the ground
+			int won2 = WORLD_SIZE / 2;
+			VertexPositionColor[] vGround = new VertexPositionColor[4]
+			{
+				new VertexPositionColor(new Vector3(-won2, 0, -won2), Color.Green),
+				new VertexPositionColor(new Vector3(won2, 0, -won2), Color.Green),
+				new VertexPositionColor(new Vector3(won2, 0, won2), Color.Green),
+				new VertexPositionColor(new Vector3(-won2, 0, won2), Color.Green)
+			};
+			_vBuffer = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, 4, BufferUsage.None);
+			_vBuffer.SetData(vGround);
+			ushort[] iGround = new ushort[6] { 0, 1, 3, 1, 2, 3 };
+			_iBuffer = new IndexBuffer(GraphicsDevice, IndexElementSize.SixteenBits, 6, BufferUsage.None);
+			_iBuffer.SetData(iGround);
+
+			// Initialize the ground shader
+			_groundEffect = new BasicEffect(GraphicsDevice);
+			_groundEffect.VertexColorEnabled = true;
+			_groundEffect.TextureEnabled = false;
+			_groundEffect.LightingEnabled = false;
+
 			// Create the camera
-			_camera = new ArcBallCamera(GraphicsDevice, yaw: 0f, pitch: 0f);
+			_camera = new ArcBallCamera(GraphicsDevice, distance: 20f, yaw: 0f, pitch: 45f);
 			_camera.MinDistance = 2f;
 
 			// Load the models
-			Texture2D checker = Content.Load<Texture2D>("checkers");
-			_uavModel = new CModel(GraphicsDevice, Content.Load<Model>("UAV"), checker);
-			_tankModel = new CModel(GraphicsDevice, Content.Load<Model>("tank"), checker);
+			_uavModel = new CModel(GraphicsDevice, Content.Load<Model>("UAV"));
+			_tankModel = new CModel(GraphicsDevice, Content.Load<Model>("tank"));
       
 			// Setup the network stuff
 			NetPeerConfiguration config = new NetPeerConfiguration("NGGameSim");
@@ -101,6 +127,8 @@ namespace NGSim
 				_client.Recycle(inmsg);
 			}
 
+			Console.WriteLine(_camera.Position);
+
 			base.Update(gameTime);
 		}
 
@@ -108,8 +136,16 @@ namespace NGSim
 		{
 			GraphicsDevice.Clear(Color.Black);
 
-			//_tankModel.Render(_camera, Vector3.Zero);
-			_uavModel.Render(_camera, Vector3.Zero);
+			_groundEffect.World = Matrix.Identity;
+			_groundEffect.View = _camera.ViewMatrix;
+			_groundEffect.Projection = _camera.ProjectionMatrix;
+			GraphicsDevice.SetVertexBuffer(_vBuffer);
+			GraphicsDevice.Indices = _iBuffer;
+			_groundEffect.CurrentTechnique.Passes[0].Apply();
+			GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4);
+
+			_tankModel.Render(_camera, Vector3.Right * 3 + Vector3.Up * 2);
+			_uavModel.Render(_camera, Vector3.Left * 3 + Vector3.Up * 5);
 
 			base.Draw(gameTime);
 		}

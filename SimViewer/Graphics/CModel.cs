@@ -10,14 +10,12 @@ namespace NGSim.Graphics
 		private static readonly object effectMutex = new object();
 
 		public Model Model { get; private set; } = null;
-		public Texture2D Texture { get; private set; } = null;
 		public readonly GraphicsDevice Device = null;
 
-		public CModel(GraphicsDevice device, Model model, Texture2D tex)
+		public CModel(GraphicsDevice device, Model model)
 		{
 			Model = model;
 			Device = device;
-			Texture = tex;
 
 			lock (effectMutex)
 			{

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Name="SimViewer" Path="SimViewer" Type="Console">
   <Properties>
     <RootNamespace>NGSim</RootNamespace>
@@ -16,6 +16,7 @@
   <Files>
     <Compile Include="Graphics\ArcBallCamera.cs" />
     <Compile Include="Graphics\Camera.cs" />
+    <Compile Include="Network\Client.cs" />
     <Compile Include="Graphics\CameraBehavior.cs" />
     <Compile Include="Graphics\CameraManager.cs" />
     <Compile Include="Graphics\CModel.cs" />

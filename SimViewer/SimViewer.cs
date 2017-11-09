@@ -3,8 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using NGSim.Graphics;
-using NGSim.Input;
-using Lidgren.Network;
+using NGSim.Network;
 using NLog;
 
 namespace NGSim
@@ -12,7 +11,7 @@ namespace NGSim
 	public class SimViewer : Game
 	{
 		private GraphicsDeviceManager _graphics;
-		private NetClient _client;
+        private Client _client;
 
 		private CModel _uavModel;
 		private CModel _tankModel;
@@ -75,14 +74,10 @@ namespace NGSim
 			_tankModel = new CModel(GraphicsDevice, Content.Load<Model>("tank"));
       
 			// Setup the network stuff
-			NetPeerConfiguration config = new NetPeerConfiguration("NGGameSim");
-			_client = new NetClient(config);
-			_client.Start();
-			_client.Connect("127.0.0.1", 8100);
+			_client = new Client();
 		}
 
 		double _lastSendTime = 0;
-		int _lastMessage = 0;
 		protected override void Update(GameTime gameTime)
 		{
 			// Update the custom input manager
@@ -95,24 +90,11 @@ namespace NGSim
 			_lastSendTime += gameTime.ElapsedGameTime.TotalSeconds;
 			if (_lastSendTime > 1.0f) // Send a message every second
 			{
-				NetOutgoingMessage msg = _client.CreateMessage();
-				msg.Write(_lastMessage);
-				msg.Write("This is message " + (_lastMessage++));
-				_client.SendMessage(msg, NetDeliveryMethod.ReliableOrdered);
+        _client.SendMessage();
 				_lastSendTime = 0;
 			}
-      
-			// Process messages from the server, if needed
-			NetIncomingMessage inmsg;
-			while ((inmsg = _client.ReadMessage()) != null)
-			{
-				Console.WriteLine("Got Packet!");
-				if (inmsg.MessageType == NetIncomingMessageType.Data)
-				{
-					Console.WriteLine("Data: {{ '{0}' }}", inmsg.ReadString());
-				}
-				_client.Recycle(inmsg);
-			}
+
+      _client.ProcessMessage();
 
 			base.Update(gameTime);
 		}
@@ -139,7 +121,7 @@ namespace NGSim
     
 		protected override void OnExiting(object sender, EventArgs args)
 		{
-			_client.Disconnect("Client Disconnecting...");
+			_client.Disconnect();
 
 			base.OnExiting(sender, args);
 		}

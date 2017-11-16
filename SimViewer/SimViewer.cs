@@ -13,6 +13,7 @@ namespace NGSim
 	{
 		private GraphicsDeviceManager _graphics;
         private Client _client;
+		private SimulationManager _simManager;
 
 		private CModel _uavModel;
 		private CModel _tankModel;
@@ -69,16 +70,24 @@ namespace NGSim
 			// Create the camera
 			CameraManager.Set(new ArcBallCamera(GraphicsDevice, distance: 20f, yaw: 0f, pitch: 45f), new ArcBallCameraBehavior());
 			(CameraManager.ActiveCamera as ArcBallCamera).MinDistance = 2f;
+      
+			// Setup the network stuff
+			_client = new Client();
+			_client.Connect();
+
+			// Create the simulation
+			_simManager = new SimulationManager();
+		}
+
+		protected override void LoadContent()
+		{
+			base.LoadContent();
 
 			// Load the models
 			_uavModel = new CModel(GraphicsDevice, Content.Load<Model>("UAV"));
 			_tankModel = new CModel(GraphicsDevice, Content.Load<Model>("tank"));
-      
-			// Setup the network stuff
-			_client = new Client();
 		}
 
-		double _lastSendTime = 0;
 		protected override void Update(GameTime gameTime)
 		{
 			// Update the custom input manager
@@ -87,15 +96,8 @@ namespace NGSim
 			// Update the camera manager
 			CameraManager.Update(gameTime);
 
-			// Send messages to the server
-			_lastSendTime += gameTime.ElapsedGameTime.TotalSeconds;
-			if (_lastSendTime > 1.0f) // Send a message every second
-			{
-        _client.SendMessage();
-				_lastSendTime = 0;
-			}
-
-      _client.ProcessMessage();
+			// Update the client (network manager)
+			_client.Update(gameTime);
 
 			base.Update(gameTime);
 		}
@@ -114,8 +116,11 @@ namespace NGSim
 			_groundEffect.CurrentTechnique.Passes[0].Apply();
 			GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 4);
 
-			_tankModel.Render(camera, Vector3.Right * 3 + Vector3.Up * 2);
-			_uavModel.Render(camera, Vector3.Left * 3 + Vector3.Up * 5);
+			//_tankModel.Render(camera, Vector3.Right * 3 + Vector3.Up * 2);
+			//_uavModel.Render(camera, Vector3.Left * 3 + Vector3.Up * 5);
+
+			// Render the simulation
+			_simManager.Render();
 
 			base.Draw(gameTime);
 		}

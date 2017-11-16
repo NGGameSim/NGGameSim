@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Name="NGAPI" Path="NGAPI" Type="Library">
   <Properties>
-    <RootNamespace>NGApi</RootNamespace>
+    <RootNamespace>NGAPI</RootNamespace>
     <NoWarn>1591</NoWarn>
   </Properties>
   <References>
@@ -9,9 +9,12 @@
     <Reference Include="System.Core" />
   </References>
   <Files>
+    <Compile Include="Entity.cs" />
+    <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Simulation.cs" />
     <Compile Include="Tank.cs" />
+    <Compile Include="Team.cs" />
     <Compile Include="UAV.cs" />
   </Files>
 </Project>

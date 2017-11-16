@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace NGApi
+namespace NGAPI
 {
-    internal class UAV
-    {
-        public int XPos;
-		public int YPos;
+	public class UAV : Entity
+	{
 		public int ViewRadius;
-    }
+
+		public UAV() :
+			base()
+		{
+
+		}
+	}
 }

@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace NGApi
+namespace NGAPI
 {
-    internal class Tank
+    public class Tank : Entity
     {
-        public int XPos;
-		public int YPos;
-		public int MisslesLeft;
-		public bool Alive;
+		public int MisslesLeft { get; internal set; } = 0;
+		public bool Alive { get; internal set; } = true;
+
+		public Tank() :
+			base()
+		{
+
+		}
     }
 }

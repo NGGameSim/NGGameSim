@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Name="SimViewer" Path="SimViewer" Type="Console">
   <Properties>
     <RootNamespace>NGSim</RootNamespace>
@@ -11,18 +11,19 @@
     <Reference Include="Lidgren.Network.External" />
     <Reference Include="MonoGame.Framework.External" />
     <Reference Include="SimCommon" />
+    <Reference Include="NGAPI" />
     <Reference Include="NLog.External" />
   </References>
   <Files>
     <Compile Include="Graphics\ArcBallCamera.cs" />
     <Compile Include="Graphics\Camera.cs" />
-    <Compile Include="Network\Client.cs" />
     <Compile Include="Graphics\CameraBehavior.cs" />
     <Compile Include="Graphics\CameraManager.cs" />
     <Compile Include="Graphics\CModel.cs" />
     <Compile Include="Input\InputEvent.cs" />
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\MouseButton.cs" />
+    <Compile Include="Network\Client.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimViewer.cs" />

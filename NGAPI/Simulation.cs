@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NGApi
+namespace NGAPI
 {
     internal class Simulation
     {

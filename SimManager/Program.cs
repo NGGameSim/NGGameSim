@@ -7,7 +7,8 @@ namespace NGSim
 {
 	public static class Program
 	{
-        //private static bool shouldClose = false;
+		private static Server server;
+
         [STAThread]
 		public static void Main(string[] args)
 		{
@@ -15,13 +16,13 @@ namespace NGSim
 
 			Application app = new Application();
 			app.Initialized += (sender, e) => { thread.Start(); };
-			//app.Terminating += (sender, e) => { shouldClose = true; };
+			app.Terminating += (sender, e) => { server.CloseServer(); };
 			app.Run(new MainWindow());
 		}
 
 		private static void testServer()
 		{
-            Server server = new Server();
+            server = new Server();
             server.WaitForMessage();
         }
 	}

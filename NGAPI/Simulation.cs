@@ -12,5 +12,6 @@ namespace NGAPI
 			Team1 = new Team();
 			Team2 = new Team();
 		}
+
     }
 }

@@ -33,7 +33,6 @@ namespace NGSim
 			base.Initialize();
 
 			// Setup graphics device settings
-			_graphics.GraphicsProfile = GraphicsProfile.HiDef;
 			_graphics.PreferMultiSampling = true;
 			GraphicsDevice.PresentationParameters.MultiSampleCount = 4;
 			_graphics.ApplyChanges();
@@ -86,8 +85,8 @@ namespace NGSim
 			Camera camera = CameraManager.ActiveCamera;
 
 			_world.Draw(GraphicsDevice, camera);
-			//_tankModel.Render(camera, Vector3.Right * 3 + Vector3.Up * 2);
-			//_uavModel.Render(camera, Vector3.Left * 3 + Vector3.Up * 5);
+			_tankModel.Render(camera, Vector3.Right * 3 + Vector3.Up * 2);
+			_uavModel.Render(camera, Vector3.Left * 3 + Vector3.Up * 5);
 
 			// Render the simulation
 			_simManager.Render();

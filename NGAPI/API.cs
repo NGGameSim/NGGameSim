@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NGAPI
 {
-    class APIControl
+    public static class API
     {
-        private static Simulation simulation = new Simulation();
-        private static UAV FriendlyUAV = simulation.Team1.UAV;
-        private static Tank FriendlyTank = simulation.Team1.Tank;
-        private static Tank EnemyTank = simulation.Team2.Tank;
+		// This gets populated my SimulationManager in SimManager
+        internal static Simulation Simulation = null;
+        internal static UAV FriendlyUAV = Simulation.Team1.UAV;
+        internal static Tank FriendlyTank = Simulation.Team1.Tank;
+        internal static Tank EnemyTank = Simulation.Team2.Tank;
 
-        public void SetUAVHeading(Heading targetHeading)
+        public static void SetUAVHeading(Heading targetHeading)
         {
             if(!Enum.IsDefined(typeof(Heading), targetHeading))
             {
@@ -22,7 +19,7 @@ namespace NGAPI
             FriendlyUAV.CurrentHeading = targetHeading;
         }
 
-        public void SetUAVSpeed(Speed targetSpeed)
+        public static void SetUAVSpeed(Speed targetSpeed)
         {
             if(!Enum.IsDefined(typeof(Speed),targetSpeed))
             {
@@ -32,16 +29,16 @@ namespace NGAPI
         }
 
         //Returns True if Enemy Tank is within the UAVs view radius
-        public bool UAVScan()
+        public static bool UAVScan()
         {
-            int viewRadius = simulation.Team1.UAV.ViewRadius;
+            int viewRadius = Simulation.Team1.UAV.ViewRadius;
             float distance = FriendlyUAV.Position.DistanceTo(EnemyTank.Position);
 
             if(distance < viewRadius) { return true; }
             else { return false; }
         }
 
-        public void TankSetHeading(Heading targetHeading)
+        public static void TankSetHeading(Heading targetHeading)
         {
             if(!Enum.IsDefined(typeof(Heading),targetHeading))
             {
@@ -50,7 +47,7 @@ namespace NGAPI
             FriendlyTank.CurrentHeading = targetHeading;
         }
 
-        public void TankSetSpeed(Speed targetSpeed)
+        public static void TankSetSpeed(Speed targetSpeed)
         {
             if (!Enum.IsDefined(typeof(Speed), targetSpeed))
             {
@@ -61,7 +58,7 @@ namespace NGAPI
         
         //Return True on a Hit on the Enemy Tank
         //Return False on a Miss or a failure to fire
-        public bool Fire(Position Target)
+        public static bool Fire(Position Target)
         {
             FriendlyTank.MisslesLeft--;
 

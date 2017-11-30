@@ -7,7 +7,7 @@ namespace NGAPI
 		public int MisslesLeft { get; internal set; } = 0;
 		public bool Alive { get; internal set; } = true;
 
-		public Tank() :
+        public Tank() :
 			base()
 		{
 

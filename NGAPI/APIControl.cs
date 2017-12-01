@@ -13,6 +13,11 @@ namespace NGAPI
         private static Tank FriendlyTank = simulation.Team1.Tank;
         private static Tank EnemyTank = simulation.Team2.Tank;
 
+		public Position GetUAVPosition()
+		{
+			return FriendlyUAV.Position;
+		}
+
 		public Speed GetUAVSpeed()
 		{
 			return FriendlyUAV.CurrentSpeed;
@@ -51,6 +56,11 @@ namespace NGAPI
             if(distance < viewRadius) { return true; }
             else { return false; }
         }
+
+		public Position GetTankPosition()
+		{
+			return FriendlyTank.Position;
+		}
 
 		public Speed GetTankSpeed()
 		{

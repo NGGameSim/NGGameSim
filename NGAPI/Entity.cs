@@ -9,7 +9,8 @@ namespace NGAPI
 		public Heading TargetHeading { get; internal set; }
 		public Speed CurrentSpeed { get; internal set; }
 		public Speed TargetSpeed { get; internal set; }
-		
+		public Direction MoveDirection { get; internal set; }
+
 		protected Entity() :
 			this(Position.Zero)
 		{ }
@@ -17,6 +18,17 @@ namespace NGAPI
 		protected Entity(Position pos)
 		{
 			Position = pos;
+		}
+
+		public void ChangeHeading()
+		{
+			if(MoveDirection == Direction.Left && TargetHeading != CurrentHeading) {
+				CurrentHeading = (Heading)(((int)CurrentHeading + 45) % 350);
+			}
+			else if (MoveDirection == Direction.Right && TargetHeading != CurrentHeading)
+			{
+				CurrentHeading = (Heading)(((int)CurrentHeading - 45) % 350);
+			}
 		}
 	}
 }

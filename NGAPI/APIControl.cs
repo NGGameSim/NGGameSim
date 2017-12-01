@@ -13,14 +13,25 @@ namespace NGAPI
         private static Tank FriendlyTank = simulation.Team1.Tank;
         private static Tank EnemyTank = simulation.Team2.Tank;
 
-        public void SetUAVHeading(Heading targetHeading)
+		public Speed GetUAVSpeed()
+		{
+			return FriendlyUAV.CurrentSpeed;
+		}
+
+		public Heading GetUAVHeading()
+		{
+			return FriendlyUAV.CurrentHeading;
+		}
+
+        public void SetUAVHeading(Heading targetHeading, Direction moveDirection)
         {
             if(!Enum.IsDefined(typeof(Heading), targetHeading))
             {
                 throw new Exception("Invalid Heading");
             }
-            FriendlyUAV.CurrentHeading = targetHeading;
-        }
+            FriendlyUAV.TargetHeading = targetHeading;
+			FriendlyUAV.MoveDirection = moveDirection;
+		}
 
         public void SetUAVSpeed(Speed targetSpeed)
         {
@@ -41,29 +52,44 @@ namespace NGAPI
             else { return false; }
         }
 
-        public void TankSetHeading(Heading targetHeading)
+		public Speed GetTankSpeed()
+		{
+			return FriendlyTank.CurrentSpeed;
+		}
+
+		public Heading GetTankHeading()
+		{
+			return FriendlyTank.CurrentHeading;
+		}
+
+		public int GetNumberOfMissles()
+		{
+			return FriendlyTank.MisslesLeft;
+		}
+
+		public void SetTankHeading(Heading targetHeading, Direction moveDirection)
         {
             if(!Enum.IsDefined(typeof(Heading),targetHeading))
             {
                 throw new Exception("Invalid Heading");
             }
-            FriendlyTank.CurrentHeading = targetHeading;
-        }
+            FriendlyTank.TargetHeading = targetHeading;
+			FriendlyUAV.MoveDirection = moveDirection;
+		}
 
-        public void TankSetSpeed(Speed targetSpeed)
+        public void SetTankSpeed(Speed targetSpeed)
         {
             if (!Enum.IsDefined(typeof(Speed), targetSpeed))
             {
                 throw new Exception("Invalid Heading");
             }
-            FriendlyTank.CurrentSpeed = targetSpeed;
+            FriendlyTank.TargetSpeed = targetSpeed;
         }
         
         //Return True on a Hit on the Enemy Tank
         //Return False on a Miss or a failure to fire
         public bool Fire(Position Target)
         {
-            FriendlyTank.MisslesLeft--;
 
             //Out of Missiles (failure to fire)
             if(FriendlyTank.MisslesLeft == 0)
@@ -72,19 +98,22 @@ namespace NGAPI
                 return false;
             }
 
-            //Out of Range (Failure to Fire)
-            //4000 is just a number and can be changed, but it is the real firing range of the M1 Abrams
-            if(FriendlyTank.Position.DistanceTo(Target) > 4000)
+			FriendlyTank.MisslesLeft--;
+
+			//Out of Range (Failure to Fire)
+			//4000 is just a number and can be changed, but it is the real firing range of the M1 Abrams in meters
+			if (FriendlyTank.Position.DistanceTo(Target) > 4000)
             {
                 return false;
             }
 
             //Good Hit Good Kill (Rifle Rifle Splash)
-            //22 is effective blast radius of 120mm cannon on M1 Abrams
+            //22 meters is effective blast radius of 120mm cannon on M1 Abrams
             if(EnemyTank.Position.DistanceTo(Target) < 22)
             {
-                return true;
-            }
+				EnemyTank.Alive = false;
+				return true;
+			}
             //Return False
             else
             {

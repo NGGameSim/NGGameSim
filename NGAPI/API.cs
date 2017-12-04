@@ -10,9 +10,9 @@ namespace NGAPI
         internal static Tank FriendlyTank = Simulation.Team1.Tank;
         internal static Tank EnemyTank = Simulation.Team2.Tank;
 
-        public static void SetUAVHeading(Heading targetHeading)
+        public static void SetUAVHeading(int targetHeading)
         {
-            if(!Enum.IsDefined(typeof(Heading), targetHeading))
+            if(targetHeading < 0 || targetHeading > 360)
             {
                 throw new Exception("Invalid Heading");
             }
@@ -38,9 +38,9 @@ namespace NGAPI
             else { return false; }
         }
 
-        public static void TankSetHeading(Heading targetHeading)
+        public static void TankSetHeading(int targetHeading)
         {
-            if(!Enum.IsDefined(typeof(Heading),targetHeading))
+            if(targetHeading < 0 || targetHeading > 360)
             {
                 throw new Exception("Invalid Heading");
             }
@@ -51,7 +51,7 @@ namespace NGAPI
         {
             if (!Enum.IsDefined(typeof(Speed), targetSpeed))
             {
-                throw new Exception("Invalid Heading");
+                throw new Exception("Invalid Speed");
             }
             FriendlyTank.CurrentSpeed = targetSpeed;
         }

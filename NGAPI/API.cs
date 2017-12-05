@@ -16,7 +16,7 @@ namespace NGAPI
             {
                 throw new Exception("Invalid Heading");
             }
-            FriendlyUAV.CurrentHeading = targetHeading;
+            FriendlyUAV.TargetHeading = targetHeading;
         }
 
         public static void SetUAVSpeed(Speed targetSpeed)
@@ -25,7 +25,7 @@ namespace NGAPI
             {
                 throw new Exception("InvalidSpeed");
             }
-            FriendlyUAV.CurrentSpeed = targetSpeed;
+            FriendlyUAV.TargetSpeed = targetSpeed;
         }
 
         //Returns True if Enemy Tank is within the UAVs view radius
@@ -44,7 +44,7 @@ namespace NGAPI
             {
                 throw new Exception("Invalid Heading");
             }
-            FriendlyTank.CurrentHeading = targetHeading;
+            FriendlyTank.TargetHeading = targetHeading;
         }
 
         public static void TankSetSpeed(Speed targetSpeed)
@@ -53,7 +53,7 @@ namespace NGAPI
             {
                 throw new Exception("Invalid Speed");
             }
-            FriendlyTank.CurrentSpeed = targetSpeed;
+            FriendlyTank.TargetSpeed = targetSpeed;
         }
         
         //Return True on a Hit on the Enemy Tank

@@ -57,7 +57,7 @@ namespace NGAPI
             }
         }
 
-        public static int SpeedToDegrees(Speed gameSpeed, Direction direction, Heading currentHeading, Heading targetHeading, Type type)
+        public static int SpeedToDegrees(Speed gameSpeed, Direction direction, int currentHeading, int targetHeading, Type type)
         {
             int difference;
             int turns;
@@ -66,28 +66,30 @@ namespace NGAPI
             //Calculate how far the user is trying to turn
             if (direction == Direction.Left)
             {
-                if ((int)currentHeading > (int)targetHeading)
+                if (currentHeading > targetHeading)
                 {
-                    difference = (int)currentHeading - (int)targetHeading;
+                    difference = currentHeading - targetHeading;
                 }
-                else if ((int)currentHeading < (int)targetHeading)
+                else if (currentHeading < targetHeading)
                 {
-                    difference = (int)currentHeading + (360 - (int)targetHeading);
+                    difference = currentHeading + (360 - (targetHeading));
                 }
                 else { difference = 0; }
             }
-            else
+            else if (direction == Direction.Right)
             {
-                if ((int)currentHeading < (int)targetHeading)
+                if (currentHeading < targetHeading)
                 {
-                    difference = (int)targetHeading - (int)currentHeading;
+                    difference = targetHeading - currentHeading;
                 }
-                else if ((int)currentHeading > (int)targetHeading)
+                else if (currentHeading > targetHeading)
                 {
-                    difference = (360 - (int)currentHeading) + (int)targetHeading;
+                    difference = (360 - currentHeading) + targetHeading;
                 }
                 else { difference = 0; }
             }
+            else if (direction == Direction.Null) { difference = 0; }
+            else { throw new Exception("Invalid Direction"); }
 
             //Determine adjustment values
             if (type == UAVType) { adjustment = 0; }

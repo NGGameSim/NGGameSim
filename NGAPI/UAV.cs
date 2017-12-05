@@ -12,7 +12,7 @@ namespace NGAPI
 
 		}
 
-		public float GetSpeed()
+		internal float GetSpeedUnits()
 		{
 			if (CurrentSpeed == Speed.Low)
 				return 4F;
@@ -23,7 +23,7 @@ namespace NGAPI
 			return 0F;  //should never happen
 		}
 
-		public void ChangeSpeed()
+		internal void UpdateSpeed()
 		{
 			if (CurrentSpeed == Speed.Low && TargetSpeed != Speed.Low)
 				CurrentSpeed = Speed.Med;

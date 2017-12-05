@@ -51,12 +51,6 @@ namespace NGAPI
 			Y += speedY * time;
 		}
 
-		public void SetPosition(int x, int y)
-		{
-			X = x;
-			Y = y;
-		}
-
 		public static Position operator + (Position l, Position r)
 		{
 			return new Position(l.X + r.X, l.Y + r.Y);

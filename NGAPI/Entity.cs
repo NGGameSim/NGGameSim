@@ -20,15 +20,9 @@ namespace NGAPI
 			Position = pos;
 		}
 
-		public void ChangeHeading()
+		public void UpdateHeading()
 		{
-			if(MoveDirection == Direction.Left && TargetHeading != CurrentHeading) {
-				CurrentHeading = (Heading)(((int)CurrentHeading + 45) % 350);
-			}
-			else if (MoveDirection == Direction.Right && TargetHeading != CurrentHeading)
-			{
-				CurrentHeading = (Heading)(((int)CurrentHeading - 45) % 350);
-			}
+			// TODO: reimplement using the new non-Heading code
 		}
 	}
 }

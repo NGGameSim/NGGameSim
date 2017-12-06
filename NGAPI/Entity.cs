@@ -5,10 +5,10 @@ namespace NGAPI
 	public abstract class Entity
 	{
 		public Position Position { get; internal set; }
-		public int CurrentHeading { get; internal set; }
-		public int TargetHeading { get; internal set; }
-		public Speed CurrentSpeed { get; internal set; }
-		public Speed TargetSpeed { get; internal set; }
+		public float CurrentHeading { get; internal set; }
+		public float TargetHeading { get; internal set; }
+		public float CurrentSpeed { get; internal set; }
+		public float TargetSpeed { get; internal set; }
 		public Direction MoveDirection { get; internal set; }
 
 		protected Entity() :
@@ -20,9 +20,10 @@ namespace NGAPI
 			Position = pos;
 		}
 
-		public void UpdateHeading()
+		//Commented out to make consistent with updateSpeed ect in SimulationManager
+		/*public void UpdateHeading()
 		{
 			// TODO: reimplement using the new non-Heading code
-		}
+		}*/
 	}
 }

@@ -9,58 +9,104 @@ namespace NGAPI
         internal static UAV FriendlyUAV = Simulation.Team1.UAV;
         internal static Tank FriendlyTank = Simulation.Team1.Tank;
         internal static Tank EnemyTank = Simulation.Team2.Tank;
+		private static float maxSpeedTank = 13;  //meters per second
+		private static float maxSpeedUAV = 60;  //meters per second
 
-        public static void SetUAVHeading(int targetHeading)
+		public static Position GetUAVPosition()
+		{
+			return FriendlyUAV.Position;
+		}
+
+		public static Position GetTankPosition()
+		{
+			return FriendlyTank.Position;
+		}
+
+		public static float GetUAVSpeed()
+		{
+			return FriendlyUAV.CurrentSpeed;
+		}
+
+		public static float GetTankSpeed()
+		{
+			return FriendlyTank.CurrentSpeed;
+		}
+
+		public static float GetUAVHeading()
+		{
+			return FriendlyUAV.CurrentHeading;
+		}
+
+		public static float GetTankHeading()
+		{
+			return FriendlyTank.CurrentHeading;
+		}
+
+		public static int GetRemainingMissles()
+		{
+			return FriendlyTank.MisslesLeft;
+		}
+
+		public static void SetUAVSpeed(float targetSpeed)
+		{
+			if (targetSpeed > maxSpeedUAV)
+				targetSpeed = maxSpeedUAV;
+			else if (targetSpeed < 0)
+				targetSpeed = 0;
+			FriendlyUAV.CurrentSpeed = targetSpeed;
+		}
+
+		public static void SetTankSpeed(float targetSpeed)
+		{
+			if (targetSpeed > maxSpeedTank)
+				targetSpeed = maxSpeedTank;
+			else if (targetSpeed < 0)
+				targetSpeed = 0;
+			FriendlyUAV.CurrentSpeed = targetSpeed;
+		}
+
+		public static void SetUAVHeading(float targetHeading, Direction moveDirection)
         {
-            if (targetHeading < 0 || targetHeading > 360)
+            if(!Enum.IsDefined(typeof(Direction), moveDirection))
             {
-                throw new Exception("Invalid Heading");
+                throw new Exception("Invalid Direction");
             }
             FriendlyUAV.TargetHeading = targetHeading;
-        }
+			FriendlyUAV.MoveDirection = moveDirection;
+		}
 
-        public static void SetUAVSpeed(Speed targetSpeed)
-        {
-            if(!Enum.IsDefined(typeof(Speed),targetSpeed))
-            {
-                throw new Exception("InvalidSpeed");
-            }
-            FriendlyUAV.TargetSpeed = targetSpeed;
-        }
+		public static void SetTankHeading(float targetHeading, Direction moveDirection)
+		{
+			if (!Enum.IsDefined(typeof(Direction), moveDirection))
+			{
+				throw new Exception("Invalid Direction");
+			}
+			FriendlyTank.TargetHeading = targetHeading;
+			FriendlyUAV.MoveDirection = moveDirection;
+		}
 
-        //Returns True if Enemy Tank is within the UAVs view radius
-        public static bool UAVScan()
+		//Returns True if Enemy Tank is within the UAVs view radius
+		public static Position GetLastKnownPosition()
         {
-            int viewRadius = Simulation.Team1.UAV.ViewRadius;
+            int viewRadius = FriendlyUAV.ViewRadius;
             float distance = FriendlyUAV.Position.DistanceTo(EnemyTank.Position);
 
-            if(distance < viewRadius) { return true; }
-            else { return false; }
-        }
+            if(distance < viewRadius) {
+				FriendlyUAV.LastKnownPosition = FriendlyUAV.Position;
+				FriendlyUAV.DetectedThisTurn = true;
+			}
+			return FriendlyUAV.LastKnownPosition;
+		}
 
-        public static void TankSetHeading(int targetHeading)
-        {
-            if (targetHeading < 0 || targetHeading > 360)
-            {
-                throw new Exception("Invalid Heading");
-            }
-            FriendlyTank.TargetHeading = targetHeading;
-        }
-
-        public static void TankSetSpeed(Speed targetSpeed)
-        {
-            if (!Enum.IsDefined(typeof(Speed), targetSpeed))
-            {
-                throw new Exception("Invalid Speed");
-            }
-            FriendlyTank.TargetSpeed = targetSpeed;
-        }
-
+		public static bool DetectedThisTurn()
+		{
+			return FriendlyUAV.DetectedThisTurn;
+		}
+        
         //Return True on a Hit on the Enemy Tank
         //Return False on a Miss or a failure to fire
         public static bool Fire(Position Target)
         {
-            FriendlyTank.MisslesLeft--;
 
             //Out of Missiles (failure to fire)
             if(FriendlyTank.MisslesLeft == 0)
@@ -69,63 +115,50 @@ namespace NGAPI
                 return false;
             }
 
-            //Out of Range (Failure to Fire)
-            //4000 is just a number and can be changed, but it is the real firing range of the M1 Abrams
-            if(FriendlyTank.Position.DistanceTo(Target) > 4000)
+			FriendlyTank.MisslesLeft--;
+
+			//Out of Range (Failure to Fire)
+			//4000 is just a number and can be changed, but it is the real firing range of the M1 Abrams in meters
+			if (FriendlyTank.Position.DistanceTo(Target) > 4000)
             {
                 return false;
             }
 
-            //Good Hit Good Kill (Rifle Rifle Splash)
-            //22 is effective blast radius of 120mm cannon on M1 Abrams
-            if(EnemyTank.Position.DistanceTo(Target) < 22)
-            {
-                return true;
-            }
-            //Return False
-            else
-            {
-                return false;
-            }
-        }
+            if(FriendlyTank.Missle2FiredThisTurn == true)
+			{
+				return false;
+			}
 
-        //Set a Target Heading and Speed while turning in a given direction
-        //Check to see if the move will move the UAV out of the play area.
-        public static void SetUAVVector(int targetHeading, Speed targetSpeed, Direction direction)
-        {
-            float unitsMoved;
-            int degreesTurned;
+			if(FriendlyTank.Missle1FiredThisTurn == true)
+			{
+				FriendlyTank.Missle2FiredTarget = Target;
+				FriendlyTank.Missle2FiredThisTurn = true;
+				FriendlyTank.TurnsItTakesMissle2 = 1 + ((int)FriendlyTank.Position.DistanceTo(Target)) / 1000;
+			}
+			else
+			{
+				FriendlyTank.Missle1FiredTarget = Target;
+				FriendlyTank.Missle1FiredThisTurn = true;
+				FriendlyTank.TurnsItTakesMissle1 = 1 + ((int)FriendlyTank.Position.DistanceTo(Target)) / 1000;
+			}
+			return true;
+		}
 
-            if (targetHeading < 0 || targetHeading > 360) { throw new Exception("Invalid Heading"); }
-            else if (!Enum.IsDefined(typeof(Speed), targetSpeed)) { throw new Exception("Invalid Speed"); }
+		public static bool CanFire()
+		{
+			//Out of Missiles (failure to fire)
+			if (FriendlyTank.MisslesLeft == 0)
+			{
+				//TODO: Besides an obvious miss, what do we do if we're out of missiles
+				return false;
+			}
 
-            unitsMoved = EntityUtility.SpeedToUnits(targetSpeed, typeof(UAV));
-            degreesTurned = EntityUtility.SpeedToDegrees(targetSpeed, direction, FriendlyUAV.CurrentHeading, targetHeading, typeof(UAV));
+			if (FriendlyTank.Missle2FiredThisTurn == true)
+			{
+				return false;
+			}
 
-            //TODO: Predict updated position of UAV and throw exception if out of bounds. Incorporate Direction
-            
-            FriendlyUAV.TargetHeading = targetHeading;
-            FriendlyUAV.TargetSpeed = targetSpeed;
-        }
-
-        //Set a Target Heading and Speed while turning in a given direction
-        //Check to see if the move will move the UAV out of the play area.
-        public static void SetTankVector(int targetHeading, Speed targetSpeed, Direction direction)
-        {
-            float unitsMoved;
-            int degreesTurned;
-
-            if (targetHeading < 0 || targetHeading > 360) { throw new Exception("Invalid Heading"); }
-            else if (!Enum.IsDefined(typeof(Speed), targetSpeed)) { throw new Exception("Invalid Speed"); }
-
-            unitsMoved = EntityUtility.SpeedToUnits(targetSpeed, typeof(UAV));
-            degreesTurned = EntityUtility.SpeedToDegrees(targetSpeed, direction, FriendlyUAV.CurrentHeading, targetHeading, typeof(UAV));
-            //TODO: Predict updated position of Tank and throw exception if out of bounds
-
-            FriendlyUAV.TargetHeading = targetHeading;
-            FriendlyUAV.TargetSpeed = targetSpeed;
-        }
-
-        public static bool stillAlive() { return FriendlyTank.Alive; }
+			return true;
+		}
     }
 }

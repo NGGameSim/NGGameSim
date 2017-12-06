@@ -5,10 +5,10 @@ namespace NGAPI
 	public abstract class Entity
 	{
 		public Position Position { get; internal set; }
-		public int CurrentHeading { get; internal set; }
-		public int TargetHeading { get; internal set; }
-		public int CurrentSpeed { get; internal set; }
-		public int TargetSpeed { get; internal set; }
+		public float CurrentHeading { get; internal set; }
+		public float TargetHeading { get; internal set; }
+		public float CurrentSpeed { get; internal set; }
+		public float TargetSpeed { get; internal set; }
 		public Direction MoveDirection { get; internal set; }
 
 		protected Entity() :

@@ -91,49 +91,49 @@ namespace NGAPI
             else if (direction == Direction.Null) { difference = 0; }
             else { throw new Exception("Invalid Direction"); }
 
-            //Determine adjustment values
-            if (type == UAVType) { adjustment = 0; }
-            else if (type == TankType) { adjustment = 1; }
-            else { throw new Exception("Invalid Entity Type"); }
+        //    //Determine adjustment values
+        //    if (type == UAVType) { adjustment = 0; }
+        //    else if (type == TankType) { adjustment = 1; }
+        //    else { throw new Exception("Invalid Entity Type"); }
 
-            //Calculate how many turns the user needs to complete the turn with adjustment
-            if (gameSpeed == Speed.High)
-            {
-                if (difference < 45) { turns = 3; }
-                else if (difference > 45 && difference < 90) { turns = 4  - adjustment; }
-                else if (difference > 90 && difference < 135) { turns = 5 - adjustment; }
-                else if (difference > 135 && difference < 180) { turns = 6 - adjustment; }
-                else if (difference > 180 && difference < 225) { turns = 7 - adjustment; }
-                else if (difference > 225 && difference < 270) { turns = 8 - adjustment; }
-                else if (difference > 270 && difference < 315) { turns = 9 - adjustment; }
-                else { turns = 10 - adjustment; }
-            }
-            else if (gameSpeed == Speed.Med)
-            {
-                if (difference < 45) { turns = 2 - adjustment; }
-                else if (difference > 45 && difference < 90) { turns = 3 - adjustment; }
-                else  if (difference > 90 && difference < 135) { turns = 4 - adjustment; }
-                else if (difference > 135 && difference < 180) { turns = 5 - adjustment; }
-                else if (difference > 180 && difference < 225) { turns = 6 - adjustment; }
-                else if (difference > 225 && difference < 270) { turns = 7 - adjustment; }
-                else if (difference > 270 && difference < 315) { turns = 8 - adjustment; }
-                else { turns = 9 - adjustment; }
-            }
-            else if (gameSpeed == Speed.Low)
-            {
-                if (difference < 45) { turns = 1 - adjustment; }
-                else if (difference > 45 && difference < 90) { turns = 2 - adjustment; }
-                else if (difference > 90 && difference < 135) { turns = 3 - adjustment; }
-                else if (difference > 135 && difference < 180) { turns = 4 - adjustment; }
-                else if (difference > 180 && difference < 225) { turns = 5 - adjustment; }
-                else if (difference > 225 && difference < 270) { turns = 6 - adjustment; }
-                else if (difference > 270 && difference < 315) { turns = 7 - adjustment; }
-                else { turns = 8 - adjustment; }
-            }
-            else { throw new Exception("Invalid Speed"); }
+        //    //Calculate how many turns the user needs to complete the turn with adjustment
+        //    if (gameSpeed == Speed.High)
+        //    {
+        //        if (difference < 45) { turns = 3; }
+        //        else if (difference > 45 && difference < 90) { turns = 4  - adjustment; }
+        //        else if (difference > 90 && difference < 135) { turns = 5 - adjustment; }
+        //        else if (difference > 135 && difference < 180) { turns = 6 - adjustment; }
+        //        else if (difference > 180 && difference < 225) { turns = 7 - adjustment; }
+        //        else if (difference > 225 && difference < 270) { turns = 8 - adjustment; }
+        //        else if (difference > 270 && difference < 315) { turns = 9 - adjustment; }
+        //        else { turns = 10 - adjustment; }
+        //    }
+        //    else if (gameSpeed == Speed.Med)
+        //    {
+        //        if (difference < 45) { turns = 2 - adjustment; }
+        //        else if (difference > 45 && difference < 90) { turns = 3 - adjustment; }
+        //        else  if (difference > 90 && difference < 135) { turns = 4 - adjustment; }
+        //        else if (difference > 135 && difference < 180) { turns = 5 - adjustment; }
+        //        else if (difference > 180 && difference < 225) { turns = 6 - adjustment; }
+        //        else if (difference > 225 && difference < 270) { turns = 7 - adjustment; }
+        //        else if (difference > 270 && difference < 315) { turns = 8 - adjustment; }
+        //        else { turns = 9 - adjustment; }
+        //    }
+        //    else if (gameSpeed == Speed.Low)
+        //    {
+        //        if (difference < 45) { turns = 1 - adjustment; }
+        //        else if (difference > 45 && difference < 90) { turns = 2 - adjustment; }
+        //        else if (difference > 90 && difference < 135) { turns = 3 - adjustment; }
+        //        else if (difference > 135 && difference < 180) { turns = 4 - adjustment; }
+        //        else if (difference > 180 && difference < 225) { turns = 5 - adjustment; }
+        //        else if (difference > 225 && difference < 270) { turns = 6 - adjustment; }
+        //        else if (difference > 270 && difference < 315) { turns = 7 - adjustment; }
+        //        else { turns = 8 - adjustment; }
+        //    }
+        //    else { throw new Exception("Invalid Speed"); }
 
-            //Calculate how many degrees the user can turn per iteration
-            return difference / turns;
-        }
+        //    //Calculate how many degrees the user can turn per iteration
+        //    return difference / turns;
+        //}
     }
 }

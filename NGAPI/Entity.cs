@@ -9,7 +9,8 @@ namespace NGAPI
 		public int TargetHeading { get; internal set; }
 		public Speed CurrentSpeed { get; internal set; }
 		public Speed TargetSpeed { get; internal set; }
-		
+		public Direction MoveDirection { get; internal set; }
+
 		protected Entity() :
 			this(Position.Zero)
 		{ }
@@ -17,6 +18,11 @@ namespace NGAPI
 		protected Entity(Position pos)
 		{
 			Position = pos;
+		}
+
+		public void UpdateHeading()
+		{
+			// TODO: reimplement using the new non-Heading code
 		}
 	}
 }

@@ -9,45 +9,26 @@ namespace NGAPI
         
         //Returns a float to be used as real world units when translating objects
         //Floats should be seeen as number of units travelled per iteration (10 per second)
-        public static float SpeedToUnits(Speed gameSpeed, Type type)
+        public static float SpeedToUnits(int gameSpeed, Type type)
         {
-            if(!Enum.IsDefined(typeof(Speed),gameSpeed))
-            {
-                throw new Exception("Invalid Speed");
-            }
-
             //Using real world RQ-4 Global Hawk speeds as reference
             if (type == UAVType)
             {
-                if (gameSpeed == Speed.Low)
+                if (gameSpeed < 7.0f || gameSpeed > 17.5f)
                 {
-                    return 7.0f;
+                    throw new Exception("Invalid Speed");
                 }
-                else if (gameSpeed == Speed.Med)
-                {
-                    return 13.5f;
-                }
-                else
-                {
-                    return 17.5f;
-                }
+                else { return (float)gameSpeed; }
             }
 
             //Same as above, uses real world speeds for M1 Abrams
             else if (type == TankType)
             {
-                if (gameSpeed == Speed.Low)
+                if(gameSpeed < 0.0f || gameSpeed > 2.0f)
                 {
-                    return 0.5f;
+                    throw new Exception("Invalid float");
                 }
-                else if (gameSpeed == Speed.Med)
-                {
-                    return 1.0f;
-                }
-                else
-                {
-                    return 2.0f;
-                }
+                else { return (float)gameSpeed; }
             }
 
             //Handling for trying to convert for something other than tank or UAV
@@ -57,7 +38,7 @@ namespace NGAPI
             }
         }
 
-        public static int SpeedToDegrees(Speed gameSpeed, Direction direction, int currentHeading, int targetHeading, Type type)
+        public static int SpeedToDegrees(int gameSpeed, Direction direction, int currentHeading, int targetHeading, Type type)
         {
             int difference;
             int turns;
@@ -97,7 +78,8 @@ namespace NGAPI
 			else { throw new Exception("Invalid Entity Type"); }
 
 			//Calculate how many turns the user needs to complete the turn with adjustment
-			if (gameSpeed == Speed.High)
+            //TODO: Alter these to acommodate tank speeds as well
+			if (gameSpeed < 10.0f)
 			{
 				if (difference < 45) { turns = 3; }
 				else if (difference > 45 && difference < 90) { turns = 4 - adjustment; }
@@ -108,7 +90,7 @@ namespace NGAPI
 				else if (difference > 270 && difference < 315) { turns = 9 - adjustment; }
 				else { turns = 10 - adjustment; }
 			}
-			else if (gameSpeed == Speed.Med)
+			else if (gameSpeed > 10.0f && gameSpeed < 15.0f )
 			{
 				if (difference < 45) { turns = 2 - adjustment; }
 				else if (difference > 45 && difference < 90) { turns = 3 - adjustment; }
@@ -119,7 +101,7 @@ namespace NGAPI
 				else if (difference > 270 && difference < 315) { turns = 8 - adjustment; }
 				else { turns = 9 - adjustment; }
 			}
-			else if (gameSpeed == Speed.Low)
+			else if (gameSpeed > 15.0f && gameSpeed < 17.5f)
 			{
 				if (difference < 45) { turns = 1 - adjustment; }
 				else if (difference > 45 && difference < 90) { turns = 2 - adjustment; }

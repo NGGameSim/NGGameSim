@@ -7,8 +7,8 @@ namespace NGAPI
 		public Position Position { get; internal set; }
 		public int CurrentHeading { get; internal set; }
 		public int TargetHeading { get; internal set; }
-		public Speed CurrentSpeed { get; internal set; }
-		public Speed TargetSpeed { get; internal set; }
+		public int CurrentSpeed { get; internal set; }
+		public int TargetSpeed { get; internal set; }
 		public Direction MoveDirection { get; internal set; }
 
 		protected Entity() :

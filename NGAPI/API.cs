@@ -12,7 +12,7 @@ namespace NGAPI
 
         public static void SetUAVHeading(int targetHeading)
         {
-            if(targetHeading < 0 || targetHeading > 360)
+            if (targetHeading < 0 || targetHeading > 360)
             {
                 throw new Exception("Invalid Heading");
             }
@@ -40,7 +40,7 @@ namespace NGAPI
 
         public static void TankSetHeading(int targetHeading)
         {
-            if(targetHeading < 0 || targetHeading > 360)
+            if (targetHeading < 0 || targetHeading > 360)
             {
                 throw new Exception("Invalid Heading");
             }
@@ -55,7 +55,7 @@ namespace NGAPI
             }
             FriendlyTank.TargetSpeed = targetSpeed;
         }
-        
+
         //Return True on a Hit on the Enemy Tank
         //Return False on a Miss or a failure to fire
         public static bool Fire(Position Target)
@@ -88,5 +88,44 @@ namespace NGAPI
                 return false;
             }
         }
+
+        //Set a Target Heading and Speed while turning in a given direction
+        //Check to see if the move will move the UAV out of the play area.
+        public static void SetUAVVector(int targetHeading, Speed targetSpeed, Direction direction)
+        {
+            float unitsMoved;
+            int degreesTurned;
+
+            if (targetHeading < 0 || targetHeading > 360) { throw new Exception("Invalid Heading"); }
+            else if (!Enum.IsDefined(typeof(Speed), targetSpeed)) { throw new Exception("Invalid Speed"); }
+
+            unitsMoved = EntityUtility.SpeedToUnits(targetSpeed, typeof(UAV));
+            degreesTurned = EntityUtility.SpeedToDegrees(targetSpeed, direction, FriendlyUAV.CurrentHeading, targetHeading, typeof(UAV));
+
+            //TODO: Predict updated position of UAV and throw exception if out of bounds. Incorporate Direction
+            
+            FriendlyUAV.TargetHeading = targetHeading;
+            FriendlyUAV.TargetSpeed = targetSpeed;
+        }
+
+        //Set a Target Heading and Speed while turning in a given direction
+        //Check to see if the move will move the UAV out of the play area.
+        public static void SetTankVector(int targetHeading, Speed targetSpeed, Direction direction)
+        {
+            float unitsMoved;
+            int degreesTurned;
+
+            if (targetHeading < 0 || targetHeading > 360) { throw new Exception("Invalid Heading"); }
+            else if (!Enum.IsDefined(typeof(Speed), targetSpeed)) { throw new Exception("Invalid Speed"); }
+
+            unitsMoved = EntityUtility.SpeedToUnits(targetSpeed, typeof(UAV));
+            degreesTurned = EntityUtility.SpeedToDegrees(targetSpeed, direction, FriendlyUAV.CurrentHeading, targetHeading, typeof(UAV));
+            //TODO: Predict updated position of Tank and throw exception if out of bounds
+
+            FriendlyUAV.TargetHeading = targetHeading;
+            FriendlyUAV.TargetSpeed = targetSpeed;
+        }
+
+        public static bool stillAlive() { return FriendlyTank.Alive; }
     }
 }

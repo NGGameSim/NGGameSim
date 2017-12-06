@@ -2,12 +2,6 @@
 
 namespace NGAPI
 {
-    public enum Speed
-    {
-        Low,
-        Med,
-        High
-    }
     public enum Direction
     {
         Left,

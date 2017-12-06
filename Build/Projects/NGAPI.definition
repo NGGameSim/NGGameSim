@@ -9,7 +9,8 @@
     <Reference Include="System.Core" />
   </References>
   <Files>
-    <Compile Include="APIControl.cs" />
+    <Compile Include="Algorithm.cs" />
+    <Compile Include="API.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityUtility.cs" />
     <Compile Include="Enums.cs" />

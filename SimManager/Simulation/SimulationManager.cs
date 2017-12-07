@@ -32,166 +32,216 @@ namespace NGSim.Simulation
 		{
 
 		}
-		public int RunSimulation()
-		{ 
-			Simulation = new NGAPI.Simulation();
-			API.Simulation = Simulation;
-			//Set a random Position for the Tank and UAV, between -19999 and 19999, field bounds are -20000 and 20000
-			int randX = rand.Next(1, (positiveBoundX - negativeBoundX) - negativeBoundX);
-			int randY = rand.Next(1, (positiveBoundY - negativeBoundY) - negativeBoundY);
-			Simulation.Team1.Tank.Position = new Position(randX, randY);
-			Simulation.Team1.UAV.Position = new Position(randX, randY);
 
-			randX = rand.Next(1, (positiveBoundX - negativeBoundX) - negativeBoundX);
-			randY = rand.Next(1, (positiveBoundY - negativeBoundY) - negativeBoundY);
-			Simulation.Team1.Tank.Position = new Position(randX, randY);
-			Simulation.Team1.UAV.Position = new Position(randX, randY);
+		//public int RunSimulation()
+		//{ 
+		//	Simulation = new NGAPI.Simulation();
+		//	API.Simulation = Simulation;
+		//	//Set a random Position for the Tank and UAV, between -19999 and 19999, field bounds are -20000 and 20000
+		//	int randX = rand.Next(1, (positiveBoundX - negativeBoundX) - negativeBoundX);
+		//	int randY = rand.Next(1, (positiveBoundY - negativeBoundY) - negativeBoundY);
+		//	Simulation.Team1.Tank.Position = new Position(randX, randY);
+		//	Simulation.Team1.UAV.Position = new Position(randX, randY);
 
-			//initialize the missle holding system
-			for(int i=0; i<20; i++)
-			{
-				turnsUntilMisslesHit[i] = 0;
-			}
+		//	randX = rand.Next(1, (positiveBoundX - negativeBoundX) - negativeBoundX);
+		//	randY = rand.Next(1, (positiveBoundY - negativeBoundY) - negativeBoundY);
+		//	Simulation.Team1.Tank.Position = new Position(randX, randY);
+		//	Simulation.Team1.UAV.Position = new Position(randX, randY);
 
-			for(int i=0; i<maxTurns && gameResult == 0; i++)
-			{
-				Update();
-			}
+		//	//initialize the missle holding system
+		//	for(int i=0; i<20; i++)
+		//	{
+		//		turnsUntilMisslesHit[i] = 0;
+		//	}
 
-			return gameResult;
-		}
+		//	for(int i=0; i<maxTurns && gameResult == 0; i++)
+		//	{
+		//		Update();
+		//	}
+
+		//	return gameResult;
+		//}
 
 		public void Update()
 		{
-			
-			bool team1Lost = false;
-			bool team2Lost = false;
+			// Perform interpolations for speeds and headings
+			updateEntityVelocities();
+			// Update the positions on the new speed and headings
+			updateEntityPositions();
+			// Checks for out of bounds entities
+			checkBounds();
+			// Fires new missiles from the teams
+			fireNewMissiles();
+			// Update the existing missile positions
+			updateMissiles();
+			// Check if any teams have been hit with missiles
+			checkMissileImpacts();
+			// Run the user algorithms
+			runUserAlgorithms();
 
-			SetTeam1Friendly();
-			algo1();
-			SetTeam2Friendly();
-			algo2();
+			//bool team1Lost = false;
+			//bool team2Lost = false;
 
-			//update the "DetectedThisTurn" variable
-			Simulation.Team1.UAV.DetectedThisTurn = false;
+			//SetTeam1Friendly();
+			//algo1();
+			//SetTeam2Friendly();
+			//algo2();
 
-			//change UAV and Tank Heading
-			UpdateHeading(Simulation.Team1.Tank);
-			UpdateHeading(Simulation.Team1.UAV);
+			////update the "DetectedThisTurn" variable
+			//Simulation.Team1.UAV.DetectedThisTurn = false;
 
-			//change UAV and Tank Speed
-			UpdateSpeed(Simulation.Team1.Tank, timeInTurn);
-			UpdateSpeed(Simulation.Team1.UAV, timeInTurn);
+			////change UAV and Tank Heading
+			//UpdateHeading(Simulation.Team1.Tank);
+			//UpdateHeading(Simulation.Team1.UAV);
 
-			//move tank and UAV with new heading and speed values
-			MoveWithSpeed(Simulation.Team1.Tank.Position,Simulation.Team1.Tank.CurrentHeading, Simulation.Team1.Tank.CurrentSpeed, timeInTurn);
-			MoveWithSpeed(Simulation.Team1.UAV.Position, Simulation.Team1.UAV.CurrentHeading, Simulation.Team1.UAV.CurrentSpeed, timeInTurn);
+			////change UAV and Tank Speed
+			//UpdateSpeed(Simulation.Team1.Tank, timeInTurn);
+			//UpdateSpeed(Simulation.Team1.UAV, timeInTurn);
 
-			//do the same thing as above for Team2
-			Simulation.Team2.UAV.DetectedThisTurn = false;
+			////move tank and UAV with new heading and speed values
+			//MoveWithSpeed(Simulation.Team1.Tank.Position,Simulation.Team1.Tank.CurrentHeading, Simulation.Team1.Tank.CurrentSpeed, timeInTurn);
+			//MoveWithSpeed(Simulation.Team1.UAV.Position, Simulation.Team1.UAV.CurrentHeading, Simulation.Team1.UAV.CurrentSpeed, timeInTurn);
 
-			UpdateHeading(Simulation.Team2.Tank);
-			UpdateHeading(Simulation.Team2.UAV);
+			////do the same thing as above for Team2
+			//Simulation.Team2.UAV.DetectedThisTurn = false;
 
-			UpdateSpeed(Simulation.Team2.Tank, timeInTurn);
-			UpdateSpeed(Simulation.Team2.UAV, timeInTurn);
+			//UpdateHeading(Simulation.Team2.Tank);
+			//UpdateHeading(Simulation.Team2.UAV);
 
-			MoveWithSpeed(Simulation.Team2.Tank.Position, Simulation.Team2.Tank.CurrentHeading, Simulation.Team2.Tank.CurrentSpeed, timeInTurn);
-			MoveWithSpeed(Simulation.Team2.UAV.Position, Simulation.Team2.UAV.CurrentHeading, Simulation.Team2.UAV.CurrentSpeed, timeInTurn);
+			//UpdateSpeed(Simulation.Team2.Tank, timeInTurn);
+			//UpdateSpeed(Simulation.Team2.UAV, timeInTurn);
 
-			//check for bounds
-			if (CheckOutOfBounds(Simulation.Team1.Tank.Position) || CheckOutOfBounds(Simulation.Team1.UAV.Position))
-				team1Lost = true;
+			//MoveWithSpeed(Simulation.Team2.Tank.Position, Simulation.Team2.Tank.CurrentHeading, Simulation.Team2.Tank.CurrentSpeed, timeInTurn);
+			//MoveWithSpeed(Simulation.Team2.UAV.Position, Simulation.Team2.UAV.CurrentHeading, Simulation.Team2.UAV.CurrentSpeed, timeInTurn);
 
-			if (CheckOutOfBounds(Simulation.Team2.Tank.Position) || CheckOutOfBounds(Simulation.Team2.UAV.Position))
-				team2Lost = true;
+			////check for bounds
+			//if (CheckOutOfBounds(Simulation.Team1.Tank.Position) || CheckOutOfBounds(Simulation.Team1.UAV.Position))
+			//	team1Lost = true;
 
-			//fire new missiles
-			if(Simulation.Team1.Tank.Missle1FiredThisTurn)
-			{
-				MisslesInAirAimedAt[missleIndex] = Simulation.Team1.Tank.Missle1FiredTarget;
-				turnsUntilMisslesHit[missleIndex] = Simulation.Team1.Tank.TurnsItTakesMissle1;
-				missleIndex++;
-				Simulation.Team1.Tank.Missle1FiredThisTurn = false;
-			}
-			if (Simulation.Team1.Tank.Missle2FiredThisTurn)
-			{
-				MisslesInAirAimedAt[missleIndex] = Simulation.Team1.Tank.Missle2FiredTarget;
-				turnsUntilMisslesHit[missleIndex] = Simulation.Team1.Tank.TurnsItTakesMissle2;
-				missleIndex++;
-				Simulation.Team1.Tank.Missle2FiredThisTurn = false;
-			}
+			//if (CheckOutOfBounds(Simulation.Team2.Tank.Position) || CheckOutOfBounds(Simulation.Team2.UAV.Position))
+			//	team2Lost = true;
 
-			if (Simulation.Team2.Tank.Missle1FiredThisTurn)
-			{
-				MisslesInAirAimedAt[missleIndex] = Simulation.Team2.Tank.Missle1FiredTarget;
-				turnsUntilMisslesHit[missleIndex] = Simulation.Team2.Tank.TurnsItTakesMissle1;
-				missleIndex++;
-				Simulation.Team2.Tank.Missle1FiredThisTurn = false;
-			}
-			if (Simulation.Team2.Tank.Missle2FiredThisTurn)
-			{
-				MisslesInAirAimedAt[missleIndex] = Simulation.Team2.Tank.Missle2FiredTarget;
-				turnsUntilMisslesHit[missleIndex] = Simulation.Team2.Tank.TurnsItTakesMissle2;
-				missleIndex++;
-				Simulation.Team2.Tank.Missle2FiredThisTurn = false;
-			}
+			////fire new missiles
+			//if(Simulation.Team1.Tank.Missle1FiredThisTurn)
+			//{
+			//	MisslesInAirAimedAt[missleIndex] = Simulation.Team1.Tank.Missle1FiredTarget;
+			//	turnsUntilMisslesHit[missleIndex] = Simulation.Team1.Tank.TurnsItTakesMissle1;
+			//	missleIndex++;
+			//	Simulation.Team1.Tank.Missle1FiredThisTurn = false;
+			//}
+			//if (Simulation.Team1.Tank.Missle2FiredThisTurn)
+			//{
+			//	MisslesInAirAimedAt[missleIndex] = Simulation.Team1.Tank.Missle2FiredTarget;
+			//	turnsUntilMisslesHit[missleIndex] = Simulation.Team1.Tank.TurnsItTakesMissle2;
+			//	missleIndex++;
+			//	Simulation.Team1.Tank.Missle2FiredThisTurn = false;
+			//}
 
-			//Handle existing missiles(including the just fired)
-			for(int i=0; i < missleIndex; i++)
-			{
-				if(turnsUntilMisslesHit[i] == 1)
-				{
-					if (MisslesInAirAimedAt[i].DistanceTo(Simulation.Team1.Tank.Position) < boomRange) {
-						team1Lost = true;
-					}
-					if (MisslesInAirAimedAt[i].DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
-					{
-						team2Lost = true;
-					}
-					turnsUntilMisslesHit[i] = 0;
-				}
-				else if(turnsUntilMisslesHit[i] > 1)
-				{
-					turnsUntilMisslesHit[i]--;
-				}
-			}
+			//if (Simulation.Team2.Tank.Missle1FiredThisTurn)
+			//{
+			//	MisslesInAirAimedAt[missleIndex] = Simulation.Team2.Tank.Missle1FiredTarget;
+			//	turnsUntilMisslesHit[missleIndex] = Simulation.Team2.Tank.TurnsItTakesMissle1;
+			//	missleIndex++;
+			//	Simulation.Team2.Tank.Missle1FiredThisTurn = false;
+			//}
+			//if (Simulation.Team2.Tank.Missle2FiredThisTurn)
+			//{
+			//	MisslesInAirAimedAt[missleIndex] = Simulation.Team2.Tank.Missle2FiredTarget;
+			//	turnsUntilMisslesHit[missleIndex] = Simulation.Team2.Tank.TurnsItTakesMissle2;
+			//	missleIndex++;
+			//	Simulation.Team2.Tank.Missle2FiredThisTurn = false;
+			//}
 
-			if (team1Lost && team2Lost)
-			{
-				gameResult = 3;
-			}
-			else if (team1Lost)
-			{
-				gameResult = 2;
-			}
-			else if (team2Lost)
-			{
-				gameResult = 1;
-			}
+			////Handle existing missiles(including the just fired)
+			//for(int i=0; i < missleIndex; i++)
+			//{
+			//	if(turnsUntilMisslesHit[i] == 1)
+			//	{
+			//		if (MisslesInAirAimedAt[i].DistanceTo(Simulation.Team1.Tank.Position) < boomRange) {
+			//			team1Lost = true;
+			//		}
+			//		if (MisslesInAirAimedAt[i].DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
+			//		{
+			//			team2Lost = true;
+			//		}
+			//		turnsUntilMisslesHit[i] = 0;
+			//	}
+			//	else if(turnsUntilMisslesHit[i] > 1)
+			//	{
+			//		turnsUntilMisslesHit[i]--;
+			//	}
+			//}
 
-			//Check if neither tank has any missiles left, it's a draw
-			if(Simulation.Team1.Tank.MisslesLeft == 0 && Simulation.Team1.Tank.MisslesLeft ==0)
-			{
-				gameResult = 3;
-			}
+			//if (team1Lost && team2Lost)
+			//{
+			//	gameResult = 3;
+			//}
+			//else if (team1Lost)
+			//{
+			//	gameResult = 2;
+			//}
+			//else if (team2Lost)
+			//{
+			//	gameResult = 1;
+			//}
 
-			numberOfTurns++;
+			////Check if neither tank has any missiles left, it's a draw
+			//if(Simulation.Team1.Tank.MisslesLeft == 0 && Simulation.Team1.Tank.MisslesLeft ==0)
+			//{
+			//	gameResult = 3;
+			//}
+
+			//numberOfTurns++;
 		}
 
-		public void SetTeam1Friendly()
+		private void runUserAlgorithms()
 		{
-			API.FriendlyTank = Simulation.Team1.Tank;
-			API.FriendlyUAV = Simulation.Team1.UAV;
-			API.EnemyTank = Simulation.Team2.Tank;
+			throw new NotImplementedException();
 		}
 
-		public void SetTeam2Friendly()
+		private void checkMissileImpacts()
 		{
-			API.FriendlyTank = Simulation.Team2.Tank;
-			API.FriendlyUAV = Simulation.Team2.UAV;
-			API.EnemyTank = Simulation.Team1.Tank;
+			throw new NotImplementedException();
 		}
+
+		private void updateMissiles()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void fireNewMissiles()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void checkBounds()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void updateEntityPositions()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void updateEntityVelocities()
+		{
+			throw new NotImplementedException();
+		}
+
+		//public void SetTeam1Friendly()
+		//{
+		//	API.FriendlyTank = Simulation.Team1.Tank;
+		//	API.FriendlyUAV = Simulation.Team1.UAV;
+		//	API.EnemyTank = Simulation.Team2.Tank;
+		//}
+
+		//public void SetTeam2Friendly()
+		//{
+		//	API.FriendlyTank = Simulation.Team2.Tank;
+		//	API.FriendlyUAV = Simulation.Team2.UAV;
+		//	API.EnemyTank = Simulation.Team1.Tank;
+		//}
 
 		//We are assuming that the algorithm is somewhere else where it can't modify the number of turns or underlying tank values 
 		public void algo1()

@@ -10,7 +10,6 @@ namespace NGSim
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private TextBox AlgorithmTextBox1;
 		private TextBox AlgorithmTextBox2;
-		public Boolean Running = false;
 
 		public MainWindow()
 		{
@@ -47,7 +46,7 @@ namespace NGSim
 		{
 			var OutString = "You entered: " + AlgorithmTextBox1.Text + " and " + AlgorithmTextBox2.Text;
 			MessageBox.Show(Application.Instance.MainForm, OutString, "GO Button", MessageBoxButtons.OK);
-			Running = true;
+			UpdateManager.SimManager.running = true;
 		}
 
 	}

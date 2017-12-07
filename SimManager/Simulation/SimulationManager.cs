@@ -28,6 +28,8 @@ namespace NGSim.Simulation
 		private int[] turnsUntilMisslesHit = new int[20];
 		private int missleIndex = 0;
 
+		public Boolean running = false;
+
 		public SimulationManager()
 		{
 

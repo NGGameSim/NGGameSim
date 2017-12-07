@@ -65,15 +65,17 @@ namespace NGAPI
 		//Returns true if missile was fired, false otherwise
 		public static bool Fire(Position Target)
 		{
+			if (CanFire(Target)) { FriendlyTank.FiresThisTurn = true; }
+			else { FriendlyTank.FiresThisTurn = false; }
+			return FriendlyTank.FiresThisTurn;
+		}
+		//Checks to see if the tank is allowed to fire at a given target
+		public static bool CanFire(Position Target)
+		{
 			if (FriendlyTank.MisslesLeft <= 0) { return false; }
 			else if (FriendlyTank.Position.DistanceTo(Target) > 4000) { return false; }
-			//TODO: Need way to check for cooldown
-
-			else { return false; }
-		}
-		public static bool CanFire()
-		{
-			return false;
+			else if (FriendlyTank.Cooldown != 0) { return false; }
+			else { return true; }
 		}
 
 

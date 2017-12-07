@@ -2,7 +2,7 @@
 
 namespace NGAPI
 {
-	public class UAV : Entity
+	internal class UAV : Entity
 	{
 		public int ViewRadius { get; internal set; }
 		public Position LastKnownPosition { get; internal set; }

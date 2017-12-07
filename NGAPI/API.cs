@@ -59,14 +59,8 @@ namespace NGAPI
 		}
 
 		//Detection functions
-		public static Position GetLastKnownPosition()
-		{
-			return EnemyTank.Position; //Just a placeholder for build purposes
-		}
-		public static bool DetectedThisTurn()
-		{
-			return false;
-		}
+		public static Position GetLastKnownPosition() { return FriendlyUAV.LastKnownPosition; }
+		public static bool DetectedThisTurn() { return FriendlyUAV.DetectedTankThisTurn; }
 
 		//Returns true if missile was fired, false otherwise
 		public static bool Fire(Position Target)

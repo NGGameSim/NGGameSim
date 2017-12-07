@@ -6,7 +6,7 @@ namespace NGAPI
 	{
 		public int ViewRadius { get; internal set; }
 
-        public UAV() :
+		public UAV() :
 			base()
 		{
 

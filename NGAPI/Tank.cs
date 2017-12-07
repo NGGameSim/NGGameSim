@@ -2,12 +2,12 @@
 
 namespace NGAPI
 {
-    public class Tank : Entity
-    {
+	public class Tank : Entity
+	{
 		public int MisslesLeft { get; internal set; } = 0;
 		public bool Alive { get; internal set; } = true;
 
-        public Tank() :
+		public Tank() :
 			base()
 		{
 

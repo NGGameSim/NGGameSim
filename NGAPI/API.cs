@@ -4,11 +4,20 @@ namespace NGAPI
 {
     public static class API
     {
+		// Because both alogorithms share the same API "instance", we need to differentiate which team is currently
+		// updating so that we can get the correct "Friendly" entities. The first team is given as 1 and the second as 2.
+		internal static int CurrentTeam;
+
 		// This gets populated my SimulationManager in SimManager
         internal static Simulation Simulation = null;
-        internal static UAV FriendlyUAV = Simulation.Team1.UAV;
-        internal static Tank FriendlyTank = Simulation.Team1.Tank;
-        internal static Tank EnemyTank = Simulation.Team2.Tank;
+        internal static UAV FriendlyUAV
+			{ get { return (CurrentTeam == 1) ? Simulation.Team1.UAV : Simulation.Team2.UAV; } }
+        internal static Tank FriendlyTank
+			{ get { return (CurrentTeam == 1) ? Simulation.Team1.Tank : Simulation.Team2.Tank; } }
+		internal static UAV EnemyUAV
+			{ get { return (CurrentTeam == 1) ? Simulation.Team2.UAV : Simulation.Team1.UAV; } }
+		internal static Tank EnemyTank
+			{ get { return (CurrentTeam == 1) ? Simulation.Team2.Tank : Simulation.Team1.Tank; } }
 
         //Get Functions for Tank
         public static Position GetTankPosition() { return FriendlyTank.Position; }
@@ -22,26 +31,30 @@ namespace NGAPI
         public static float GetUAVHeading() { return FriendlyUAV.CurrentHeading; }
 
         //Set Functions for UAV
-        public static void SetUAVSpeed(float targetSpeed)
+        public static bool SetUAVSpeed(float targetSpeed)
         {
-            if (targetSpeed < 7.0f || targetSpeed > 17.5f) { throw new Exception("Invalid Speed"); }
+			if (targetSpeed < 7.0f || targetSpeed > 17.5f)
+				return false;
             FriendlyUAV.TargetSpeed = targetSpeed;
+			return true;
         }
         public static void SetUAVHeading(float targetHeading)
         {
-            if (targetHeading < 0.0f || targetHeading > 360.0f) { throw new Exception("Invalid Heading"); }
+			targetHeading %= 360.0f;
             FriendlyUAV.TargetHeading = targetHeading;
         }
         
         //Set Functions for Tank
-        public static void SetTankSpeed(float targetSpeed)
+        public static bool SetTankSpeed(float targetSpeed)
         {
-            if (targetSpeed < 0.0f || targetSpeed > 2.0f) { throw new Exception("Invalid Speed"); }
+			if (targetSpeed < 0.0f || targetSpeed > 2.0f)
+				return false;
             FriendlyTank.TargetSpeed = targetSpeed;
+			return true;
         }
         public static void SetTankHeading(float targetHeading)
         {
-            if (targetHeading < 0.0f || targetHeading > 360.0f) { throw new Exception("Invalid Heading"); }
+			targetHeading %= 360.0f;
             FriendlyTank.TargetHeading = targetHeading;
         }
 

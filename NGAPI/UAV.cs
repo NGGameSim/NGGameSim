@@ -2,16 +2,16 @@
 
 namespace NGAPI
 {
-	public class UAV : Entity
-	{
-		public int ViewRadius { get; internal set; }
-		public Position LastKnownPosition { get; internal set; }
-		public bool DetectedThisTurn = false;  //must be set back to false ever turn
+    internal class UAV : Entity
+    {
+        public int ViewRadius { get; internal set; }
+        public Position LastKnownPosition { get; internal set; }
+        public bool DetectedTankThisTurn { get; internal set; }
 
         public UAV() :
-			base()
-		{
+            base()
+        {
 
-		}
-	}
+        }
+    }
 }

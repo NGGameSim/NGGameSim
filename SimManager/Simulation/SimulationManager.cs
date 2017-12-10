@@ -30,8 +30,19 @@ namespace NGSim.Simulation
 
 		public SimulationManager()
 		{
+            Simulation = new NGAPI.Simulation();
+            API.Simulation = Simulation;
 
-		}
+            int randX = rand.Next(1, (positiveBoundX - negativeBoundX) - negativeBoundX);
+            int randY = rand.Next(1, (positiveBoundY - negativeBoundY) - negativeBoundY);
+            Simulation.Team1.Tank.Position = new Position(randX, randY);
+            Simulation.Team1.UAV.Position = new Position(randX, randY);
+
+            randX = rand.Next(1, (positiveBoundX - negativeBoundX) - negativeBoundX);
+            randY = rand.Next(1, (positiveBoundY - negativeBoundY) - negativeBoundY);
+            Simulation.Team2.Tank.Position = new Position(randX, randY);
+            Simulation.Team2.UAV.Position = new Position(randX, randY);
+        }
 
 		//public int RunSimulation()
 		//{ 
@@ -216,12 +227,20 @@ namespace NGSim.Simulation
 
 		private void checkBounds()
 		{
-			throw new NotImplementedException();
-		}
+			if (Simulation.Team1.Tank.Position.X > positiveBoundX || Simulation.Team1.Tank.Position.X < negativeBoundX) { gameResult = 2; }
+            else if (Simulation.Team1.UAV.Position.X > positiveBoundX || Simulation.Team1.UAV.Position.X < negativeBoundX) { gameResult = 2; }
+            else if (Simulation.Team1.Tank.Position.Y > positiveBoundY || Simulation.Team1.Tank.Position.Y < negativeBoundY) { gameResult = 2; }
+            else if (Simulation.Team1.UAV.Position.Y > positiveBoundY || Simulation.Team1.UAV.Position.Y < negativeBoundY) { gameResult = 2; }
 
-		private void updateEntityPositions()
+            if (Simulation.Team2.Tank.Position.X > positiveBoundX || Simulation.Team2.Tank.Position.X < negativeBoundX) { gameResult = 1; }
+            else if (Simulation.Team2.UAV.Position.X > positiveBoundX || Simulation.Team2.UAV.Position.X < negativeBoundX) { gameResult = 1; }
+            else if (Simulation.Team2.Tank.Position.Y > positiveBoundY || Simulation.Team2.Tank.Position.Y < negativeBoundY) { gameResult = 1; }
+            else if (Simulation.Team2.UAV.Position.Y > positiveBoundY || Simulation.Team2.UAV.Position.Y < negativeBoundY) { gameResult = 1; }
+        }
+
+        private void updateEntityPositions()
 		{
-			throw new NotImplementedException();
+            throw new NotImplementedException();
 		}
 
 		private void updateEntityVelocities()

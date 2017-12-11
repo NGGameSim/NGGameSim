@@ -227,20 +227,34 @@ namespace NGSim.Simulation
 
 		private void checkBounds()
 		{
-			if (Simulation.Team1.Tank.Position.X > positiveBoundX || Simulation.Team1.Tank.Position.X < negativeBoundX) { gameResult = 2; }
-            else if (Simulation.Team1.UAV.Position.X > positiveBoundX || Simulation.Team1.UAV.Position.X < negativeBoundX) { gameResult = 2; }
-            else if (Simulation.Team1.Tank.Position.Y > positiveBoundY || Simulation.Team1.Tank.Position.Y < negativeBoundY) { gameResult = 2; }
-            else if (Simulation.Team1.UAV.Position.Y > positiveBoundY || Simulation.Team1.UAV.Position.Y < negativeBoundY) { gameResult = 2; }
-
-            if (Simulation.Team2.Tank.Position.X > positiveBoundX || Simulation.Team2.Tank.Position.X < negativeBoundX) { gameResult = 1; }
-            else if (Simulation.Team2.UAV.Position.X > positiveBoundX || Simulation.Team2.UAV.Position.X < negativeBoundX) { gameResult = 1; }
-            else if (Simulation.Team2.Tank.Position.Y > positiveBoundY || Simulation.Team2.Tank.Position.Y < negativeBoundY) { gameResult = 1; }
-            else if (Simulation.Team2.UAV.Position.Y > positiveBoundY || Simulation.Team2.UAV.Position.Y < negativeBoundY) { gameResult = 1; }
+			if(API.CurrentTeam == 1)
+			{
+				if (Simulation.Team1.Tank.Position.X > positiveBoundX || Simulation.Team1.Tank.Position.X < negativeBoundX) { gameResult = 2; }
+				else if (Simulation.Team1.UAV.Position.X > positiveBoundX || Simulation.Team1.UAV.Position.X < negativeBoundX) { gameResult = 2; }
+				else if (Simulation.Team1.Tank.Position.Y > positiveBoundY || Simulation.Team1.Tank.Position.Y < negativeBoundY) { gameResult = 2; }
+				else if (Simulation.Team1.UAV.Position.Y > positiveBoundY || Simulation.Team1.UAV.Position.Y < negativeBoundY) { gameResult = 2; }
+			}
+			if(API.CurrentTeam != 1)
+			{
+				if (Simulation.Team2.Tank.Position.X > positiveBoundX || Simulation.Team2.Tank.Position.X < negativeBoundX) { gameResult = 1; }
+				else if (Simulation.Team2.UAV.Position.X > positiveBoundX || Simulation.Team2.UAV.Position.X < negativeBoundX) { gameResult = 1; }
+				else if (Simulation.Team2.Tank.Position.Y > positiveBoundY || Simulation.Team2.Tank.Position.Y < negativeBoundY) { gameResult = 1; }
+				else if (Simulation.Team2.UAV.Position.Y > positiveBoundY || Simulation.Team2.UAV.Position.Y < negativeBoundY) { gameResult = 1; }
+			}
         }
 
         private void updateEntityPositions()
 		{
-            throw new NotImplementedException();
+			if(API.CurrentTeam == 1)
+			{
+				Simulation.Team1.Tank.Position = API.FriendlyTank.Position;
+				Simulation.Team1.UAV.Position = API.FriendlyUAV.Position; 
+			}
+            else if(API.CurrentTeam != 1)
+			{
+				Simulation.Team2.Tank.Position = API.FriendlyTank.Position;
+				Simulation.Team2.UAV.Position = API.FriendlyUAV.Position;
+			}
 		}
 
 		private void updateEntityVelocities()

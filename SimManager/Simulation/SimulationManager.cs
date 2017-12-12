@@ -23,6 +23,8 @@ namespace NGSim.Simulation
 		private int positiveBoundY = 20000;
 		private int boomRange = 22; //22 meters is effective blast radius of 120mm cannon on M1 Abrams
 		Random rand = new Random();
+		StupidAlgorithm1 algo1 = new StupidAlgorithm1();
+		StupidAlgorithm2 algo2 = new StupidAlgorithm2();
 
 		//contains the position data of the missles in air. Since there can only be 20 missles(10 in each tank, each can have its own place
 		// private Missile[] MissilesInAir = new Missile[];
@@ -60,11 +62,16 @@ namespace NGSim.Simulation
 			checkMissileImpacts();
 			// Run the user algorithms
 			runUserAlgorithms();
+
+			// TODO: End the game when a result happens
 		}
 
 		private void runUserAlgorithms()
 		{
-			throw new NotImplementedException();
+			algo1.Update();
+			API.CurrentTeam = 2;
+			algo2.Update();
+			API.CurrentTeam = 1;
 		}
 
 		private void checkMissileImpacts()
@@ -94,26 +101,33 @@ namespace NGSim.Simulation
 
 		private void fireNewMissiles()
 		{
-			if(Simulation.Team1.Tank.FiresThisTurn == true)
+			// TODO: update the existing tank cooldowns
+
+			if (Simulation.Team1.Tank.FiresThisTurn == true)
 			{
 				Missile missile = new NGAPI.Missile();
 				MissileInAir.Add(missile);
 				missile.TurnsRemaining = 20;
 				missile.Source = Simulation.Team1.Tank.Position;
 				missile.Target = Simulation.Team1.Tank.MissileTarget;
+				Simulation.Team1.Tank.FiresThisTurn = false;
+				Simulation.Team1.Tank.Cooldown = 20;
 			}
-			else if(Simulation.Team2.Tank.FiresThisTurn == true)
+			if(Simulation.Team2.Tank.FiresThisTurn == true)
 			{
 				Missile missile = new NGAPI.Missile();
 				MissileInAir.Add(missile);
 				missile.TurnsRemaining = 20;
 				missile.Source = Simulation.Team2.Tank.Position;
 				missile.Target = Simulation.Team2.Tank.MissileTarget;
+				Simulation.Team2.Tank.FiresThisTurn = false;
+				Simulation.Team2.Tank.Cooldown = 20;
 			}
 		}
 
 		private void checkBounds()
 		{
+			// TODO: these dont need to check the current team, both teams update here
 			if(API.CurrentTeam == 1)
 			{
 				if (Simulation.Team1.Tank.Position.X > positiveBoundX || Simulation.Team1.Tank.Position.X < negativeBoundX) { gameResult = 2; }
@@ -132,20 +146,24 @@ namespace NGSim.Simulation
 
         private void updateEntityPositions()
 		{
-			if(API.CurrentTeam == 1)
-			{
-				Simulation.Team1.Tank.Position = API.FriendlyTank.Position;
-				Simulation.Team1.UAV.Position = API.FriendlyUAV.Position; 
-			}
-            else if(API.CurrentTeam != 1)
-			{
-				Simulation.Team2.Tank.Position = API.FriendlyTank.Position;
-				Simulation.Team2.UAV.Position = API.FriendlyUAV.Position;
-			}
+			// TODO: we need to do vector math here to actually generate new positions, right now they will never move
+			// TODO: no if statements, both teams update here
+
+			//if(API.CurrentTeam == 1)
+			//{
+			//	Simulation.Team1.Tank.Position = API.FriendlyTank.Position;
+			//	Simulation.Team1.UAV.Position = API.FriendlyUAV.Position; 
+			//}
+   //         if(API.CurrentTeam != 1)
+			//{
+			//	Simulation.Team2.Tank.Position = API.FriendlyTank.Position;
+			//	Simulation.Team2.UAV.Position = API.FriendlyUAV.Position;
+			//}
 		}
 
 		private void updateEntityVelocities()
 		{
+			// TODO: right now this just immediately updates the speeds and headings, interpolate in the future
 			API.FriendlyTank.CurrentHeading = API.FriendlyTank.TargetHeading;
 			API.FriendlyUAV.CurrentHeading = API.FriendlyUAV.TargetHeading;
 			API.EnemyTank.CurrentHeading = API.EnemyTank.TargetHeading;
@@ -154,90 +172,6 @@ namespace NGSim.Simulation
 			API.FriendlyUAV.CurrentSpeed = API.FriendlyUAV.TargetSpeed;
 			API.EnemyTank.CurrentSpeed = API.EnemyTank.TargetSpeed;
 			API.EnemyUAV.CurrentSpeed = API.EnemyUAV.TargetSpeed;
-		}
-
-		//We are assuming that the algorithm is somewhere else where it can't modify the number of turns or underlying tank values
-		public void algo1()
-		{
-			//set random speed
-			int speed = getRandomInteger(60);
-			API.SetUAVSpeed(speed);
-			int speedTank = getRandomInteger(13);
-			API.SetTankSpeed(speedTank);
-
-			//set Random headings
-			int heading = getRandomInteger(360);
-			API.SetUAVHeading(heading, Direction.Left);
-			int headingTank = getRandomInteger(360);
-			API.SetTankHeading(headingTank, Direction.Left);
-
-			Position UAVPos = API.GetLastKnownPosition();
-			Position tankPos = API.GetTankPosition();
-			if(API.DetectedThisTurn() && UAVPos.DistanceTo(tankPos) < 22)
-			{
-				API.Fire(UAVPos);
-			}
-
-			//Bounds Checking
-			if (UAVPos.X < -18000)
-				API.SetUAVHeading(0, Direction.Left);
-			else if (UAVPos.X > 18000)
-				API.SetUAVHeading(180, Direction.Left);
-			else if (UAVPos.Y < -18000)
-				API.SetUAVHeading(90, Direction.Left);
-			else if (UAVPos.Y > 18000)
-				API.SetUAVHeading(215, Direction.Left);
-
-			if (tankPos.X < -18000)
-				API.SetTankHeading(0, Direction.Left);
-			else if (tankPos.X > 18000)
-				API.SetTankHeading(180, Direction.Left);
-			else if (tankPos.Y < -18000)
-				API.SetTankHeading(90, Direction.Left);
-			else if (tankPos.Y > 18000)
-				API.SetTankHeading(215, Direction.Left);
-		}
-
-		//currently identical to algo1
-		public void algo2()
-		{
-			//set random speed
-			int speed = getRandomInteger(60);
-			API.SetUAVSpeed(speed);
-			int speedTank = getRandomInteger(13);
-			API.SetTankSpeed(speedTank);
-
-			//set Random headings
-			int heading = getRandomInteger(360);
-			API.SetUAVHeading(heading, Direction.Left);
-			int headingTank = getRandomInteger(360);
-			API.SetTankHeading(headingTank, Direction.Left);
-
-			Position UAVPos = API.GetLastKnownPosition();
-			Position tankPos = API.GetTankPosition();
-			if (API.DetectedThisTurn() && UAVPos.DistanceTo(tankPos) < 22)
-			{
-				API.Fire(UAVPos);
-			}
-
-			//Bounds Checking
-			if (UAVPos.X < -18000)
-				API.SetUAVHeading(0, Direction.Left);
-			else if (UAVPos.X > 18000)
-				API.SetUAVHeading(180, Direction.Left);
-			else if (UAVPos.Y < -18000)
-				API.SetUAVHeading(90, Direction.Left);
-			else if (UAVPos.Y > 18000)
-				API.SetUAVHeading(215, Direction.Left);
-
-			if (tankPos.X < -18000)
-				API.SetTankHeading(0, Direction.Left);
-			else if (tankPos.X > 18000)
-				API.SetTankHeading(180, Direction.Left);
-			else if (tankPos.Y < -18000)
-				API.SetTankHeading(90, Direction.Left);
-			else if (tankPos.Y > 18000)
-				API.SetTankHeading(215, Direction.Left);
 		}
 
 		public int getRandomInteger(int maximum)

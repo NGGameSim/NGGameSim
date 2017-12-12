@@ -10,10 +10,10 @@ namespace NGSim.Simulation
 	{
 		internal NGAPI.Simulation Simulation { get; private set; }
 		private int gameResult = 0; //0 means game is running, 1 means Team1 won, 2  means Team2 won, 3 means a draw
-		private int negativeBoundX = -20000;
-		private int positiveBoundX = 20000;
-		private int negativeBoundY = -20000;
-		private int positiveBoundY = 20000;
+		private int negativeBoundX = -500;
+		private int positiveBoundX = 500;
+		private int negativeBoundY = -500;
+		private int positiveBoundY = 500;
 		private int boomRange = 22; //22 meters is effective blast radius of 120mm cannon on M1 Abrams
 		Random rand = new Random();
 		StupidAlgorithm1 algo1 = new StupidAlgorithm1();
@@ -30,19 +30,25 @@ namespace NGSim.Simulation
             Simulation = new NGAPI.Simulation();
             API.Simulation = Simulation;
 
-            int randX = rand.Next(1, (positiveBoundX - negativeBoundX) - negativeBoundX);
-            int randY = rand.Next(1, (positiveBoundY - negativeBoundY) - negativeBoundY);
-            Simulation.Team1.Tank.Position = new Position(randX, randY);
+			int randX = rand.Next(1, positiveBoundX - negativeBoundX) + negativeBoundX;
+            int randY = rand.Next(1, positiveBoundY - negativeBoundY) + negativeBoundY;
+			Simulation.Team1.Tank.Position = new Position(randX, randY);
             Simulation.Team1.UAV.Position = new Position(randX, randY);
 
-            randX = rand.Next(1, (positiveBoundX - negativeBoundX) - negativeBoundX);
-            randY = rand.Next(1, (positiveBoundY - negativeBoundY) - negativeBoundY);
+            randX = rand.Next(1, positiveBoundX - negativeBoundX) + negativeBoundX;
+            randY = rand.Next(1, positiveBoundY - negativeBoundY) + negativeBoundY;
             Simulation.Team2.Tank.Position = new Position(randX, randY);
             Simulation.Team2.UAV.Position = new Position(randX, randY);
         }
 
 		public void Update()
 		{
+			if (gameResult != 0)
+			{
+				Console.WriteLine("Winner is team {0}", gameResult);
+				return;
+				//Environment.Exit(0);
+			}
 			Console.WriteLine("X1Tank is {0} Y1Tank is {1}", Simulation.Team1.Tank.Position.X, Simulation.Team1.Tank.Position.Y);
 			Console.WriteLine("X1UAV is {0} Y1UAV is {1}", Simulation.Team1.UAV.Position.X, Simulation.Team1.UAV.Position.Y);
 			Console.WriteLine("X2Tank is {0} Y2Tank is {1}", Simulation.Team2.Tank.Position.X, Simulation.Team2.Tank.Position.Y);
@@ -62,11 +68,7 @@ namespace NGSim.Simulation
 			// Run the user algorithms
 			runUserAlgorithms();
 
-			if(gameResult != 0)
-			{
-				Console.WriteLine("Winner is team {0}", gameResult);
-				Environment.Exit(0);
-			}
+
 		}
 
 		private void runUserAlgorithms()

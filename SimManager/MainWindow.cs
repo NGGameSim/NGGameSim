@@ -44,8 +44,9 @@ namespace NGSim
 
 		private void GoButton_Click(object sender, EventArgs e)
 		{
-			var OutString = "You entered: " + AlgorithmTextBox1.Text + " and " + AlgorithmTextBox2.Text;
-			MessageBox.Show(Application.Instance.MainForm, OutString, "GO Button", MessageBoxButtons.OK);
+			//var OutString = "You entered: " + AlgorithmTextBox1.Text + " and " + AlgorithmTextBox2.Text;
+			//MessageBox.Show(Application.Instance.MainForm, OutString, "GO Button", MessageBoxButtons.OK);
+
 			UpdateManager.SimManager.running = true;
 		}
 

@@ -63,11 +63,14 @@ namespace NGSim
 				if (stopwatch.Elapsed.TotalMilliseconds >= UPDATE_RATE)
 				{
 					// Perform all of the update logic that should take place at 10UPS
-					SimManager.Update();
-					Server.Update();
+					if (SimManager.running)
+					{
+						SimManager.Update();
+						Server.Update();
 
-					stopwatch.Restart(); // Restart the count to the next update
-					++UpdateCount;
+						stopwatch.Restart(); // Restart the count to the next update
+						++UpdateCount;
+					}
 				}
 
 				Thread.Sleep(5); // Wait for 5ms, then check again if it should update

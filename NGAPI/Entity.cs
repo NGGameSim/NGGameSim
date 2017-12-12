@@ -20,9 +20,10 @@ namespace NGAPI
 			Position = pos;
 		}
 
-		public void UpdateHeading()
+		//Commented out to make consistent with updateSpeed ect in SimulationManager
+		/*public void UpdateHeading()
 		{
 			// TODO: reimplement using the new non-Heading code
-		}
+		}*/
 	}
 }

@@ -43,14 +43,6 @@ namespace NGAPI
 			return (this / Length());
 		}
 
-		public void MoveWithSpeed(float direction, float speed, float time)
-		{
-			float speedX = speed*(float)Math.Cos(Math.PI / 180 * direction);
-			float speedY = speed*(float)Math.Sin(Math.PI / 180 * direction);
-			X += speedX * time;
-			Y += speedY * time;
-		}
-
 		public static Position operator + (Position l, Position r)
 		{
 			return new Position(l.X + r.X, l.Y + r.Y);

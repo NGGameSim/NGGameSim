@@ -4,7 +4,6 @@ namespace NGAPI
 {
 	public abstract class Algorithm
 	{
-		public abstract void UpdateTank();
-		public abstract void UpdateUAV();
+		public abstract void Update();
 	}
 }

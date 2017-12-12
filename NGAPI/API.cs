@@ -65,7 +65,11 @@ namespace NGAPI
         //Returns true if missile was fired, false otherwise
         public static bool Fire(Position Target)
         {
-            if (CanFire(Target)) { FriendlyTank.FiresThisTurn = true; }
+            if (CanFire(Target))
+            {
+              FriendlyTank.FiresThisTurn = true;
+              FriendlyTank.MissileTarget = Target;
+            }
             else { FriendlyTank.FiresThisTurn = false; }
             return FriendlyTank.FiresThisTurn;
         }

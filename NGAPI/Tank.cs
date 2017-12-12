@@ -8,7 +8,8 @@ namespace NGAPI
         public bool Alive { get; internal set; } = true;
         public bool FiresThisTurn { get; internal set; }
         public int Cooldown { get; internal set; }
-
+        public Position MissileTarget { get; internal set; }
+        
         public Tank() :
             base()
         {

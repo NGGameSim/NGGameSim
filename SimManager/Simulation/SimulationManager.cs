@@ -24,9 +24,8 @@ namespace NGSim.Simulation
 		Random rand = new Random();
 
 		//contains the position data of the missles in air. Since there can only be 20 missles(10 in each tank, each can have its own place
-		private Position[] MisslesInAirAimedAt = new Position[20];
-		private int[] turnsUntilMisslesHit = new int[20];
-		private int missleIndex = 0;
+		// private Missile[] MissilesInAir = new Missile[];
+		private List<Missle> MissileInAir = new List<Missile>
 
 		public SimulationManager()
 		{
@@ -45,7 +44,7 @@ namespace NGSim.Simulation
         }
 
 		//public int RunSimulation()
-		//{ 
+		//{
 		//	Simulation = new NGAPI.Simulation();
 		//	API.Simulation = Simulation;
 		//	//Set a random Position for the Tank and UAV, between -19999 and 19999, field bounds are -20000 and 20000
@@ -212,17 +211,50 @@ namespace NGSim.Simulation
 
 		private void checkMissileImpacts()
 		{
-			throw new NotImplementedException();
+			foreach(Missile missle in MissileInAir)
+			{
+				if(missle.TurnsRemaining == 0)
+				{
+					if(missile.Target.DistanceTo(Simulation.Team1.Tank.Position) < boomRange)
+					{
+						// Team 1 tank is hit, Team two wins.
+						gameResult = 2;
+					}
+					if(missile.Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
+					{
+						// Team 2 tank is hit, Team one wins.
+						gameResult = 1;
+					}
+				}
+			}
 		}
 
 		private void updateMissiles()
 		{
-			throw new NotImplementedException();
+			foreach(Missile missle in MissileInAir)
+			{
+				missle.TurnsRemaining = missle.TurnsRemaining - 1;
+			}
 		}
 
 		private void fireNewMissiles()
 		{
-			throw new NotImplementedException();
+			if(Simulation.Team1.Tank.FiresThisTurn == true)
+			{
+				Missile missile = new NGAPI.Missile;
+				MissileInAir.add(missle);
+				missile.TurnsRemaining = 20;
+				missile.Source = Simulation.Team1.Tank.Position;
+				missile.Target = Simulation.Team1.Tank.MissileTarget;
+			}
+			else if(Simulation.Team2.Tank.FiresThisTurn == true)
+			{
+				Missile missile = new NGAPI.Missile;
+				MissileInAir.add(missle);
+				missile.TurnsRemaining = 20;
+				missile.Source = Simulation.Team2.Tank.Position;
+				missile.Target = Simulation.Team2.Tank.MissileTarget;
+			}
 		}
 
 		private void checkBounds()
@@ -276,7 +308,7 @@ namespace NGSim.Simulation
 		//	API.EnemyTank = Simulation.Team1.Tank;
 		//}
 
-		//We are assuming that the algorithm is somewhere else where it can't modify the number of turns or underlying tank values 
+		//We are assuming that the algorithm is somewhere else where it can't modify the number of turns or underlying tank values
 		public void algo1()
 		{
 			//set random speed

@@ -9,14 +9,7 @@ namespace NGSim.Simulation
 	public class SimulationManager
 	{
 		internal NGAPI.Simulation Simulation { get; private set; }
-		private float timeInTurn = 1;
 		private int gameResult = 0; //0 means game is running, 1 means Team1 won, 2  means Team2 won, 3 means a draw
-		private int numberOfTurns = 0;
-		private int maxTurns = 100000;
-		private int accelerationPerTurnTank = 2;
-		private int accelerationPerTurnUAV = 4;
-		private int headingChangePerTurnTank = 45;
-		private int headingChangePerTurnUAV = 45;
 		private int negativeBoundX = -20000;
 		private int positiveBoundX = 20000;
 		private int negativeBoundY = -20000;
@@ -48,6 +41,10 @@ namespace NGSim.Simulation
 
 		public void Update()
 		{
+			Console.WriteLine("X1Tank is {0} Y1Tank is {1}", Simulation.Team1.Tank.Position.X, Simulation.Team1.Tank.Position.Y);
+			Console.WriteLine("X1UAV is {0} Y1UAV is {1}", Simulation.Team1.UAV.Position.X, Simulation.Team1.UAV.Position.Y);
+			Console.WriteLine("X2Tank is {0} Y2Tank is {1}", Simulation.Team2.Tank.Position.X, Simulation.Team2.Tank.Position.Y);
+			Console.WriteLine("X2UAV is {0} Y2UAV is {1}", Simulation.Team2.UAV.Position.X, Simulation.Team2.UAV.Position.Y);
 			// Perform interpolations for speeds and headings
 			updateEntityVelocities();
 			// Update the positions on the new speed and headings
@@ -63,7 +60,11 @@ namespace NGSim.Simulation
 			// Run the user algorithms
 			runUserAlgorithms();
 
-			// TODO: End the game when a result happens
+			if(gameResult != 0)
+			{
+				Console.WriteLine("Winner is team {0}", gameResult);
+				Environment.Exit(0);
+			}
 		}
 
 		private void runUserAlgorithms()
@@ -101,7 +102,7 @@ namespace NGSim.Simulation
 
 		private void fireNewMissiles()
 		{
-			// TODO: update the existing tank cooldowns
+			// TODO: update the Tank Cooldowns
 
 			if (Simulation.Team1.Tank.FiresThisTurn == true)
 			{
@@ -128,20 +129,17 @@ namespace NGSim.Simulation
 		private void checkBounds()
 		{
 			// TODO: these dont need to check the current team, both teams update here
-			if(API.CurrentTeam == 1)
-			{
-				if (Simulation.Team1.Tank.Position.X > positiveBoundX || Simulation.Team1.Tank.Position.X < negativeBoundX) { gameResult = 2; }
-				else if (Simulation.Team1.UAV.Position.X > positiveBoundX || Simulation.Team1.UAV.Position.X < negativeBoundX) { gameResult = 2; }
-				else if (Simulation.Team1.Tank.Position.Y > positiveBoundY || Simulation.Team1.Tank.Position.Y < negativeBoundY) { gameResult = 2; }
-				else if (Simulation.Team1.UAV.Position.Y > positiveBoundY || Simulation.Team1.UAV.Position.Y < negativeBoundY) { gameResult = 2; }
-			}
-			if(API.CurrentTeam != 1)
-			{
-				if (Simulation.Team2.Tank.Position.X > positiveBoundX || Simulation.Team2.Tank.Position.X < negativeBoundX) { gameResult = 1; }
-				else if (Simulation.Team2.UAV.Position.X > positiveBoundX || Simulation.Team2.UAV.Position.X < negativeBoundX) { gameResult = 1; }
-				else if (Simulation.Team2.Tank.Position.Y > positiveBoundY || Simulation.Team2.Tank.Position.Y < negativeBoundY) { gameResult = 1; }
-				else if (Simulation.Team2.UAV.Position.Y > positiveBoundY || Simulation.Team2.UAV.Position.Y < negativeBoundY) { gameResult = 1; }
-			}
+			
+			if (Simulation.Team1.Tank.Position.X > positiveBoundX || Simulation.Team1.Tank.Position.X < negativeBoundX) { gameResult = 2; }
+			else if (Simulation.Team1.UAV.Position.X > positiveBoundX || Simulation.Team1.UAV.Position.X < negativeBoundX) { gameResult = 2; }
+			else if (Simulation.Team1.Tank.Position.Y > positiveBoundY || Simulation.Team1.Tank.Position.Y < negativeBoundY) { gameResult = 2; }
+			else if (Simulation.Team1.UAV.Position.Y > positiveBoundY || Simulation.Team1.UAV.Position.Y < negativeBoundY) { gameResult = 2; }
+			
+			if (Simulation.Team2.Tank.Position.X > positiveBoundX || Simulation.Team2.Tank.Position.X < negativeBoundX) { gameResult = 1; }
+			else if (Simulation.Team2.UAV.Position.X > positiveBoundX || Simulation.Team2.UAV.Position.X < negativeBoundX) { gameResult = 1; }
+			else if (Simulation.Team2.Tank.Position.Y > positiveBoundY || Simulation.Team2.Tank.Position.Y < negativeBoundY) { gameResult = 1; }
+			else if (Simulation.Team2.UAV.Position.Y > positiveBoundY || Simulation.Team2.UAV.Position.Y < negativeBoundY) { gameResult = 1; }
+			
         }
 
         private void updateEntityPositions()
@@ -149,16 +147,22 @@ namespace NGSim.Simulation
 			// TODO: we need to do vector math here to actually generate new positions, right now they will never move
 			// TODO: no if statements, both teams update here
 
-			//if(API.CurrentTeam == 1)
-			//{
-			//	Simulation.Team1.Tank.Position = API.FriendlyTank.Position;
-			//	Simulation.Team1.UAV.Position = API.FriendlyUAV.Position; 
-			//}
-   //         if(API.CurrentTeam != 1)
-			//{
-			//	Simulation.Team2.Tank.Position = API.FriendlyTank.Position;
-			//	Simulation.Team2.UAV.Position = API.FriendlyUAV.Position;
-			//}
+			float X1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team1.Tank.CurrentHeading);
+			float X1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team1.UAV.CurrentHeading);
+			float X2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team2.Tank.CurrentHeading);
+			float X2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team2.UAV.CurrentHeading);
+
+			float Y1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team1.Tank.CurrentHeading);
+			float Y1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team1.UAV.CurrentHeading);
+			float Y2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team2.Tank.CurrentHeading);
+			float Y2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team2.UAV.CurrentHeading);
+
+			Simulation.Team1.Tank.Position = new Position(Simulation.Team1.Tank.Position.X + X1Tank, Simulation.Team1.Tank.Position.Y + Y1Tank);
+			Simulation.Team1.UAV.Position = new Position(Simulation.Team1.UAV.Position.X + X1UAV, Simulation.Team1.UAV.Position.Y + Y1UAV);
+
+			Simulation.Team2.Tank.Position = new Position(Simulation.Team2.Tank.Position.X + X2Tank, Simulation.Team2.Tank.Position.Y + Y2Tank);
+			Simulation.Team2.UAV.Position = new Position(Simulation.Team2.UAV.Position.X + X2UAV, Simulation.Team2.UAV.Position.Y + Y2UAV);
+
 		}
 
 		private void updateEntityVelocities()

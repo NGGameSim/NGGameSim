@@ -39,39 +39,22 @@ namespace NGAPI
             }
         }
 
-        public static float SpeedToDegrees(float gameSpeed, Direction direction, float currentHeading, float targetHeading, Type type)
+        public static float SpeedToDegrees(float gameSpeed, float currentHeading, float targetHeading, Type type)
         {
             float difference;
             float turns;
             
 
             //Calculate how far the user is trying to turn
-            if (direction == Direction.Left)
-            {
-                if (currentHeading > targetHeading)
-                {
-                    difference = currentHeading - targetHeading;
-                }
-                else if (currentHeading < targetHeading)
-                {
-                    difference = currentHeading + (360 - (targetHeading));
-                }
-                else { difference = 0; }
-            }
-            else if (direction == Direction.Right)
-            {
-                if (currentHeading < targetHeading)
-                {
-                    difference = targetHeading - currentHeading;
-                }
-                else if (currentHeading > targetHeading)
-                {
-                    difference = (360 - currentHeading) + targetHeading;
-                }
-                else { difference = 0; }
-            }
-            else if (direction == Direction.Null) { difference = 0; }
-            else { throw new Exception("Invalid Direction"); }
+            if (currentHeading > targetHeading)
+			{
+				difference = currentHeading - targetHeading;
+			}
+			else if (targetHeading > currentHeading)
+			{
+				difference = targetHeading - currentHeading;
+			}
+			else { difference = 0; }
 
 			if (type == UAVType)
             {

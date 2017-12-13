@@ -1,21 +1,38 @@
 ﻿using System;
+using NGAPI;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NGSim
 {
     class StupidAlgorithm1 : NGAPI.Algorithm
     {
-        public override void UpdateTank()
-        {
+        public override void Update()
+		{
+			Random rnd = new Random();
 
-        }
+			Position CurrentTankPosition = API.GetTankPosition();
+			float CurrentTankHeading = API.GetTankHeading();
+			float CurrentTankSpeed = API.GetTankSpeed();
 
-        public override void UpdateUAV()
-        {
+			Position CurrentUAVPosition = API.GetUAVPosition();
+			float CurrentUAVHeading = API.GetUAVHeading();
+			float CurrentUAVSpeed = API.GetUAVSpeed();
 
-        }
+			float newTankHeading = rnd.Next(0, 359);
+			float newUAVHeading = rnd.Next(0, 359);
+			float newTankSpeed = rnd.Next(0, 2);
+			float newUAVSpeed = rnd.Next(7, 17);
+
+			API.SetTankHeading(newTankHeading);
+			API.SetTankSpeed(newTankSpeed);
+			API.SetUAVHeading(newUAVHeading);
+			API.SetUAVSpeed(newUAVSpeed);
+			
+			if(API.FriendlyUAV.DetectedTankThisTurn == true)
+			{
+				API.Fire(API.GetLastKnownPosition());
+			}
+
+		}
     }
 }

@@ -1,0 +1,43 @@
+2017-\/2018 Senior Projects CU Boulder
+
+This project is an attempt to create a simulation environment for testing C4\+I\+SR algorithms. The simulation pits two teams against each other, both with algorithms written to run completely autonomously, with a tank and a drone. The goal is to use the drone to search out the enemy tank, and communicate with the friendly tank to destroy the enemy tank.
+
+This project is sponsered by Northrop Grumman, with the intent to use it in a competition in the Engineering Week Challenge. The project is developed by a team of 5 students at the University of Colorado at Boulder, referred to as the \char`\"{}\+N\+G\+Game\+Sim Team\char`\"{} within the code and licensing.
+
+\subsubsection*{Links}
+
+
+\begin{DoxyItemize}
+\item \href{https://waffle.io/NGGameSim/NGGameSim}{\tt Waffle Board}
+\end{DoxyItemize}
+
+\subsection*{Building}
+
+The projects are built using Protobuild, allowing easy text-\/based cross-\/platform project definition files. In order to contribute, follow these steps\+:
+\begin{DoxyEnumerate}
+\item Run {\ttfamily Protobuild.\+exe -\/-\/generate $<$platform$>$}, where {\ttfamily $<$platform$>$} is one of\+: \char`\"{}\+Windows\char`\"{}, \char`\"{}\+Linux\char`\"{}, or \char`\"{}\+Mac\+O\+S\char`\"{}.
+\begin{DoxyItemize}
+\item If you are on a non-\/\+Windows platform, you will need to add {\ttfamily mono} before the Protobuild.\+exe call.
+\end{DoxyItemize}
+\item Open the generated \textquotesingle{}.sln\textquotesingle{} file in your favorite I\+DE, and develop as necessary.
+\item If you have added/removed files, or changed project settings, you will have to run {\ttfamily Protobuild.\+exe -\/-\/sync} to update the project definition files with the changes you made.
+\begin{DoxyItemize}
+\item Again, non-\/\+Windows users will need to add {\ttfamily mono} before the Protobuild.\+exe call.
+\item If you forget to sync before deleting the solution file, your new files will remain on disk, but all file changes to the project will not be saved and will need to be redone.
+\end{DoxyItemize}
+\item If you ever want to clean up the generated files, run {\ttfamily Protobuild.\+exe -\/-\/clean}
+\end{DoxyEnumerate}
+
+\subsection*{Contributing}
+
+When contributing to this repo, please follow the conventions used throughout the code. Development is done using the fork/pull model. When using this model with Protobuild, please remember to run the {\ttfamily clean} command {\itshape before} switching branches, or else the changes to the project definitions could have unintended consequences.
+
+\subsection*{Licensing}
+
+The files contained within this repo are licensed under two licenses. The full text of these licenses can be found in the L\+I\+C\+E\+N\+S\+E-\/\+C\+O\+DE and L\+I\+C\+E\+N\+S\+E-\/\+A\+S\+S\+E\+TS files within this repository. These licenses are\+:
+\begin{DoxyItemize}
+\item \href{https://choosealicense.com/licenses/gpl-3.0/}{\tt G\+NU G\+PL v3} -\/ For all code files
+\item \href{https://choosealicense.com/licenses/cc-by-sa-4.0/}{\tt C\+C-\/\+B\+Y-\/\+S\+A-\/4.\+0} -\/ For all non-\/code files, such as 3D models, textures, ect...
+\end{DoxyItemize}
+
+Unless otherwise stated, all files contained within this repository implictly fall under one of these two licenses. 

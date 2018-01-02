@@ -76,6 +76,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:afbd05d5e2c71d6c78a1a05cd77a2b246"><td class="memItemLeft" align="right" valign="top"><a id="afbd05d5e2c71d6c78a1a05cd77a2b246"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>Run500Games</b> ()</td></tr>
+<tr class="separator:afbd05d5e2c71d6c78a1a05cd77a2b246"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5365991d5e5c33560a7059349e9df00"><td class="memItemLeft" align="right" valign="top"><a id="af5365991d5e5c33560a7059349e9df00"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>RunOneGame</b> ()</td></tr>
+<tr class="separator:af5365991d5e5c33560a7059349e9df00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d06f65c2f9db77f976fd15d2b10c96c"><td class="memItemLeft" align="right" valign="top"><a id="a0d06f65c2f9db77f976fd15d2b10c96c"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>Update</b> ()</td></tr>
 <tr class="separator:a0d06f65c2f9db77f976fd15d2b10c96c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,24 +127,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>updateEntityVelocitie
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
+<tr class="memitem:a88e2d022428a5d68ecf1e8ca6478e62e"><td class="memItemLeft" align="right" valign="top"><a id="a88e2d022428a5d68ecf1e8ca6478e62e"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>printGamePositions</b> = true</td></tr>
+<tr class="separator:a88e2d022428a5d68ecf1e8ca6478e62e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0446e35590be49092413b580c51a209b"><td class="memItemLeft" align="right" valign="top"><a id="a0446e35590be49092413b580c51a209b"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>printGameResult</b> = true</td></tr>
+<tr class="separator:a0446e35590be49092413b580c51a209b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac97f8eb51b3be48372858d9435ee8def"><td class="memItemLeft" align="right" valign="top"><a id="ac97f8eb51b3be48372858d9435ee8def"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>gameResult</b> = 0</td></tr>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>gameResult</b></td></tr>
 <tr class="separator:ac97f8eb51b3be48372858d9435ee8def"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a021eddea4823f53693afe05d19bfb7e5"><td class="memItemLeft" align="right" valign="top"><a id="a021eddea4823f53693afe05d19bfb7e5"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>negativeBoundX</b> = -500</td></tr>
-<tr class="separator:a021eddea4823f53693afe05d19bfb7e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3aa5f0e51ea185efee7ca9a04c413a42"><td class="memItemLeft" align="right" valign="top"><a id="a3aa5f0e51ea185efee7ca9a04c413a42"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>positiveBoundX</b> = 500</td></tr>
-<tr class="separator:a3aa5f0e51ea185efee7ca9a04c413a42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92b5b85f5f078e22eef2bc6c7a2e629b"><td class="memItemLeft" align="right" valign="top"><a id="a92b5b85f5f078e22eef2bc6c7a2e629b"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>negativeBoundY</b> = -500</td></tr>
-<tr class="separator:a92b5b85f5f078e22eef2bc6c7a2e629b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9eecc341f836b248b77fb98996fae243"><td class="memItemLeft" align="right" valign="top"><a id="a9eecc341f836b248b77fb98996fae243"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>positiveBoundY</b> = 500</td></tr>
-<tr class="separator:a9eecc341f836b248b77fb98996fae243"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4753319daaa55bd49264edc992b0368"><td class="memItemLeft" align="right" valign="top"><a id="ac4753319daaa55bd49264edc992b0368"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>boomRange</b> = 22</td></tr>
-<tr class="separator:ac4753319daaa55bd49264edc992b0368"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65a9376a8491c969ed5599b349c36afa"><td class="memItemLeft" align="right" valign="top"><a id="a65a9376a8491c969ed5599b349c36afa"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>numMoves</b></td></tr>
+<tr class="separator:a65a9376a8491c969ed5599b349c36afa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af93167702dfcca1d634312c56180de0a"><td class="memItemLeft" align="right" valign="top"><a id="af93167702dfcca1d634312c56180de0a"></a>
 Random&#160;</td><td class="memItemRight" valign="bottom"><b>rand</b> = new Random()</td></tr>
 <tr class="separator:af93167702dfcca1d634312c56180de0a"><td class="memSeparator" colspan="2">&#160;</td></tr>

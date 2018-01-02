@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['device',['Device',['../class_n_g_sim_1_1_graphics_1_1_c_model.html#aa0f0dfabda48854ef2ac2a17bcd1281e',1,'NGSim::Graphics::CModel']]]
+  ['firingrange',['firingRange',['../class_n_g_a_p_i_1_1_constants.html#a63c05d50bec436159177f4f4de9fb42f',1,'NGAPI::Constants']]]
 ];

@@ -12,12 +12,16 @@ namespace NGSim
 
 			UpdateManager.Initialize();
 
-			MainWindow window = new MainWindow();
-			//window.WindowStateChanged += (sender, e) => { UpdateManager.LaunchThread(); };
-			window.Shown += (sender, e) => { UpdateManager.LaunchThread(); };
-			window.Closing += (sender, e) => { UpdateManager.CloseThread(); };
+			MainWindow mainWindow = new MainWindow();
+			ClientWindow clientWindow = new ClientWindow();
 
-			app.Run(window);
+			mainWindow.Show();
+			clientWindow.Show();
+
+			mainWindow.Shown += (sender, e) => { UpdateManager.LaunchThread(); };
+			mainWindow.Closing += (sender, e) => { UpdateManager.CloseThread(); };
+
+			app.Run(mainWindow);
 		}
 	}
 }

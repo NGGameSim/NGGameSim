@@ -1,7 +1,7 @@
 ﻿using NGAPI;
 using System.Collections.Generic;
 using System;
-
+ 
 namespace NGSim.Simulation
 {
 	// On the server-side, the simulation manager is reponsible for quite a lot, including updating the algorithms,
@@ -31,15 +31,15 @@ namespace NGSim.Simulation
             API.Simulation = Simulation;
 
 			int randX = rand.Next(1, positiveBoundX - negativeBoundX) + negativeBoundX;
-            int randY = rand.Next(1, positiveBoundY - negativeBoundY) + negativeBoundY;
+			int randY = rand.Next(1, positiveBoundY - negativeBoundY) + negativeBoundY;
 			Simulation.Team1.Tank.Position = new Position(randX, randY);
-            Simulation.Team1.UAV.Position = new Position(randX, randY);
+			Simulation.Team1.UAV.Position = new Position(randX, randY);
 
-            randX = rand.Next(1, positiveBoundX - negativeBoundX) + negativeBoundX;
-            randY = rand.Next(1, positiveBoundY - negativeBoundY) + negativeBoundY;
-            Simulation.Team2.Tank.Position = new Position(randX, randY);
-            Simulation.Team2.UAV.Position = new Position(randX, randY);
-        }
+			randX = rand.Next(1, positiveBoundX - negativeBoundX) + negativeBoundX;
+			randY = rand.Next(1, positiveBoundY - negativeBoundY) + negativeBoundY;
+			Simulation.Team2.Tank.Position = new Position(randX, randY);
+			Simulation.Team2.UAV.Position = new Position(randX, randY);
+		}
 
 		public void Update()
 		{

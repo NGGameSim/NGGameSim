@@ -1,4 +1,4 @@
-﻿using NGAPI;
+using NGAPI;
 using System.Collections.Generic;
 using System;
 using static NGAPI.Constants;

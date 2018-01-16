@@ -12,3 +12,6 @@ packages/**
 *.user
 
 *.userprefs
+
+Documentation/html
+Documentation/latex

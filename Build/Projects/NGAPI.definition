@@ -11,6 +11,7 @@
   <Files>
     <Compile Include="Algorithm.cs" />
     <Compile Include="API.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityUtility.cs" />
     <Compile Include="Enums.cs" />

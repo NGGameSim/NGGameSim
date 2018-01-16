@@ -29,12 +29,18 @@ namespace NGSim
 				new TableCell(AlgorithmTextBox2, true)
 			));
 
-			var GoButton = new Button { Text = "GO" };
+			var Run1GameInDepthButton = new Button { Text = "Run 1 Game In Depth With Positions Shown" };
+			var RunGamesContinuallyButton = new Button { Text = "Continually run games and print who's the winner" };
+			var Run500GamesContinuallyButton = new Button { Text = "Continually run 500 games and print the winning percentages" };
 
-			GoButton.Click += GoButton_Click;
+			Run1GameInDepthButton.Click += Run1GameInDepthButton_Click;
+			RunGamesContinuallyButton.Click += RunGamesContinuallyButton_Click;
+			Run500GamesContinuallyButton.Click += Run500GamesContinuallyButton_Click;
 
 			var GoRow = new TableRow(
-				new TableCell(GoButton, true)
+				new TableCell(Run1GameInDepthButton, true), 
+				new TableCell(RunGamesContinuallyButton, true),
+				new TableCell(Run500GamesContinuallyButton, true)
 			);
 
 			layout.Rows.Add(GoRow);
@@ -42,14 +48,26 @@ namespace NGSim
 			this.Content = layout;
 		}
 
-		private void GoButton_Click(object sender, EventArgs e)
+		private void Run1GameInDepthButton_Click(object sender, EventArgs e)
 		{
 			//var OutString = "You entered: " + AlgorithmTextBox1.Text + " and " + AlgorithmTextBox2.Text;
 			//MessageBox.Show(Application.Instance.MainForm, OutString, "GO Button", MessageBoxButtons.OK);
 
 			UpdateManager.SimManager.running = true;
+			UpdateManager.SimManager.SetGameRunningMode(0);
 		}
 
+		private void RunGamesContinuallyButton_Click(object sender, EventArgs e)
+		{ 
+			UpdateManager.SimManager.running = true;
+			UpdateManager.SimManager.SetGameRunningMode(1);
+		}
+
+		private void Run500GamesContinuallyButton_Click(object sender, EventArgs e)
+		{
+			UpdateManager.SimManager.running = true;
+			UpdateManager.SimManager.SetGameRunningMode(2);
+		}
 	}
 
 	public class ClientWindow : Form

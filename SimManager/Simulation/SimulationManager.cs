@@ -322,11 +322,13 @@ namespace NGSim.Simulation
 			if(Simulation.Team1.UAV.Position.DistanceTo(Simulation.Team2.Tank.Position) < UAVScanRange)
 			{
 				Simulation.Team1.UAV.DetectedTankThisTurn = true;
+				Simulation.Team1.UAV.LastKnownPosition = Simulation.Team2.Tank.Position;
 			}
 
 			if (Simulation.Team2.UAV.Position.DistanceTo(Simulation.Team1.Tank.Position) < UAVScanRange)
 			{
 				Simulation.Team2.UAV.DetectedTankThisTurn = true;
+				Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;
 			}
 		}
 

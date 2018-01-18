@@ -164,7 +164,6 @@ namespace NGSim.Simulation
 			checkBounds();
 			//Update the detection variables
 			updateDetection();
-			// Fires new missiles from the teams
 			fireNewMissiles();
 			// Update the existing missile positions
 			updateMissiles();
@@ -181,20 +180,6 @@ namespace NGSim.Simulation
 			API.CurrentTeam = 2;
 			algo2.Update();
 			API.CurrentTeam = 1;
-		}
-
-		private void updateDetection()
-		{
-			if (Simulation.Team1.UAV.Position.DistanceTo(Simulation.Team2.Tank.Position) < Simulation.Team1.UAV.ViewRadius)
-			{
-				Simulation.Team1.UAV.DetectedTankThisTurn = true;
-				Simulation.Team1.UAV.LastKnownPosition = Simulation.Team2.Tank.Position;
-			}
-			if (Simulation.Team2.UAV.Position.DistanceTo(Simulation.Team1.Tank.Position) < Simulation.Team2.UAV.ViewRadius)
-			{
-				Simulation.Team2.UAV.DetectedTankThisTurn = true;
-				Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;
-			}
 		}
 
 		private void checkMissileImpacts()
@@ -248,9 +233,9 @@ namespace NGSim.Simulation
 				Console.WriteLine("Team 1 Fired!");
 				Missile missile = new NGAPI.Missile();
 				MissileInAir.Add(missile);
-				missile.TurnsRemaining = 20;
 				missile.Source = Simulation.Team1.Tank.Position;
 				missile.Target = Simulation.Team1.Tank.MissileTarget;
+                missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30; //M1 Abrams missiles move at 300 m/s
 				Simulation.Team1.Tank.FiresThisTurn = false;
 				Simulation.Team1.Tank.Cooldown = 20;
 				Simulation.Team1.Tank.MisslesLeft--;
@@ -261,10 +246,10 @@ namespace NGSim.Simulation
 				Console.WriteLine("Team 2 Fired!");
 				Missile missile = new NGAPI.Missile();
 				MissileInAir.Add(missile);
-				missile.TurnsRemaining = 20;
 				missile.Source = Simulation.Team2.Tank.Position;
 				missile.Target = Simulation.Team2.Tank.MissileTarget;
-				Simulation.Team2.Tank.FiresThisTurn = false;
+                missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30;
+                Simulation.Team2.Tank.FiresThisTurn = false;
 				Simulation.Team2.Tank.Cooldown = 20;
 				Simulation.Team2.Tank.MisslesLeft--;
 				Console.WriteLine("Team 2 has {0} Missiles Left", Simulation.Team2.Tank.MisslesLeft);
@@ -304,18 +289,16 @@ namespace NGSim.Simulation
 
 		private void updateEntityPositions()
 		{
-			// TODO: we need to do vector math here to actually generate new positions, right now they will never move
-			// TODO: no if statements, both teams update here
 
-			float X1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team1.Tank.CurrentHeading);
-			float X1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team1.UAV.CurrentHeading);
-			float X2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team2.Tank.CurrentHeading);
-			float X2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team2.UAV.CurrentHeading);
+			float X1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team1.Tank.CurrentHeading);
+			float X1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team1.UAV.CurrentHeading);
+			float X2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team2.Tank.CurrentHeading);
+			float X2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team2.UAV.CurrentHeading);
 
-			float Y1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team1.Tank.CurrentHeading);
-			float Y1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team1.UAV.CurrentHeading);
-			float Y2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team2.Tank.CurrentHeading);
-			float Y2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team2.UAV.CurrentHeading);
+			float Y1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team1.Tank.CurrentHeading);
+			float Y1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team1.UAV.CurrentHeading);
+			float Y2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team2.Tank.CurrentHeading);
+			float Y2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team2.UAV.CurrentHeading);
 
 			Simulation.Team1.Tank.Position = new Position(Simulation.Team1.Tank.Position.X + X1Tank, Simulation.Team1.Tank.Position.Y + Y1Tank);
 			Simulation.Team1.UAV.Position = new Position(Simulation.Team1.UAV.Position.X + X1UAV, Simulation.Team1.UAV.Position.Y + Y1UAV);
@@ -337,6 +320,20 @@ namespace NGSim.Simulation
 			API.EnemyTank.CurrentSpeed = API.EnemyTank.TargetSpeed;
 			API.EnemyUAV.CurrentSpeed = API.EnemyUAV.TargetSpeed;
 		}
+
+        private void updateDetection()
+        {
+            if (Simulation.Team1.UAV.Position.DistanceTo(Simulation.Team2.Tank.Position) < Simulation.Team1.UAV.ViewRadius)
+            {
+                Simulation.Team1.UAV.DetectedTankThisTurn = true;
+                Simulation.Team1.UAV.LastKnownPosition = Simulation.Team2.Tank.Position;
+            }
+            if (Simulation.Team2.UAV.Position.DistanceTo(Simulation.Team1.Tank.Position) < Simulation.Team2.UAV.ViewRadius)
+            {
+                Simulation.Team2.UAV.DetectedTankThisTurn = true;
+                Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;
+            }
+        }
 
 		public int getRandomInteger(int maximum)
 		{

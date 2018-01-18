@@ -52,10 +52,6 @@ namespace NGSim.Simulation
 				{
 					UpdateGameState();
 					numMoves++;
-					Console.WriteLine("X1Tank is {0} Y1Tank is {1}", Simulation.Team1.Tank.Position.X, Simulation.Team1.Tank.Position.Y);
-					Console.WriteLine("X1UAV is {0} Y1UAV is {1}", Simulation.Team1.UAV.Position.X, Simulation.Team1.UAV.Position.Y);
-					Console.WriteLine("X2Tank is {0} Y2Tank is {1}", Simulation.Team2.Tank.Position.X, Simulation.Team2.Tank.Position.Y);
-					Console.WriteLine("X2UAV is {0} Y2UAV is {1}", Simulation.Team2.UAV.Position.X, Simulation.Team2.UAV.Position.Y);
 				}
 				else if (gameResult == 0)
 				{
@@ -166,6 +162,8 @@ namespace NGSim.Simulation
 			updateEntityPositions();
 			// Checks for out of bounds entities
 			checkBounds();
+			//Update the detection variables
+			updateDetection();
 			// Fires new missiles from the teams
 			fireNewMissiles();
 			// Update the existing missile positions
@@ -185,24 +183,41 @@ namespace NGSim.Simulation
 			API.CurrentTeam = 1;
 		}
 
+		private void updateDetection()
+		{
+			if (Simulation.Team1.UAV.Position.DistanceTo(Simulation.Team2.Tank.Position) < Simulation.Team1.UAV.ViewRadius)
+			{
+				Simulation.Team1.UAV.DetectedTankThisTurn = true;
+				Simulation.Team1.UAV.LastKnownPosition = Simulation.Team2.Tank.Position;
+			}
+			if (Simulation.Team2.UAV.Position.DistanceTo(Simulation.Team1.Tank.Position) < Simulation.Team2.UAV.ViewRadius)
+			{
+				Simulation.Team2.UAV.DetectedTankThisTurn = true;
+				Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;
+			}
+		}
+
 		private void checkMissileImpacts()
 		{
 			bool team1Hit = false;
 			bool team2Hit = false;
-			foreach(Missile missile in MissileInAir)
+			for (int i = 0; i < MissileInAir.Count; i++)
 			{
-				if(missile.TurnsRemaining == 0)
+				if(MissileInAir[i].TurnsRemaining == 0)
 				{
-					if(missile.Target.DistanceTo(Simulation.Team1.Tank.Position) < boomRange)
+					if(MissileInAir[i].Target.DistanceTo(Simulation.Team1.Tank.Position) < boomRange)
 					{
 						// Team 1 tank is hit, Team two wins.
 						team1Hit = true;
+						Console.WriteLine("Tank was destroyed!!");
 					}
-					if(missile.Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
+					if(MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
 					{
 						// Team 2 tank is hit, Team one wins.
 						team2Hit = true;
+						Console.WriteLine("Tank was destroyed!!");
 					}
+					MissileInAir.RemoveAt(i);
 				}
 			}
 			if(team1Hit && team2Hit)
@@ -225,10 +240,12 @@ namespace NGSim.Simulation
 
 		private void fireNewMissiles()
 		{
-			// TODO: update the Tank Cooldowns
+			if(Simulation.Team1.Tank.Cooldown != 0) { Simulation.Team1.Tank.Cooldown--; }
+			if(Simulation.Team2.Tank.Cooldown != 0) { Simulation.Team2.Tank.Cooldown--; }
 
 			if (Simulation.Team1.Tank.FiresThisTurn == true)
 			{
+				Console.WriteLine("Team 1 Fired!");
 				Missile missile = new NGAPI.Missile();
 				MissileInAir.Add(missile);
 				missile.TurnsRemaining = 20;
@@ -236,9 +253,12 @@ namespace NGSim.Simulation
 				missile.Target = Simulation.Team1.Tank.MissileTarget;
 				Simulation.Team1.Tank.FiresThisTurn = false;
 				Simulation.Team1.Tank.Cooldown = 20;
+				Simulation.Team1.Tank.MisslesLeft--;
+				Console.WriteLine("Team 1 has {0} Missiles Left", Simulation.Team1.Tank.MisslesLeft);
 			}
 			if(Simulation.Team2.Tank.FiresThisTurn == true)
 			{
+				Console.WriteLine("Team 2 Fired!");
 				Missile missile = new NGAPI.Missile();
 				MissileInAir.Add(missile);
 				missile.TurnsRemaining = 20;
@@ -246,6 +266,8 @@ namespace NGSim.Simulation
 				missile.Target = Simulation.Team2.Tank.MissileTarget;
 				Simulation.Team2.Tank.FiresThisTurn = false;
 				Simulation.Team2.Tank.Cooldown = 20;
+				Simulation.Team2.Tank.MisslesLeft--;
+				Console.WriteLine("Team 2 has {0} Missiles Left", Simulation.Team2.Tank.MisslesLeft);
 			}
 		}
 
@@ -280,7 +302,7 @@ namespace NGSim.Simulation
 			}
 		}
 
-        private void updateEntityPositions()
+		private void updateEntityPositions()
 		{
 			// TODO: we need to do vector math here to actually generate new positions, right now they will never move
 			// TODO: no if statements, both teams update here

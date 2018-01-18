@@ -3,22 +3,22 @@ using static NGAPI.Constants;
 
 namespace NGAPI
 {
-    public static class API
-    {
-        // Because both alogorithms share the same API "instance", we need to differentiate which team is currently
-        // updating so that we can get the correct "Friendly" entities. The first team is given as 1 and the second as 2.
-        internal static int CurrentTeam;
+	public static class API
+	{
+		// Because both alogorithms share the same API "instance", we need to differentiate which team is currently
+		// updating so that we can get the correct "Friendly" entities. The first team is given as 1 and the second as 2.
+		internal static int CurrentTeam;
 
-        // This gets populated my SimulationManager in SimManager
-        internal static Simulation Simulation = null;
-        internal static UAV FriendlyUAV
-        { get { return (CurrentTeam == 1) ? Simulation.Team1.UAV : Simulation.Team2.UAV; } }
-        internal static Tank FriendlyTank
-        { get { return (CurrentTeam == 1) ? Simulation.Team1.Tank : Simulation.Team2.Tank; } }
-        internal static UAV EnemyUAV
-        { get { return (CurrentTeam == 1) ? Simulation.Team2.UAV : Simulation.Team1.UAV; } }
-        internal static Tank EnemyTank
-        { get { return (CurrentTeam == 1) ? Simulation.Team2.Tank : Simulation.Team1.Tank; } }
+		// This gets populated my SimulationManager in SimManager
+		internal static Simulation Simulation = null;
+		internal static UAV FriendlyUAV
+		{ get { return (CurrentTeam == 1) ? Simulation.Team1.UAV : Simulation.Team2.UAV; } }
+		internal static Tank FriendlyTank
+		{ get { return (CurrentTeam == 1) ? Simulation.Team1.Tank : Simulation.Team2.Tank; } }
+		internal static UAV EnemyUAV
+		{ get { return (CurrentTeam == 1) ? Simulation.Team2.UAV : Simulation.Team1.UAV; } }
+		internal static Tank EnemyTank
+		{ get { return (CurrentTeam == 1) ? Simulation.Team2.Tank : Simulation.Team1.Tank; } }
 
 		///Gets the tank's position in meters from the center in the X and Y directions.
 		public static Position GetTankPosition() { return FriendlyTank.Position; }
@@ -32,8 +32,8 @@ namespace NGAPI
 		///Gets the number of remaining missiles.
 		public static int GetRemainingMissiles() { return FriendlyTank.MisslesLeft; }
 
-        ///Gets the UAV's position in meters from the center in the X and Y directions.
-        public static Position GetUAVPosition() { return FriendlyUAV.Position; }
+		///Gets the UAV's position in meters from the center in the X and Y directions.
+		public static Position GetUAVPosition() { return FriendlyUAV.Position; }
 
 		///Gets the UAV's speed in meters per second.
 		public static float GetUAVSpeed() { return FriendlyUAV.CurrentSpeed; }
@@ -43,64 +43,64 @@ namespace NGAPI
 
 		///Set the sped for the for UAV in meters per second. @param targetSpeed: Any speed from 7 to 26 meters per second
 		public static bool SetUAVSpeed(float targetSpeed)
-        {
-            if (targetSpeed < minUAVSpeed || targetSpeed > maxUAVSpeed)
-                return false;
-            FriendlyUAV.TargetSpeed = targetSpeed;
-            return true;
-        }
+		{
+			if (targetSpeed < minUAVSpeed || targetSpeed > maxUAVSpeed)
+				return false;
+			FriendlyUAV.TargetSpeed = targetSpeed;
+			return true;
+		}
 
 		//TODO: Add direction parameter to this function
 		///Sets the UAV's heading(angle in which it is pointing) in degrees. @param targetHeading: What you direction you want the UAV to turn toward. This can be any number, including negative numbers and numbers above 360. @param direction: In which direction you want it to turn torward your target heading
 		public static void SetUAVHeading(float targetHeading)
-        {
+		{
 			targetHeading %= 360.0f;
-            FriendlyUAV.TargetHeading = targetHeading;
-        }
+			FriendlyUAV.TargetHeading = targetHeading;
+		}
 
-        ///Sets the tank's speed in meters per second. @param targetSpeed: Any speed from 0 to 13 meters per second
-        public static bool SetTankSpeed(float targetSpeed)
-        {
-            if (targetSpeed < 0.0f || targetSpeed > maxTankSpeed)
-                return false;
-            FriendlyTank.TargetSpeed = targetSpeed;
-            return true;
-        }
+		///Sets the tank's speed in meters per second. @param targetSpeed: Any speed from 0 to 13 meters per second
+		public static bool SetTankSpeed(float targetSpeed)
+		{
+			if (targetSpeed < 0.0f || targetSpeed > maxTankSpeed)
+				return false;
+			FriendlyTank.TargetSpeed = targetSpeed;
+			return true;
+		}
 
 		//TODO: Add direction parameter to this function
 		///Sets the tank's heading(angle in which it is pointing) in degrees. @param targetHeading: What you direction you want the tank to turn toward. This can be any number, including negative numbers and numbers above 360. @param direction: In which direction you want it to go turn torward your target heading
 		public static void SetTankHeading(float targetHeading)
-        {
-            targetHeading %= 360.0f;
-            FriendlyTank.TargetHeading = targetHeading;
-        }
+		{
+			targetHeading %= 360.0f;
+			FriendlyTank.TargetHeading = targetHeading;
+		}
 
 		///Gets the last known position of the enemy tank, if DetectedThisTurn returns true, this is the current position of the enemy tank.
 		public static Position GetLastKnownPosition() { return FriendlyUAV.LastKnownPosition; }
 
 		///Returns true if the enemy tank was detected in this turn.
-        public static bool DetectedThisTurn() { return FriendlyUAV.DetectedTankThisTurn; }
+		public static bool DetectedThisTurn() { return FriendlyUAV.DetectedTankThisTurn; }
 
-        ///Returns true if missile was fired, false otherwise
-        public static bool Fire(Position Target)
-        {
-            if (CanFire(Target))
-            {
-              FriendlyTank.FiresThisTurn = true;
-              FriendlyTank.MissileTarget = Target;
-            }
-            else { FriendlyTank.FiresThisTurn = false; }
-            return FriendlyTank.FiresThisTurn;
-        }
+		///Returns true if missile was fired, false otherwise
+		public static bool Fire(Position Target)
+		{
+			if (CanFire(Target))
+			{
+			  FriendlyTank.FiresThisTurn = true;
+			  FriendlyTank.MissileTarget = Target;
+			}
+			else { FriendlyTank.FiresThisTurn = false; }
+			return FriendlyTank.FiresThisTurn;
+		}
 
-        ///Checks to see if the tank is allowed to fire at a given target
-        public static bool CanFire(Position Target)
-        {
-            if (FriendlyTank.MisslesLeft <= 0) { return false; }
-            else if (FriendlyTank.Position.DistanceTo(Target) > firingRange) { return false; }
-            else if (FriendlyTank.Cooldown != 0) { return false; }
-            else { return true; }
-        }
+		///Checks to see if the tank is allowed to fire at a given target
+		public static bool CanFire(Position Target)
+		{
+			if (FriendlyTank.MisslesLeft <= 0) { return false; }
+			else if (FriendlyTank.Position.DistanceTo(Target) > firingRange) { return false; }
+			else if (FriendlyTank.Cooldown != 0) { return false; }
+			else { return true; }
+		}
 
 		//TODO: Implement these.
 
@@ -120,5 +120,5 @@ namespace NGAPI
 		{
 			return 0;
 		}
-    }
+	}
 }

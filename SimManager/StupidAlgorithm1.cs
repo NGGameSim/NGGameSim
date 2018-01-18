@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace NGSim
 {
-    class StupidAlgorithm1 : NGAPI.Algorithm
-    {
+	class StupidAlgorithm1 : NGAPI.Algorithm
+	{
 		int lastChange = 30;
 
-        public override void Update()
+		public override void Update()
 		{
 			Random rnd = new Random();
 			
@@ -33,8 +33,6 @@ namespace NGSim
 				API.SetUAVSpeed(newUAVSpeed);
 				lastChange = 30;
 			}
-
-			
 			
 			if(API.FriendlyUAV.DetectedTankThisTurn == true)
 			{
@@ -42,5 +40,5 @@ namespace NGSim
 			}
 
 		}
-    }
+	}
 }

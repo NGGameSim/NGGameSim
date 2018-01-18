@@ -27,7 +27,7 @@ namespace NGAPI
 		internal const float maxTankAcceleration = 1f; /// meters per second per second
 		internal const float maxUAVTurningSpeed = 1f; ///angles per second
 		internal const float maxTankTurningSpeed = 1f; ///angles per second
-		internal const float UAVScanRange = 1f;  ///meters
+		internal const float UAVScanRange = 100f;  ///meters
 		internal const float missileSpeed = 1f; ///meters per second
 	}
 }

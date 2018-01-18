@@ -36,7 +36,7 @@ namespace NGSim
 
 			
 			
-			if(API.FriendlyUAV.DetectedTankThisTurn == true)
+			if(API.DetectedThisTurn() == true)
 			{
 				API.Fire(API.GetLastKnownPosition());
 			}

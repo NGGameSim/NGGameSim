@@ -174,7 +174,8 @@ namespace NGSim.Simulation
 			checkMissileImpacts();
 			// Run the user algorithms
 			runUserAlgorithms();
-
+			// UAVs scan to see if tank is in range
+			UAVScan();
 		}
 
 		private void runUserAlgorithms()
@@ -306,14 +307,27 @@ namespace NGSim.Simulation
 		private void updateEntityVelocities()
 		{
 			// TODO: right now this just immediately updates the speeds and headings, interpolate in the future
-			API.FriendlyTank.CurrentHeading = API.FriendlyTank.TargetHeading;
-			API.FriendlyUAV.CurrentHeading = API.FriendlyUAV.TargetHeading;
-			API.EnemyTank.CurrentHeading = API.EnemyTank.TargetHeading;
-			API.EnemyUAV.CurrentHeading = API.EnemyUAV.TargetHeading;
-			API.FriendlyTank.CurrentSpeed = API.FriendlyTank.TargetSpeed;
-			API.FriendlyUAV.CurrentSpeed = API.FriendlyUAV.TargetSpeed;
-			API.EnemyTank.CurrentSpeed = API.EnemyTank.TargetSpeed;
-			API.EnemyUAV.CurrentSpeed = API.EnemyUAV.TargetSpeed;
+			Simulation.Team1.Tank.CurrentHeading = Simulation.Team1.Tank.TargetHeading;
+			Simulation.Team1.UAV.CurrentHeading = Simulation.Team1.UAV.TargetHeading;
+			Simulation.Team2.Tank.CurrentHeading = Simulation.Team2.Tank.TargetHeading;
+			Simulation.Team2.UAV.CurrentHeading = Simulation.Team2.UAV.TargetHeading;
+			Simulation.Team1.Tank.CurrentSpeed = Simulation.Team1.Tank.TargetSpeed;
+			Simulation.Team1.UAV.CurrentSpeed = Simulation.Team1.UAV.TargetSpeed;
+			Simulation.Team2.Tank.CurrentSpeed = Simulation.Team2.Tank.TargetSpeed;
+			Simulation.Team2.UAV.CurrentSpeed = Simulation.Team2.UAV.TargetSpeed;
+		}
+
+		private void UAVScan()
+		{
+			if(Simulation.Team1.UAV.Position.DistanceTo(Simulation.Team2.Tank.Position) < UAVScanRange)
+			{
+				Simulation.Team1.UAV.DetectedTankThisTurn = true;
+			}
+
+			if (Simulation.Team2.UAV.Position.DistanceTo(Simulation.Team1.Tank.Position) < UAVScanRange)
+			{
+				Simulation.Team2.UAV.DetectedTankThisTurn = true;
+			}
 		}
 
 		public int getRandomInteger(int maximum)

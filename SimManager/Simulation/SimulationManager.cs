@@ -1,6 +1,7 @@
 using NGAPI;
 using System.Collections.Generic;
 using System;
+using NGSim.Network;
 using static NGAPI.Constants;
 
 namespace NGSim.Simulation
@@ -175,6 +176,50 @@ namespace NGSim.Simulation
 			// Run the user algorithms
 			runUserAlgorithms();
 
+			// Send network update packets
+			sendNetworkPackets();
+		}
+
+		private void sendNetworkPackets()
+		{
+			// Entity update packet
+			var entityPacket = Server.Instance.CreateMessage(1);
+			entityPacket.Write(Simulation.Team1.Tank.Position.X);
+			entityPacket.Write(Simulation.Team1.Tank.Position.Y);
+			entityPacket.Write(Simulation.Team1.Tank.CurrentHeading);
+			entityPacket.Write(Simulation.Team1.UAV.Position.X);
+			entityPacket.Write(Simulation.Team1.UAV.Position.Y);
+			entityPacket.Write(Simulation.Team1.UAV.CurrentHeading);
+			entityPacket.Write(Simulation.Team2.Tank.Position.X);
+			entityPacket.Write(Simulation.Team2.Tank.Position.Y);
+			entityPacket.Write(Simulation.Team2.Tank.CurrentHeading);
+			entityPacket.Write(Simulation.Team2.UAV.Position.X);
+			entityPacket.Write(Simulation.Team2.UAV.Position.Y);
+			entityPacket.Write(Simulation.Team2.UAV.CurrentHeading);
+			entityPacket.Write((byte)Simulation.Team1.Tank.MisslesLeft);
+			entityPacket.Write((byte)Simulation.Team2.Tank.MisslesLeft);
+
+			// Missile update packet
+			var missilePacket = Server.Instance.CreateMessage(2);
+			missilePacket.Write((byte)(Simulation.Team1.Missiles.Count + Simulation.Team2.Missiles.Count));
+			foreach (var missile in Simulation.Team1.Missiles)
+			{
+				missilePacket.Write(missile.Target.X); // TODO: Get the position
+				missilePacket.Write(missile.Target.Y); // TODO: Get the position
+				missilePacket.Write(0f); // TODO: Calculate Heading
+				missilePacket.Write((byte)1);
+			}
+			foreach (var missile in Simulation.Team2.Missiles)
+			{
+				missilePacket.Write(missile.Target.X); // TODO: Get the position
+				missilePacket.Write(missile.Target.Y); // TODO: Get the position
+				missilePacket.Write(0f); // TODO: Calculate Heading
+				missilePacket.Write((byte)2);
+			}
+
+			// Send the packets
+			Server.Instance.SendMessage(entityPacket);
+			Server.Instance.SendMessage(missilePacket);
 		}
 
 		private void runUserAlgorithms()

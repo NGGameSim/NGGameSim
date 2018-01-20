@@ -5,11 +5,17 @@ namespace NGSim.Network
 {
 	public class Server
 	{
+		public static Server Instance { get; private set; } = null;
+
 		private NetPeerConfiguration _config = new NetPeerConfiguration("NGGameSim");
 		private NetServer _server;
 
 		public Server()
 		{
+			if (Instance != null)
+				throw new InvalidOperationException("Cannot create more than once server instance.");
+			Instance = this;
+
 			_config.Port = 8100;
 			_config.LocalAddress = new System.Net.IPAddress(new byte[] { 127, 0, 0, 1 });
 			_config.MaximumConnections = 5;
@@ -32,6 +38,20 @@ namespace NGSim.Network
 				_server.Shutdown("Shutting down...");
 				Console.WriteLine("Server Shutdown"); 
 			}
+		}
+
+		// Create a new message with the given opcode
+		public NetOutgoingMessage CreateMessage(byte opcode)
+		{
+			var message = _server.CreateMessage();
+			message.Write(opcode);
+			return message;
+		}
+
+		// Sends a prepared message to all connections
+		public void SendMessage(NetOutgoingMessage msg)
+		{
+			_server.SendToAll(msg, NetDeliveryMethod.ReliableOrdered);
 		}
 
 		public void Update()

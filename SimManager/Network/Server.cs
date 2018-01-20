@@ -10,6 +10,16 @@ namespace NGSim.Network
 		private NetPeerConfiguration _config = new NetPeerConfiguration("NGGameSim");
 		private NetServer _server;
 
+		public uint TotalSentMessages
+		{
+			get { return (uint)_server.Statistics.SentMessages; }
+		}
+
+		public uint TotalSentBytes
+		{
+			get { return (uint)_server.Statistics.SentBytes; }
+		}
+
 		public Server()
 		{
 			if (Instance != null)
@@ -60,19 +70,6 @@ namespace NGSim.Network
 			while ((msg = _server.ReadMessage()) != null)
 			{
 				Console.WriteLine("Message Type: " + msg.MessageType);
-				switch (msg.MessageType)
-				{
-					case NetIncomingMessageType.Data:
-						int dataInt = msg.ReadInt32();
-						string dataStr = msg.ReadString();
-						Console.WriteLine("Data Packet: {{ {0}, '{1}' }}", dataInt, dataStr);
-						// Send a response back
-						NetOutgoingMessage outmsg = _server.CreateMessage();
-						outmsg.Write("This is a response to message " + dataInt);
-						_server.SendMessage(outmsg, msg.SenderConnection, NetDeliveryMethod.ReliableOrdered);
-						break;
-					default: break;
-				}
 				_server.Recycle(msg);
 			}
 		}

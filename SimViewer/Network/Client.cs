@@ -6,13 +6,16 @@ namespace NGSim.Network
 {
 	public class Client
 	{
-		private NetClient _client;
+		public static Client Instance { get; private set; } = null;
 
-		private int _lastMessage = 0;
-		private TimeSpan _lastSendTime = TimeSpan.Zero;
+		private NetClient _client;
 
 		public Client()
 		{
+			if (Instance != null)
+				throw new InvalidOperationException("Cannot create more than one network client instance.");
+			Instance = this;
+
 			NetPeerConfiguration config = new NetPeerConfiguration("NGGameSim");
 			_client = new NetClient(config);
 			_client.Start();
@@ -37,18 +40,21 @@ namespace NGSim.Network
 				Console.WriteLine("Got Packet!");
 				if (inmsg.MessageType == NetIncomingMessageType.Data)
 				{
-					Console.WriteLine("Data: {{ '{0}' }}", inmsg.ReadString());
+					byte opcode = inmsg.ReadByte();
+					switch (opcode)
+					{
+						case 1:
+							SimulationManager.Instance.TranslateEntityPacket(inmsg);
+							break;
+						case 2:
+							SimulationManager.Instance.TranslateMissilePacket(inmsg);
+							break;
+						default:
+							Console.WriteLine($"Unknown data packet type ({opcode}).");
+							break;
+					}
 				}
 				_client.Recycle(inmsg);
-			}
-			
-			if ((gameTime.TotalGameTime - _lastSendTime).TotalSeconds >= 1)
-			{
-				NetOutgoingMessage msg = _client.CreateMessage();
-				msg.Write(_lastMessage);
-				msg.Write("This is message " + (_lastMessage++));
-				_client.SendMessage(msg, NetDeliveryMethod.ReliableOrdered);
-				_lastSendTime = gameTime.TotalGameTime;
 			}
 		}
 	}

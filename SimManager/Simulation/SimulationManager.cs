@@ -142,13 +142,16 @@ namespace NGSim.Simulation
 
 		public void SetInitialRandomPositions()
 		{
-			int randX = rand.Next(1, positiveBoundX - negativeBoundX) + negativeBoundX;
-			int randY = rand.Next(1, positiveBoundY - negativeBoundY) + negativeBoundY;
+			int xlim = (int)(WorldSize.X / 3);
+			int ylim = (int)(WorldSize.Y / 3);
+
+			int randX = rand.Next(-xlim, xlim);
+			int randY = rand.Next(-ylim, ylim);
 			Simulation.Team1.Tank.Position = new Position(randX, randY);
 			Simulation.Team1.UAV.Position = new Position(randX, randY);
 
-			randX = rand.Next(1, positiveBoundX - negativeBoundX) + negativeBoundX;
-			randY = rand.Next(1, positiveBoundY - negativeBoundY) + negativeBoundY;
+			randX = rand.Next(-xlim, xlim);
+			randY = rand.Next(-ylim, ylim);
 			Simulation.Team2.Tank.Position = new Position(randX, randY);
 			Simulation.Team2.UAV.Position = new Position(randX, randY);
 		}
@@ -301,15 +304,11 @@ namespace NGSim.Simulation
 			bool team1Disqualified = false;
 			bool team2Disqualified = false;
 
-			if (Simulation.Team1.Tank.Position.X > positiveBoundX || Simulation.Team1.Tank.Position.X < negativeBoundX) { team1Disqualified = true; }
-			else if (Simulation.Team1.UAV.Position.X > positiveBoundX || Simulation.Team1.UAV.Position.X < negativeBoundX) { team1Disqualified = true; }
-			else if (Simulation.Team1.Tank.Position.Y > positiveBoundY || Simulation.Team1.Tank.Position.Y < negativeBoundY) { team1Disqualified = true; }
-			else if (Simulation.Team1.UAV.Position.Y > positiveBoundY || Simulation.Team1.UAV.Position.Y < negativeBoundY) { team1Disqualified = true; }
+			if (!inBounds(Simulation.Team1.Tank.Position)) { team1Disqualified = true; }
+			else if (!inBounds(Simulation.Team1.UAV.Position)) { team1Disqualified = true; }
 			
-			if (Simulation.Team2.Tank.Position.X > positiveBoundX || Simulation.Team2.Tank.Position.X < negativeBoundX) { team2Disqualified = true; }
-			else if (Simulation.Team2.UAV.Position.X > positiveBoundX || Simulation.Team2.UAV.Position.X < negativeBoundX) { team2Disqualified = true; }
-			else if (Simulation.Team2.Tank.Position.Y > positiveBoundY || Simulation.Team2.Tank.Position.Y < negativeBoundY) { team2Disqualified = true; }
-			else if (Simulation.Team2.UAV.Position.Y > positiveBoundY || Simulation.Team2.UAV.Position.Y < negativeBoundY) { team2Disqualified = true; }
+			if (!inBounds(Simulation.Team2.Tank.Position)) { team2Disqualified = true; }
+			else if (!inBounds(Simulation.Team2.UAV.Position)) { team2Disqualified = true; }
 			
 			if(team1Disqualified && team2Disqualified)
 			{
@@ -323,6 +322,14 @@ namespace NGSim.Simulation
 			{
 				gameResult = 1;
 			}
+		}
+
+		private bool inBounds(Position pos)
+		{
+			float xlim = WorldSize.X / 2;
+			float ylim = WorldSize.Y / 2;
+
+			return (pos.X < xlim && pos.X > -xlim) && (pos.Y < ylim && pos.Y > -ylim);
 		}
 
         private void updateEntityPositions()

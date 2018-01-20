@@ -34,6 +34,8 @@ namespace NGSim
 
 			// Setup graphics device settings
 			_graphics.PreferMultiSampling = true;
+			_graphics.PreferredBackBufferWidth = 1600;
+			_graphics.PreferredBackBufferHeight = 900;
 			GraphicsDevice.PresentationParameters.MultiSampleCount = 4;
 			_graphics.ApplyChanges();
 
@@ -52,7 +54,7 @@ namespace NGSim
 			_client.Connect();
 
 			// Create the simulation
-			_simManager = new SimulationManager();
+			_simManager = new SimulationManager(GraphicsDevice, Content);
 		}
 
 		protected override void LoadContent()
@@ -84,9 +86,9 @@ namespace NGSim
 
 			Camera camera = CameraManager.ActiveCamera;
 
-			_world.Draw(GraphicsDevice, camera);
-			_tankModel.Render(camera, Vector3.Right * 3 + Vector3.Up * 2);
-			_uavModel.Render(camera, Vector3.Left * 3 + Vector3.Up * 5);
+			//_world.Draw(GraphicsDevice, camera);
+			//_tankModel.Render(camera, Vector3.Right * 3 + Vector3.Up * 2);
+			//_uavModel.Render(camera, Vector3.Left * 3 + Vector3.Up * 5);
 
 			// Render the simulation
 			_simManager.Render();

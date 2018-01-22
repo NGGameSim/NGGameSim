@@ -20,7 +20,7 @@ namespace NGAPI
 		public Position(float x, float y)
 		{
 			X = x;
-			Y = x;
+			Y = y;
 		}
 
 		public float Length()

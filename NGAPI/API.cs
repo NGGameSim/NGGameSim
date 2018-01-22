@@ -9,8 +9,10 @@ namespace NGAPI
         // updating so that we can get the correct "Friendly" entities. The first team is given as 1 and the second as 2.
         internal static int CurrentTeam;
 
-        // This gets populated my SimulationManager in SimManager
-        internal static Simulation Simulation = null;
+		static Random rnd = new Random();
+
+		// This gets populated my SimulationManager in SimManager
+		internal static Simulation Simulation = null;
         internal static UAV FriendlyUAV
         { get { return (CurrentTeam == 1) ? Simulation.Team1.UAV : Simulation.Team2.UAV; } }
         internal static Tank FriendlyTank
@@ -110,7 +112,7 @@ namespace NGAPI
 		/// <param name="max">Positive integer greater than 1</param>
 		public static int GetRandomInteger(int max)
 		{
-			return 0;
+			return rnd.Next(0, max);
 		}
 
 		/// <summary>

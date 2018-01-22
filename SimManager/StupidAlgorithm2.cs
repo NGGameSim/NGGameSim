@@ -3,14 +3,12 @@ using NGAPI;
 
 namespace NGSim
 {
-    class StupidAlgorithm2 : Algorithm
-    {
+	class StupidAlgorithm2 : Algorithm
+	{
 		int lastChange = 30;
-		Random rnd = new Random();
 
 		public override void Update()
 		{
-
 			Position CurrentTankPosition = API.GetTankPosition();
 			float CurrentTankHeading = API.GetTankHeading();
 			float CurrentTankSpeed = API.GetTankSpeed();
@@ -37,5 +35,5 @@ namespace NGSim
 				API.Fire(API.GetLastKnownPosition());
 			}
 		}
-    }
+	}
 }

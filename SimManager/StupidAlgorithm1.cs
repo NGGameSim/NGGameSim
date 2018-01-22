@@ -1,10 +1,9 @@
 ﻿using System;
 using NGAPI;
-using System.Collections.Generic;
 
 namespace NGSim
 {
-    class StupidAlgorithm1 : NGAPI.Algorithm
+    class StupidAlgorithm1 : Algorithm
     {
 		int lastChange = 30;
 		Random rnd = new Random();

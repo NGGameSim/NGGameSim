@@ -347,10 +347,6 @@ namespace NGSim.Simulation
 			float Y2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team2.Tank.CurrentHeading);
 			float Y2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team2.UAV.CurrentHeading);
 
-			//Console.WriteLine("The tank has heading {0} and should move {1} in x and {2} in y", Simulation.Team1.Tank.CurrentHeading, (float)Math.Cos(Math.PI*Simulation.Team1.Tank.CurrentHeading/180), (float)Math.Sin(Math.PI*Simulation.Team1.Tank.CurrentHeading/180));
-
-			Console.WriteLine("The tank has heading {0} and speed {1} and should move {2} in x and {3} in y", Simulation.Team1.Tank.CurrentHeading, Simulation.Team1.Tank.CurrentSpeed, X1Tank, Y1Tank);
-
 			Simulation.Team1.Tank.Position = new Position(Simulation.Team1.Tank.Position.X + X1Tank, Simulation.Team1.Tank.Position.Y + Y1Tank);
 			Simulation.Team1.UAV.Position = new Position(Simulation.Team1.UAV.Position.X + X1UAV, Simulation.Team1.UAV.Position.Y + Y1UAV);
 

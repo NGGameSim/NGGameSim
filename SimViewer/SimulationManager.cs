@@ -93,10 +93,10 @@ namespace NGSim
 			_sb.Draw(_blankTex, _bgRect, Color.DarkGreen);
 
 			// Draw entities
-			_sb.Draw(_blankTex, posToVec(Simulation.Team1.Tank.Position), null, Color.Blue, 0, Vector2.Zero, 20, SpriteEffects.None, 0);
-			_sb.Draw(_blankTex, posToVec(Simulation.Team2.Tank.Position), null, Color.Red, 0, Vector2.Zero, 20, SpriteEffects.None, 0);
-			_sb.Draw(_blankTex, posToVec(Simulation.Team1.UAV.Position), null, Color.Cyan, 0, Vector2.Zero, 20, SpriteEffects.None, 0);
-			_sb.Draw(_blankTex, posToVec(Simulation.Team2.UAV.Position), null, Color.Pink, 0, Vector2.Zero, 20, SpriteEffects.None, 0);
+			_sb.Draw(_blankTex, posToVec(Simulation.Team1.Tank.Position), null, Color.Blue, 0, Vector2.One /2 , 20, SpriteEffects.None, 0);
+			_sb.Draw(_blankTex, posToVec(Simulation.Team2.Tank.Position), null, Color.Red, 0, Vector2.One / 2, 20, SpriteEffects.None, 0);
+			_sb.Draw(_blankTex, posToVec(Simulation.Team1.UAV.Position), null, Color.Cyan, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
+			_sb.Draw(_blankTex, posToVec(Simulation.Team2.UAV.Position), null, Color.Pink, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
 
 			_sb.End();
 		}

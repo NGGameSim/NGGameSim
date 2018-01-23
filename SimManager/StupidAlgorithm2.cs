@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NGAPI;
 
 namespace NGSim
@@ -30,7 +30,7 @@ namespace NGSim
 				lastChange = 30;
 			}
 
-			if (API.FriendlyUAV.DetectedTankThisTurn == true)
+			if (API.DetectedThisTurn())
 			{
 				API.Fire(API.GetLastKnownPosition());
 			}

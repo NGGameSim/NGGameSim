@@ -16,7 +16,7 @@ namespace NGSim
 		//when gameRunningMode = 0, 1 game is ran and game state info is printed,
 		//when it is 1, games are continuously ran and the result is displayed
 		//when it is 2, 500 games are ran the winning percentage is displayed
-		private int gameRunningMode;
+		public int gameRunningMode;
 		private int gameResult; //0 means game is running, 1 means Team1 won, 2  means Team2 won, 3 means a draw
 		private int numMoves;
 		private bool switchedGameMode = false;  //prevents race condition when switching the mode

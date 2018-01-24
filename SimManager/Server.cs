@@ -1,7 +1,7 @@
 ﻿using System;
 using Lidgren.Network;
 
-namespace NGSim.Network
+namespace NGSim
 {
 	public class Server
 	{

@@ -16,10 +16,10 @@
   <Files>
     <Compile Include="AlgorithmLoader.cs" />
     <Compile Include="MainWindow.cs" />
-    <Compile Include="Network\Server.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Simulation\SimulationManager.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="SimulationManager.cs" />
     <Compile Include="StupidAlgorithm1.cs" />
     <Compile Include="StupidAlgorithm2.cs" />
     <Compile Include="UpdateManager.cs" />

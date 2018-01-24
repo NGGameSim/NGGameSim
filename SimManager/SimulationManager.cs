@@ -1,16 +1,17 @@
 using NGAPI;
 using System.Collections.Generic;
 using System;
-using NGSim.Network;
 using static NGAPI.Constants;
 
-namespace NGSim.Simulation
+namespace NGSim
 {
 	// On the server-side, the simulation manager is reponsible for quite a lot, including updating the algorithms,
 	// performing entity and game state logic updates, and dispatching state packets to all of the connected clients.
 	public class SimulationManager
 	{
-		internal NGAPI.Simulation Simulation { get; private set; }
+		internal Simulation Simulation { get; private set; }
+		public Algorithm Algo1;
+		public Algorithm Algo2;
 
 		//when gameRunningMode = 0, 1 game is ran and game state info is printed,
 		//when it is 1, games are continuously ran and the result is displayed
@@ -21,8 +22,6 @@ namespace NGSim.Simulation
 		private bool switchedGameMode = false;  //prevents race condition when switching the mode
 
 		Random rand = new Random();
-		StupidAlgorithm1 algo1 = new StupidAlgorithm1();
-		StupidAlgorithm2 algo2 = new StupidAlgorithm2();
 
 		//contains the position data of the missles in air. Since there can only be 20 missles(10 in each tank, each can have its own place
 		// private Missile[] MissilesInAir = new Missile[];
@@ -32,7 +31,7 @@ namespace NGSim.Simulation
 
 		public SimulationManager()
 		{
-			Simulation = new NGAPI.Simulation();
+			Simulation = new Simulation();
 			API.Simulation = Simulation;
 		}
 
@@ -225,9 +224,9 @@ namespace NGSim.Simulation
 
 		private void runUserAlgorithms()
 		{
-			algo1.Update();
+			Algo1.Update();
 			API.CurrentTeam = 2;
-			algo2.Update();
+			Algo2.Update();
 			API.CurrentTeam = 1;
 		}
 
@@ -235,6 +234,7 @@ namespace NGSim.Simulation
 		{
 			bool team1Hit = false;
 			bool team2Hit = false;
+			List<int> toRemove = new List<int>();
 			for (int i = 0; i < MissileInAir.Count; i++)
 			{
 				if(MissileInAir[i].TurnsRemaining == 0)
@@ -251,9 +251,13 @@ namespace NGSim.Simulation
 						team2Hit = true;
 						Console.WriteLine("Tank was destroyed!!");
 					}
-					MissileInAir.RemoveAt(i);
+					toRemove.Add(i);
 				}
 			}
+			foreach (var i in toRemove)
+				MissileInAir.RemoveAt(i);
+			toRemove.Clear();
+
 			if(team1Hit && team2Hit)
 			{
 				gameResult = 3;

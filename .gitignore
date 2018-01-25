@@ -15,3 +15,6 @@ packages/**
 
 Documentation/html
 Documentation/latex
+Documentation/\.DS_Store
+
+\.DS_Store

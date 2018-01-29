@@ -4,6 +4,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using System.Collections.Generic;
 
 namespace NGSim
 {
@@ -15,6 +16,8 @@ namespace NGSim
 		public static SimulationManager Instance { get; private set; } = null;
 
 		internal Simulation Simulation { get; private set; }
+
+		private List<Position> mposList = new List<Position>();
 
 		private readonly SpriteBatch _sb;
 		private readonly Texture2D _blankTex;
@@ -42,7 +45,7 @@ namespace NGSim
 			_projMatrix = Matrix.CreateScale(900 / Constants.WorldSize.Y) * Matrix.CreateTranslation(device.Viewport.Width / 2, device.Viewport.Height / 2, 0);
 
 			_font = content.Load<SpriteFont>("debugfont");
-			_lRect = new Rectangle(0, 0, 130, 62);
+			_lRect = new Rectangle(0, 0, 130, 70);
 
 			Simulation = new Simulation();
 		}
@@ -65,14 +68,16 @@ namespace NGSim
 		// Reads information for a missile update packet (opcode 2)
 		public void TranslateMissilePacket(NetIncomingMessage msg)
 		{
-			int mcount = msg.ReadByte();
+			int mcount = msg.ReadByte(); //BUG: This is always 0
+            Console.Write("Missile count = {0}\n", mcount);
 			for (int i = 0; i < mcount; ++i)
 			{
 				Position mpos = new Position(msg.ReadSingle(), msg.ReadSingle());
+                Console.WriteLine("Missile Position = {0}, {1}", mpos.X, mpos.Y);
 				float heading = msg.ReadSingle();
 				byte team = msg.ReadByte();
 
-				// TODO: something with the missiles
+				mposList.Add(mpos);
 			}
 		}
 
@@ -85,6 +90,7 @@ namespace NGSim
 			_sb.DrawString(_font, "Cyan = Team 1 UAV", new Vector2(5, 18), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Red  = Team 2 Tank", new Vector2(5, 31), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Pink = Team 2 UAV", new Vector2(5, 44), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
+			_sb.DrawString(_font, "Black = Missiles", new Vector2(5, 57), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.End();
 
 			_sb.Begin(transformMatrix: _projMatrix);
@@ -98,6 +104,11 @@ namespace NGSim
 			_sb.Draw(_blankTex, posToVec(Simulation.Team1.UAV.Position), null, Color.Cyan, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
 			_sb.Draw(_blankTex, posToVec(Simulation.Team2.UAV.Position), null, Color.Pink, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
 
+			// Draw Missiles
+			foreach (Position position in mposList)
+			{
+				_sb.Draw(_blankTex, posToVec(position), null, Color.Black, 0, Vector2.One / 2, 20, SpriteEffects.None, 0);
+			}
 			_sb.End();
 		}
 

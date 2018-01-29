@@ -26,6 +26,8 @@ namespace NGSim
 		//contains the position data of the missles in air. Since there can only be 20 missles(10 in each tank, each can have its own place
 		// private Missile[] MissilesInAir = new Missile[];
 		private List<Missile> MissileInAir = new List<Missile>();
+		private List<float> XMissiles = new List<float>();
+		private List<float> YMissiles = new List<float>();
 
 		public Boolean running = false;
 
@@ -175,7 +177,6 @@ namespace NGSim
 			checkMissileImpacts();
 			// Run the user algorithms
 			runUserAlgorithms();
-
 			// Send network update packets
 			sendNetworkPackets();
 		}
@@ -201,19 +202,20 @@ namespace NGSim
 
 			// Missile update packet
 			var missilePacket = Server.Instance.CreateMessage(2);
-			missilePacket.Write((byte)(Simulation.Team1.Missiles.Count + Simulation.Team2.Missiles.Count));
+            Console.WriteLine("Missile In Air Count = {0}", MissileInAir.Count);
+			missilePacket.Write((byte)(MissileInAir.Count));
 			foreach (var missile in Simulation.Team1.Missiles)
 			{
-				missilePacket.Write(missile.Target.X); // TODO: Get the position
-				missilePacket.Write(missile.Target.Y); // TODO: Get the position
-				missilePacket.Write(0f); // TODO: Calculate Heading
+				missilePacket.Write(missile.CurrentPostion.X); 
+				missilePacket.Write(missile.CurrentPostion.Y); 
+				missilePacket.Write(missile.CurrentHeading); 
 				missilePacket.Write((byte)1);
 			}
 			foreach (var missile in Simulation.Team2.Missiles)
 			{
-				missilePacket.Write(missile.Target.X); // TODO: Get the position
-				missilePacket.Write(missile.Target.Y); // TODO: Get the position
-				missilePacket.Write(0f); // TODO: Calculate Heading
+				missilePacket.Write(missile.CurrentPostion.X); 
+				missilePacket.Write(missile.CurrentPostion.Y); 
+				missilePacket.Write(missile.CurrentHeading); 
 				missilePacket.Write((byte)2);
 			}
 
@@ -254,9 +256,9 @@ namespace NGSim
 					toRemove.Add(i);
 				}
 			}
-			foreach (var i in toRemove)
-				MissileInAir.RemoveAt(i);
-			toRemove.Clear();
+			//foreach (var i in toRemove)
+				//MissileInAir.RemoveAt(i);
+			//toRemove.Clear();
 
 			if(team1Hit && team2Hit)
 			{
@@ -288,10 +290,17 @@ namespace NGSim
 				MissileInAir.Add(missile);
 				missile.Source = Simulation.Team1.Tank.Position;
 				missile.Target = Simulation.Team1.Tank.MissileTarget;
-                missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30; //M1 Abrams missiles move at 300 m/s
+				missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30; //M1 Abrams missiles move at 300 m/s
 				Simulation.Team1.Tank.FiresThisTurn = false;
 				Simulation.Team1.Tank.Cooldown = 20;
 				Simulation.Team1.Tank.MisslesLeft--;
+
+				//Calculate the Missile Heading
+				double yHeading = Math.Sin(missile.Target.X - missile.Source.X) * Math.Cos(missile.Target.Y);
+				double xHeading = Math.Cos(missile.Source.Y) * Math.Sin(missile.Target.Y) - Math.Sin(missile.Source.Y) * Math.Cos(missile.Target.Y) * Math.Cos(missile.Target.X - missile.Source.X);
+				missile.CurrentHeading = (float) Math.Atan2(yHeading, xHeading) * (float) (180 / Math.PI);
+				missile.CurrentPostion = missile.Source;
+
 				Console.WriteLine("Team 1 has {0} Missiles Left", Simulation.Team1.Tank.MisslesLeft);
 			}
 			if(Simulation.Team2.Tank.FiresThisTurn == true)
@@ -301,10 +310,19 @@ namespace NGSim
 				MissileInAir.Add(missile);
 				missile.Source = Simulation.Team2.Tank.Position;
 				missile.Target = Simulation.Team2.Tank.MissileTarget;
-                missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30;
-                Simulation.Team2.Tank.FiresThisTurn = false;
+				missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30;
+				Simulation.Team2.Tank.FiresThisTurn = false;
 				Simulation.Team2.Tank.Cooldown = 20;
 				Simulation.Team2.Tank.MisslesLeft--;
+
+				//Calculate the Missile Heading
+				double yHeading = Math.Sin(missile.Target.X - missile.Source.X) * Math.Cos(missile.Target.Y);
+				double xHeading = Math.Cos(missile.Source.Y) * Math.Sin(missile.Target.Y) - Math.Sin(missile.Source.Y) * Math.Cos(missile.Target.Y) * Math.Cos(missile.Target.X - missile.Source.X);
+				missile.CurrentHeading = (float)Math.Atan2(yHeading, xHeading) * (float)(180 / Math.PI);
+				//Set an initial position for the missile
+				missile.CurrentPostion = missile.Source;
+
+				Console.WriteLine("Missile Position Set to {0}, {1}", missile.CurrentPostion.X, missile.CurrentPostion.Y);
 				Console.WriteLine("Team 2 has {0} Missiles Left", Simulation.Team2.Tank.MisslesLeft);
 			}
 		}
@@ -362,6 +380,20 @@ namespace NGSim
 
 			Simulation.Team2.Tank.Position = new Position(Simulation.Team2.Tank.Position.X + X2Tank, Simulation.Team2.Tank.Position.Y + Y2Tank);
 			Simulation.Team2.UAV.Position = new Position(Simulation.Team2.UAV.Position.X + X2UAV, Simulation.Team2.UAV.Position.Y + Y2UAV);
+
+			foreach (Missile missile in MissileInAir)
+			{
+				float XMissile = 30 * (float)Math.Sin(missile.CurrentHeading);
+				float YMissile = 30 * (float)Math.Cos(missile.CurrentHeading);
+				XMissiles.Add(XMissile);
+				YMissiles.Add(YMissile);
+			}
+
+			for (int i = 0; i < MissileInAir.Count; i++)
+			{
+				MissileInAir.ForEach((missile) => { missile.CurrentPostion = new Position(missile.CurrentPostion.X + XMissiles[i], missile.CurrentPostion.Y + YMissiles[i]); });
+				Console.WriteLine("Missile Position = {0}, {1}", MissileInAir[i].CurrentPostion.X, MissileInAir[i].CurrentPostion.Y);
+			}
 
 		}
 

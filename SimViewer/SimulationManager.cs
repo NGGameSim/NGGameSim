@@ -68,12 +68,12 @@ namespace NGSim
 		// Reads information for a missile update packet (opcode 2)
 		public void TranslateMissilePacket(NetIncomingMessage msg)
 		{
-            int mcount = msg.ReadInt32(); //BUG: This is always 0
-            Console.Write("Missile count = {0}\n", mcount);
+			int mcount = msg.ReadInt32();
+			Console.Write("Missile count = {0}\n", mcount);
 			for (int i = 0; i < mcount; ++i)
 			{
 				Position mpos = new Position(msg.ReadSingle(), msg.ReadSingle());
-                Console.WriteLine("Missile Position = {0}, {1}", mpos.X, mpos.Y);
+				Console.WriteLine("Missile Position = {0}, {1}", mpos.X, mpos.Y);
 				float heading = msg.ReadSingle();
 				byte team = msg.ReadByte();
 
@@ -101,8 +101,8 @@ namespace NGSim
 			// Draw entities
 			_sb.Draw(_blankTex, posToVec(Simulation.Team1.Tank.Position), null, Color.Blue, 0, Vector2.One /2 , 20, SpriteEffects.None, 0);
 			_sb.Draw(_blankTex, posToVec(Simulation.Team2.Tank.Position), null, Color.Red, 0, Vector2.One / 2, 20, SpriteEffects.None, 0);
-			_sb.Draw(_blankTex, posToVec(Simulation.Team1.UAV.Position), null, Color.Cyan, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
-			_sb.Draw(_blankTex, posToVec(Simulation.Team2.UAV.Position), null, Color.Pink, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
+			_sb.Draw(_blankTex, posToVec(Simulation.Team1.UAV.Position), null, Color.Blue, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
+			_sb.Draw(_blankTex, posToVec(Simulation.Team2.UAV.Position), null, Color.Red, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
 
 			// Draw Missiles
 			foreach (Position position in mposList)

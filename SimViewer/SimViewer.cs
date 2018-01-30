@@ -12,7 +12,7 @@ namespace NGSim
 	public class SimViewer : Game
 	{
 		private GraphicsDeviceManager _graphics;
-        private Client _client;
+		private Client _client;
 		private SimulationManager _simManager;
 
 		private CModel _uavModel;
@@ -48,7 +48,7 @@ namespace NGSim
 			// Create the camera
 			CameraManager.Set(new ArcBallCamera(GraphicsDevice, distance: 20f, yaw: 0f, pitch: 45f), new ArcBallCameraBehavior());
 			(CameraManager.ActiveCamera as ArcBallCamera).MinDistance = 2f;
-      
+	  
 			// Setup the network stuff
 			_client = new Client();
 			_client.Connect();
@@ -95,7 +95,7 @@ namespace NGSim
 
 			base.Draw(gameTime);
 		}
-    
+	
 		protected override void OnExiting(object sender, EventArgs args)
 		{
 			_client.Disconnect();

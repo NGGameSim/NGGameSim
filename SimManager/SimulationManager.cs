@@ -66,6 +66,8 @@ namespace NGSim
 				else
 				{
 					Console.WriteLine("Winner is team {0}", gameResult);
+					Console.Write("Type any character to continue...");
+					var tmp = Console.ReadLine();
 				}
 			}
 			else if (gameRunningMode == 1)
@@ -82,6 +84,8 @@ namespace NGSim
 				else
 				{
 					Console.WriteLine("Winner is team {0}", gameResult);
+					Console.Write("Type any character to continue...");
+					var tmp = Console.ReadLine();
 				}
 			}
 			else if (gameRunningMode == 2)
@@ -202,9 +206,9 @@ namespace NGSim
 
 			// Missile update packet
 			var missilePacket = Server.Instance.CreateMessage(2);
-            Console.WriteLine($"Missile In Air Count = {MissileInAir.Count}");
+			Console.WriteLine($"Missile In Air Count = {MissileInAir.Count}");
 			missilePacket.Write(MissileInAir.Count);
-            foreach (Missile missile in MissileInAir)
+			foreach (Missile missile in MissileInAir)
 			{
 				missilePacket.Write(missile.CurrentPostion.X); 
 				missilePacket.Write(missile.CurrentPostion.Y); 
@@ -246,13 +250,14 @@ namespace NGSim
 						team2Hit = true;
 						Console.WriteLine("Tank was destroyed!!");
 					}
+					Console.WriteLine("Missile ran out of turns, hit the ground. (Or tank)");
 					toRemove.Add(i);
 				}
 			}
-
-			//foreach (var i in toRemove)
-				//MissileInAir.RemoveAt(i);
-			//toRemove.Clear();
+			//Remove missils listed as reached their target.
+			foreach (var i in toRemove)
+				MissileInAir.RemoveAt(i);
+			toRemove.Clear();
 
 			if(team1Hit && team2Hit)
 			{
@@ -295,6 +300,9 @@ namespace NGSim
 				missile.CurrentHeading = (float) Math.Atan2(yHeading, xHeading) * (float) (180 / Math.PI);
 				missile.CurrentPostion = missile.Source;
 
+				//Debugging Code
+				Console.WriteLine("Missile Position Set to {0}, {1} (Starting Position)", missile.CurrentPostion.X, missile.CurrentPostion.Y);
+				Console.WriteLine("Missile Target Set to {0}, {1} (target Position)", missile.Target.X, missile.Target.Y);
 				Console.WriteLine("Team 1 has {0} Missiles Left", Simulation.Team1.Tank.MisslesLeft);
 			}
 			if(Simulation.Team2.Tank.FiresThisTurn == true)
@@ -316,8 +324,10 @@ namespace NGSim
 				//Set an initial position for the missile
 				missile.CurrentPostion = missile.Source;
 
-				Console.WriteLine("Missile Position Set to {0}, {1}", missile.CurrentPostion.X, missile.CurrentPostion.Y);
-				Console.WriteLine("Team 2 has {0} Missiles Left", Simulation.Team2.Tank.MisslesLeft);
+				//Debugging Code
+				Console.WriteLine("Missile Position Set to {0}, {1} (Starting Position)", missile.CurrentPostion.X, missile.CurrentPostion.Y);
+				Console.WriteLine("Missile Target Set to {0}, {1} (target Position)", missile.Target.X, missile.Target.Y);
+				Console.WriteLine("Team 1 has {0} Missiles Left", Simulation.Team1.Tank.MisslesLeft);
 			}
 		}
 

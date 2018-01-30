@@ -2,7 +2,7 @@
 
 namespace NGAPI
 {
-	public struct Missile
+	public class Missile
 	{
 		public Position Source; // The source the missile was fired from
 		public Position Target; // The target position of the missile

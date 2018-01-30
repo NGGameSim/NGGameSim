@@ -202,21 +202,14 @@ namespace NGSim
 
 			// Missile update packet
 			var missilePacket = Server.Instance.CreateMessage(2);
-            Console.WriteLine("Missile In Air Count = {0}", MissileInAir.Count);
-			missilePacket.Write((byte)(MissileInAir.Count));
-			foreach (var missile in Simulation.Team1.Missiles)
+            Console.WriteLine($"Missile In Air Count = {MissileInAir.Count}");
+			missilePacket.Write(MissileInAir.Count);
+            foreach (Missile missile in MissileInAir)
 			{
 				missilePacket.Write(missile.CurrentPostion.X); 
 				missilePacket.Write(missile.CurrentPostion.Y); 
 				missilePacket.Write(missile.CurrentHeading); 
 				missilePacket.Write((byte)1);
-			}
-			foreach (var missile in Simulation.Team2.Missiles)
-			{
-				missilePacket.Write(missile.CurrentPostion.X); 
-				missilePacket.Write(missile.CurrentPostion.Y); 
-				missilePacket.Write(missile.CurrentHeading); 
-				missilePacket.Write((byte)2);
 			}
 
 			// Send the packets
@@ -256,6 +249,7 @@ namespace NGSim
 					toRemove.Add(i);
 				}
 			}
+
 			//foreach (var i in toRemove)
 				//MissileInAir.RemoveAt(i);
 			//toRemove.Clear();

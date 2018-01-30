@@ -68,7 +68,7 @@ namespace NGSim
 		// Reads information for a missile update packet (opcode 2)
 		public void TranslateMissilePacket(NetIncomingMessage msg)
 		{
-			int mcount = msg.ReadByte(); //BUG: This is always 0
+            int mcount = msg.ReadInt32(); //BUG: This is always 0
             Console.Write("Missile count = {0}\n", mcount);
 			for (int i = 0; i < mcount; ++i)
 			{

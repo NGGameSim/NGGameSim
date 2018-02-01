@@ -107,8 +107,9 @@ namespace NGSim
 			// Draw Missiles
 			foreach (Position position in mposList)
 			{
-				_sb.Draw(_blankTex, posToVec(position), null, Color.Black, 0, Vector2.One / 2, 20, SpriteEffects.None, 0);
+				_sb.Draw(_blankTex, posToVec(position), null, Color.Black, 0, Vector2.One / 2, 5, SpriteEffects.None, 0);
 			}
+            mposList.Clear();
 			_sb.End();
 		}
 

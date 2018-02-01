@@ -66,8 +66,8 @@ namespace NGSim
 				else
 				{
 					Console.WriteLine("Winner is team {0}", gameResult);
-					Console.Write("Type any character to continue...");
-					var tmp = Console.ReadLine();
+					//Console.Write("Type any character to continue...");
+					//var tmp = Console.ReadLine();
 				}
 			}
 			else if (gameRunningMode == 1)
@@ -84,8 +84,8 @@ namespace NGSim
 				else
 				{
 					Console.WriteLine("Winner is team {0}", gameResult);
-					Console.Write("Type any character to continue...");
-					var tmp = Console.ReadLine();
+					//Console.Write("Type any character to continue...");
+					//var tmp = Console.ReadLine();
 				}
 			}
 			else if (gameRunningMode == 2)
@@ -254,10 +254,10 @@ namespace NGSim
 					toRemove.Add(i);
 				}
 			}
-			//Remove missils listed as reached their target.
-			foreach (var i in toRemove)
-				MissileInAir.RemoveAt(i);
-			toRemove.Clear();
+            //Remove missils listed as reached their target.
+            foreach (var i in toRemove)
+                MissileInAir.RemoveAt(i);
+            toRemove.Clear();
 
 			if(team1Hit && team2Hit)
 			{
@@ -427,7 +427,18 @@ namespace NGSim
 				Simulation.Team2.UAV.DetectedTankThisTurn = true;
 				Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;
 			}
-		}
+            if (Simulation.Team1.Tank.Position.DistanceTo(Simulation.Team2.Tank.Position) < TankScanRange)
+            {
+                Simulation.Team1.UAV.DetectedTankThisTurn = true;
+                Simulation.Team1.UAV.LastKnownPosition = Simulation.Team2.Tank.Position;
+            }
+
+            if (Simulation.Team2.Tank.Position.DistanceTo(Simulation.Team1.Tank.Position) < TankScanRange)
+            {
+                Simulation.Team2.UAV.DetectedTankThisTurn = true;
+                Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;
+            }
+        }
 
 		public int getRandomInteger(int maximum)
 		{

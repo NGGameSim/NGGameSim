@@ -26,6 +26,9 @@ namespace NGSim
 		private readonly SpriteFont _font;
 		private readonly Rectangle _lRect;
 
+        private Vector2 origin = new Vector2(0, 0);
+
+
 		public SimulationManager(GraphicsDevice device, ContentManager content)
 		{
 			if (Instance != null)
@@ -69,11 +72,10 @@ namespace NGSim
 		public void TranslateMissilePacket(NetIncomingMessage msg)
 		{
 			int mcount = msg.ReadInt32();
-			Console.Write("Missile count = {0}\n", mcount);
+
 			for (int i = 0; i < mcount; ++i)
 			{
 				Position mpos = new Position(msg.ReadSingle(), msg.ReadSingle());
-				Console.WriteLine("Missile Position = {0}, {1}", mpos.X, mpos.Y);
 				float heading = msg.ReadSingle();
 				byte team = msg.ReadByte();
 
@@ -103,6 +105,7 @@ namespace NGSim
 			_sb.Draw(_blankTex, posToVec(Simulation.Team2.Tank.Position), null, Color.Red, 0, Vector2.One / 2, 20, SpriteEffects.None, 0);
 			_sb.Draw(_blankTex, posToVec(Simulation.Team1.UAV.Position), null, Color.Blue, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
 			_sb.Draw(_blankTex, posToVec(Simulation.Team2.UAV.Position), null, Color.Red, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
+            _sb.Draw(_blankTex, origin, null, Color.Brown, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
 
 			// Draw Missiles
 			foreach (Position position in mposList)

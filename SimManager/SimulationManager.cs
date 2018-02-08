@@ -2,6 +2,7 @@ using NGAPI;
 using System.Collections.Generic;
 using System;
 using static NGAPI.Constants;
+using NLog;
 
 namespace NGSim
 {
@@ -22,6 +23,8 @@ namespace NGSim
 		private bool switchedGameMode = false;  //prevents race condition when switching the mode
 
 		Random rand = new Random();
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		//contains the position data of the missles in air. Since there can only be 20 missles(10 in each tank, each can have its own place
 		// private Missile[] MissilesInAir = new Missile[];
@@ -146,15 +149,17 @@ namespace NGSim
 			int xlim = (int)(WorldSize.X / 3);
 			int ylim = (int)(WorldSize.Y / 3);
 
-			int randX = rand.Next(-xlim, xlim);
-			int randY = rand.Next(-ylim, ylim);
-			Simulation.Team1.Tank.Position = new Position(randX, randY);
-			Simulation.Team1.UAV.Position = new Position(randX, randY);
+			//int randX = rand.Next(-xlim, xlim);
+			//int randY = rand.Next(-ylim, ylim);
+			Simulation.Team1.Tank.Position = new Position(100, 100);
+			Simulation.Team1.UAV.Position = new Position(100, 100);
+            logger.Info($"Team 1 Initial Position {Simulation.Team1.Tank.Position.X} {Simulation.Team1.Tank.Position.Y}");
 
-			randX = rand.Next(-xlim, xlim);
-			randY = rand.Next(-ylim, ylim);
-			Simulation.Team2.Tank.Position = new Position(randX, randY);
-			Simulation.Team2.UAV.Position = new Position(randX, randY);
+			//randX = rand.Next(-xlim, xlim);
+			//randY = rand.Next(-ylim, ylim);
+			Simulation.Team2.Tank.Position = new Position(-100, 100);
+			Simulation.Team2.UAV.Position = new Position(-100, 100);
+            logger.Info($"Team 2 Initial Position {Simulation.Team2.Tank.Position.X} {Simulation.Team2.Tank.Position.Y}");
 		}
 
 		public void UpdateGameState()
@@ -206,12 +211,11 @@ namespace NGSim
 
 			// Missile update packet
 			var missilePacket = Server.Instance.CreateMessage(2);
-			Console.WriteLine($"Missile In Air Count = {MissileInAir.Count}");
 			missilePacket.Write(MissileInAir.Count);
 			foreach (Missile missile in MissileInAir)
 			{
 				missilePacket.Write(missile.CurrentPostion.X); 
-				missilePacket.Write(missile.CurrentPostion.Y); 
+				missilePacket.Write(missile.CurrentPostion.Y);
 				missilePacket.Write(missile.CurrentHeading); 
 				missilePacket.Write((byte)1);
 			}
@@ -250,7 +254,6 @@ namespace NGSim
 						team2Hit = true;
 						Console.WriteLine("Tank was destroyed!!");
 					}
-					Console.WriteLine("Missile ran out of turns, hit the ground. (Or tank)");
 					toRemove.Add(i);
 				}
 			}
@@ -284,50 +287,73 @@ namespace NGSim
 
 			if (Simulation.Team1.Tank.FiresThisTurn == true)
 			{
-				Console.WriteLine("Team 1 Fired!");
 				Missile missile = new NGAPI.Missile();
 				MissileInAir.Add(missile);
-				missile.Source = Simulation.Team1.Tank.Position;
+                missile.Source = new Position(Simulation.Team1.Tank.Position.X, Simulation.Team1.Tank.Position.Y);
 				missile.Target = Simulation.Team1.Tank.MissileTarget;
 				missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30; //M1 Abrams missiles move at 300 m/s
 				Simulation.Team1.Tank.FiresThisTurn = false;
 				Simulation.Team1.Tank.Cooldown = 20;
 				Simulation.Team1.Tank.MisslesLeft--;
 
-				//Calculate the Missile Heading
-				double yHeading = Math.Sin(missile.Target.X - missile.Source.X) * Math.Cos(missile.Target.Y);
-				double xHeading = Math.Cos(missile.Source.Y) * Math.Sin(missile.Target.Y) - Math.Sin(missile.Source.Y) * Math.Cos(missile.Target.Y) * Math.Cos(missile.Target.X - missile.Source.X);
-				missile.CurrentHeading = (float) Math.Atan2(yHeading, xHeading) * (float) (180 / Math.PI);
-				missile.CurrentPostion = missile.Source;
+                //Calculate the Missile Heading
+                double dx = missile.Target.X - missile.Source.X;
+                double dy = missile.Target.Y - missile.Source.Y;
+                missile.CurrentHeading = (float)(Math.Atan2(dy, dx) * (180 / Math.PI));
+                if(missile.CurrentHeading < 0) { missile.CurrentHeading = missile.CurrentHeading + 360; }
 
-				//Debugging Code
-				Console.WriteLine("Missile Position Set to {0}, {1} (Starting Position)", missile.CurrentPostion.X, missile.CurrentPostion.Y);
-				Console.WriteLine("Missile Target Set to {0}, {1} (target Position)", missile.Target.X, missile.Target.Y);
-				Console.WriteLine("Team 1 has {0} Missiles Left", Simulation.Team1.Tank.MisslesLeft);
+                //TARGET TESTING: PASS
+                if (missile.Target.X != 0 && missile.Target.Y != 0) { logger.Debug($"TARGET 1: FAIL {missile.Target.X} {missile.Target.Y}"); }
+                else { logger.Debug($"TARGET 1: PASS {missile.Target.X} {missile.Target.Y}"); }
+
+                //SOURCE TESTING: PASS
+                if (missile.Source.X != Simulation.Team1.Tank.Position.X || missile.Source.Y != Simulation.Team1.Tank.Position.Y) { logger.Debug($"SOURCE 1: FAIL {missile.Source.X} {missile.Source.Y}"); }
+                else { logger.Debug($"SOURCE 1: PASS {missile.Source.X} {missile.Source.Y}"); }
+
+                //DIFFERENCE TESTING: PASS
+                if (dx != missile.Target.X - missile.Source.X || dy != missile.Target.Y - missile.Source.Y) { logger.Debug($"DIFFERENCE 1: FAIL {dx} {dy}"); }
+                else { logger.Debug($"DIFFERENCE 1: PASS {dx} {dy}"); }
+
+                //HEADING TESTING: PASS
+                if (missile.CurrentHeading != 225) { logger.Debug($"HEADING 1: FAIL {missile.CurrentHeading}"); }
+                else { logger.Debug($"HEADING 1: PASS {missile.CurrentHeading}"); }
+
+                missile.CurrentPostion = missile.Source;
 			}
 			if(Simulation.Team2.Tank.FiresThisTurn == true)
 			{
-				Console.WriteLine("Team 2 Fired!");
-				Missile missile = new NGAPI.Missile();
-				MissileInAir.Add(missile);
-				missile.Source = Simulation.Team2.Tank.Position;
-				missile.Target = Simulation.Team2.Tank.MissileTarget;
-				missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30;
+				Missile missile2 = new NGAPI.Missile();
+				MissileInAir.Add(missile2);
+                missile2.Source = new Position(Simulation.Team2.Tank.Position.X, Simulation.Team2.Tank.Position.Y);
+                missile2.Target = Simulation.Team2.Tank.MissileTarget;
+				missile2.TurnsRemaining = (int)missile2.Source.DistanceTo(missile2.Target) / 30;
 				Simulation.Team2.Tank.FiresThisTurn = false;
 				Simulation.Team2.Tank.Cooldown = 20;
 				Simulation.Team2.Tank.MisslesLeft--;
 
-				//Calculate the Missile Heading
-				double yHeading = Math.Sin(missile.Target.X - missile.Source.X) * Math.Cos(missile.Target.Y);
-				double xHeading = Math.Cos(missile.Source.Y) * Math.Sin(missile.Target.Y) - Math.Sin(missile.Source.Y) * Math.Cos(missile.Target.Y) * Math.Cos(missile.Target.X - missile.Source.X);
-				missile.CurrentHeading = (float)Math.Atan2(yHeading, xHeading) * (float)(180 / Math.PI);
-				//Set an initial position for the missile
-				missile.CurrentPostion = missile.Source;
+                double dx = missile2.Target.X - missile2.Source.X;
+                double dy = missile2.Target.Y - missile2.Source.Y;
+                missile2.CurrentHeading = (float)(Math.Atan2(dx, dy) * (180 / Math.PI));
+                if (missile2.CurrentHeading < 0) { missile2.CurrentHeading = missile2.CurrentHeading + 360; }
 
-				//Debugging Code
-				Console.WriteLine("Missile Position Set to {0}, {1} (Starting Position)", missile.CurrentPostion.X, missile.CurrentPostion.Y);
-				Console.WriteLine("Missile Target Set to {0}, {1} (target Position)", missile.Target.X, missile.Target.Y);
-				Console.WriteLine("Team 1 has {0} Missiles Left", Simulation.Team1.Tank.MisslesLeft);
+                //TARGET TESTING
+                if(missile2.Target.X != 0 && missile2.Target.Y != 0) { logger.Debug($"TARGET 2: FAIL {missile2.Target.X} {missile2.Target.Y}"); }
+                else { logger.Debug($"TARGET 2: PASS {missile2.Target.X} {missile2.Target.Y}"); }
+
+                //SOURCE TESTING
+                if (missile2.Source.X != Simulation.Team2.Tank.Position.X || missile2.Source.Y != Simulation.Team2.Tank.Position.Y) { logger.Debug($"SOURCE 2: FAIL {missile2.Source.X} {missile2.Source.Y}"); }
+                else { logger.Debug($"SOURCE 2: PASS {missile2.Source.X} {missile2.Source.Y}"); }
+
+                //DIFFERENCE TESTING
+                if (dx != missile2.Target.X - missile2.Source.X || dy != missile2.Target.Y - missile2.Source.Y) { logger.Debug($"DIFFERENCE 2: FAIL {dx} {dy}"); }
+                else { logger.Debug($"DIFFERENCE 2: PASS {dx} {dy}"); }
+
+                //HEADING TESTING
+                if(missile2.CurrentHeading != 135) { logger.Debug($"HEADING 2: FAIL {missile2.CurrentHeading}"); }
+                else { logger.Debug($"HEADING 2: PASS {missile2.CurrentHeading}"); }
+
+                //Set an initial position for the missile
+                missile2.CurrentPostion = missile2.Source;
 			}
 		}
 
@@ -368,7 +394,7 @@ namespace NGSim
 
 		private void updateEntityPositions()
 		{
-
+            //Generate the changes in the X and Y position for all entities
 			float X1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team1.Tank.CurrentHeading);
 			float X1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team1.UAV.CurrentHeading);
 			float X2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team2.Tank.CurrentHeading);
@@ -379,6 +405,7 @@ namespace NGSim
 			float Y2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team2.Tank.CurrentHeading);
 			float Y2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team2.UAV.CurrentHeading);
 
+            //Add the X and Y changes
 			Simulation.Team1.Tank.Position = new Position(Simulation.Team1.Tank.Position.X + X1Tank, Simulation.Team1.Tank.Position.Y + Y1Tank);
 			Simulation.Team1.UAV.Position = new Position(Simulation.Team1.UAV.Position.X + X1UAV, Simulation.Team1.UAV.Position.Y + Y1UAV);
 
@@ -396,7 +423,6 @@ namespace NGSim
 			for (int i = 0; i < MissileInAir.Count; i++)
 			{
 				MissileInAir.ForEach((missile) => { missile.CurrentPostion = new Position(missile.CurrentPostion.X + XMissiles[i], missile.CurrentPostion.Y + YMissiles[i]); });
-				Console.WriteLine("Missile Position = {0}, {1}", MissileInAir[i].CurrentPostion.X, MissileInAir[i].CurrentPostion.Y);
 			}
 
 		}

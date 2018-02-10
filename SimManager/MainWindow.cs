@@ -23,7 +23,7 @@ namespace NGSim
 		private TextBox NGameTextBox;
 		private Button LaunchButton;
 		private TextArea StateInfoTextArea;
-		private TextArea NetoworkInfoTextArea;
+		private TextArea NetworkInfoTextArea;
 		private OpenFileDialog AlgorithmOpenFile1;
 		private OpenFileDialog AlgorithmOpenFile2;
 
@@ -58,36 +58,48 @@ namespace NGSim
 			AlgorithmBrowseButton1.Click += AlgorithmBrowseButton1_Click;
 			AlgorithmBrowseButton2.Click += AlgorithmBrowseButton2_Click;
 
-			AlgorithmLoadButton = new Button { Text = "Load Algorithms" };
-			AlgorithmLoadButton.Click += AlgorithmLoadButton_Click;
+			SingleGameCheckBox = new CheckBox { Text = "Single Game" };
+			NGameCheckBox = new CheckBox { Text = "N Games" };
+			NGameTextBox = new TextBox();
+
+			LaunchButton = new Button { Text = "LAUNCH" };
+			LaunchButton.Click += LaunchButton_Click;
+
+			//AlgorithmLoadButton = new Button { Text = "Load Algorithms" };
+			//AlgorithmLoadButton.Click += AlgorithmLoadButton_Click;
 
 			AlgorithmOpenFile1 = new OpenFileDialog();
 			AlgorithmOpenFile2 = new OpenFileDialog();
 
 			var algoLayout = new TableLayout
 			{
-				Spacing = new Size(5, 5),
-				Padding = new Padding(10),
+				Spacing = new Size(10, 5),
+				Padding = new Padding(20),
 				Width = 800,
 				Rows =
 				{
 					new TableRow(
-						new Label { Text = "Algorithm 1 Path" }
+						new Label { Text = "Red Team Algorithm" }, new TableCell(AlgorithmTextBox1, true), AlgorithmBrowseButton1	
 					),
 					new TableRow(
-						new TableCell(AlgorithmTextBox1, true), AlgorithmBrowseButton1	
-					),
-					new TableRow(
-						new Label { Text = "Algorithm 2 Path" }
-					),
-					new TableRow(
-						new TableCell(AlgorithmTextBox2, true), AlgorithmBrowseButton2	
+						new Label { Text = "Blue Team Algorithm" }, new TableCell(AlgorithmTextBox2, true), AlgorithmBrowseButton2	
 					),
 					new TableRow(
 						new Label { }	
 					),
 					new TableRow(
-						new Label { Text = "\t\tNote: Leave path blank to load dummy algorithm" }, AlgorithmLoadButton
+						new TableLayout
+						{
+							Rows =
+							{
+								new TableRow(
+									SingleGameCheckBox, new Label { }
+								),
+								new TableRow(
+									NGameCheckBox, new Label { }, NGameTextBox
+								)
+							}
+						}, new TableCell(LaunchButton, true)
 					)
 				}
 			};
@@ -96,17 +108,25 @@ namespace NGSim
 			return algoGroup;
 		}
 
+		private void LaunchButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
 		private Control prepareSimulationControlGroup()
 		{
 			var group = new GroupBox { Text = "Simulation Control" };
 
-			Run1GameInDepthButton = new Button { Text = "Single Game", Height = 30, Enabled = false }; //Run 1 Game In Depth With Positions Shown
+			/* Run1GameInDepthButton = new Button { Text = "Single Game", Height = 30, Enabled = false }; //Run 1 Game In Depth With Positions Shown
 			RunGamesContinuallyButton = new Button { Text = "Continuous Games", Height = 30, Enabled = false }; //Continually run games and print who's the winner
 			Run500GamesContinuallyButton = new Button { Text = "500 Continuous Games", Height = 30, Enabled = false }; //Continually run 500 games and print the winning percentages
 
 			Run1GameInDepthButton.Click += Run1GameInDepthButton_Click;
 			RunGamesContinuallyButton.Click += RunGamesContinuallyButton_Click;
 			Run500GamesContinuallyButton.Click += Run500GamesContinuallyButton_Click;
+			*/
+			StateInfoTextArea = new TextArea();
+			NetworkInfoTextArea = new TextArea();
 
 			var layout = new TableLayout
 			{
@@ -116,7 +136,7 @@ namespace NGSim
 				Rows =
 				{
 					new TableRow(
-						new TableCell(Run1GameInDepthButton, true), new TableCell(RunGamesContinuallyButton, true), new TableCell(Run500GamesContinuallyButton, true)
+						new TableCell(StateInfoTextArea, true), new TableCell(NetworkInfoTextArea, true)
 					)
 				}
 			};
@@ -142,7 +162,7 @@ namespace NGSim
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.Message, "Unable to load Algorithm 1", MessageBoxType.Error);
-				Run1GameInDepthButton.Enabled = false;
+				//Run1GameInDepthButton.Enabled = false;
 				return;
 			}
 
@@ -159,12 +179,12 @@ namespace NGSim
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.Message, "Unable to load Algorithm 2", MessageBoxType.Error);
-				Run1GameInDepthButton.Enabled = false;
+				//Run1GameInDepthButton.Enabled = false;
 				return;
 			}
 
 			// Enable buttons
-			Run1GameInDepthButton.Enabled = true;
+			//Run1GameInDepthButton.Enabled = true;
 
 			UpdateManager.SimManager.SetGameRunningMode(UpdateManager.SimManager.gameRunningMode);
 			//UpdateManager.SimManager.running = true;

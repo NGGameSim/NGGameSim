@@ -14,10 +14,16 @@ namespace NGSim
 		private TextBox AlgorithmTextBox2;
 		private Button AlgorithmBrowseButton1;
 		private Button AlgorithmBrowseButton2;
-		private Button AlgorithmLoadButton;
-		private Button Run1GameInDepthButton;
-		private Button RunGamesContinuallyButton;
-		private Button Run500GamesContinuallyButton;
+		// private Button AlgorithmLoadButton;
+		// private Button Run1GameInDepthButton;
+		// private Button RunGamesContinuallyButton;
+		// private Button Run500GamesContinuallyButton;
+		private CheckBox SingleGameCheckBox;
+		private CheckBox NGameCheckBox;
+		private TextBox NGameTextBox;
+		private Button LaunchButton;
+		private TextArea StateInfoTextArea;
+		private TextArea NetoworkInfoTextArea;
 		private OpenFileDialog AlgorithmOpenFile1;
 		private OpenFileDialog AlgorithmOpenFile2;
 

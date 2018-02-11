@@ -10,14 +10,11 @@ namespace NGSim
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
+		// Controls
 		private TextBox AlgorithmTextBox1;
 		private TextBox AlgorithmTextBox2;
 		private Button AlgorithmBrowseButton1;
 		private Button AlgorithmBrowseButton2;
-		// private Button AlgorithmLoadButton;
-		// private Button Run1GameInDepthButton;
-		// private Button RunGamesContinuallyButton;
-		// private Button Run500GamesContinuallyButton;
 		private CheckBox SingleGameCheckBox;
 		private CheckBox NGameCheckBox;
 		private TextBox NGameTextBox;
@@ -27,6 +24,7 @@ namespace NGSim
 		private OpenFileDialog AlgorithmOpenFile1;
 		private OpenFileDialog AlgorithmOpenFile2;
 
+		// Main Window contains a layout with the algorithm controls and simulation controls added to it
 		public MainWindow()
 		{
 			logger.Info("Sample Log Message");
@@ -45,10 +43,13 @@ namespace NGSim
 			Content = winLayout;
 		}
 
+		// Algorithm Controls
+		// Includes text boxes for algorithms, browse buttons, checkboxes for simulation type, and a launch button
 		private Control prepareAlgorithmControlGroup()
 		{
 			var algoGroup = new GroupBox { Text = "Algorithm Selection" };
 
+			// Create the controls
 			AlgorithmTextBox1 = new TextBox { Text = "" };
 			AlgorithmTextBox2 = new TextBox { Text = "" };
 
@@ -58,19 +59,20 @@ namespace NGSim
 			AlgorithmBrowseButton1.Click += AlgorithmBrowseButton1_Click;
 			AlgorithmBrowseButton2.Click += AlgorithmBrowseButton2_Click;
 
-			SingleGameCheckBox = new CheckBox { Text = "Single Game" };
+			SingleGameCheckBox = new CheckBox { Text = "Single Game", Checked = true };
 			NGameCheckBox = new CheckBox { Text = "N Games" };
-			NGameTextBox = new TextBox();
+			NGameTextBox = new TextBox { Text = "500" };
+
+			SingleGameCheckBox.CheckedChanged += SingleGameCheckBox_CheckChanged;
+			NGameCheckBox.CheckedChanged += NGameCheckBox_CheckChanged;
 
 			LaunchButton = new Button { Text = "LAUNCH" };
 			LaunchButton.Click += LaunchButton_Click;
 
-			//AlgorithmLoadButton = new Button { Text = "Load Algorithms" };
-			//AlgorithmLoadButton.Click += AlgorithmLoadButton_Click;
-
 			AlgorithmOpenFile1 = new OpenFileDialog();
 			AlgorithmOpenFile2 = new OpenFileDialog();
 
+			// Add the controls to the layout
 			var algoLayout = new TableLayout
 			{
 				Spacing = new Size(10, 5),
@@ -104,29 +106,22 @@ namespace NGSim
 				}
 			};
 
+			// Add the layout to the returned group
 			algoGroup.Content = algoLayout;
 			return algoGroup;
 		}
 
-		private void LaunchButton_Click(object sender, EventArgs e)
-		{
-			throw new NotImplementedException();
-		}
-
+		// Simulation Controls
+		// Includes 2 text areas for logging
+		// Will include controls for the simulation once those have been decided on
 		private Control prepareSimulationControlGroup()
 		{
 			var group = new GroupBox { Text = "Simulation Control" };
 
-			/* Run1GameInDepthButton = new Button { Text = "Single Game", Height = 30, Enabled = false }; //Run 1 Game In Depth With Positions Shown
-			RunGamesContinuallyButton = new Button { Text = "Continuous Games", Height = 30, Enabled = false }; //Continually run games and print who's the winner
-			Run500GamesContinuallyButton = new Button { Text = "500 Continuous Games", Height = 30, Enabled = false }; //Continually run 500 games and print the winning percentages
-
-			Run1GameInDepthButton.Click += Run1GameInDepthButton_Click;
-			RunGamesContinuallyButton.Click += RunGamesContinuallyButton_Click;
-			Run500GamesContinuallyButton.Click += Run500GamesContinuallyButton_Click;
-			*/
 			StateInfoTextArea = new TextArea();
 			NetworkInfoTextArea = new TextArea();
+			StateInfoTextArea.ReadOnly = true;
+			NetworkInfoTextArea.ReadOnly = true;
 
 			var layout = new TableLayout
 			{
@@ -145,7 +140,63 @@ namespace NGSim
 			return group;
 		}
 
-		private void AlgorithmLoadButton_Click(object sender, EventArgs e)
+		// Controls the N-Game Checkbox
+		private void NGameCheckBox_CheckChanged(object sender, EventArgs e)
+		{
+			if(NGameCheckBox.Checked == true)
+			{
+				SingleGameCheckBox.Checked = false;
+			}
+			if(NGameCheckBox.Checked == false && SingleGameCheckBox.Checked == false)
+			{
+				NGameCheckBox.Checked = true;
+			}
+		}
+
+		// Controls the Single-Game Checkbox
+		private void SingleGameCheckBox_CheckChanged(object sender, EventArgs e)
+		{
+			if(SingleGameCheckBox.Checked == true)
+			{
+				NGameCheckBox.Checked = false;
+			}
+			if(SingleGameCheckBox.Checked == false && NGameCheckBox.Checked == false)
+			{
+				SingleGameCheckBox.Checked = true;
+			}
+		}
+
+		// Controls the 'LAUNCH' button
+		// Attemps to load the specified algorithms, then run the specified simulation
+		private void LaunchButton_Click(object sender, EventArgs e)
+		{
+			bool result = LoadAlgorithms();
+			if(result == true)
+			{
+				if (SingleGameCheckBox.Checked == true)
+				{
+					RunSingleGame();
+				}
+				else
+				{
+					RunNGames(Int32.Parse(NGameTextBox.Text));
+				}
+			}
+		}
+
+		// Function to log information about the game state
+		private void LogStateInfo(string text)
+		{
+			StateInfoTextArea.Append(text);
+		}
+		// Function to log information about the network state
+		private void LogNetworkInfo(string text)
+		{
+			NetworkInfoTextArea.Append(text);
+		}
+
+		// Function to attempt to load the specified algorithms
+		private bool LoadAlgorithms()
 		{
 			UpdateManager.SimManager.running = false;
 
@@ -163,7 +214,7 @@ namespace NGSim
 			{
 				MessageBox.Show(ex.Message, "Unable to load Algorithm 1", MessageBoxType.Error);
 				//Run1GameInDepthButton.Enabled = false;
-				return;
+				return false;
 			}
 
 			// Try to load the new algo 2
@@ -180,17 +231,19 @@ namespace NGSim
 			{
 				MessageBox.Show(ex.Message, "Unable to load Algorithm 2", MessageBoxType.Error);
 				//Run1GameInDepthButton.Enabled = false;
-				return;
+				return false;
 			}
 
 			// Enable buttons
 			//Run1GameInDepthButton.Enabled = true;
 
 			UpdateManager.SimManager.SetGameRunningMode(UpdateManager.SimManager.gameRunningMode);
+			return true;
 			//UpdateManager.SimManager.running = true;
 		}
 
-		private void Run1GameInDepthButton_Click(object sender, EventArgs e)
+		// Function to run a single game
+		private void RunSingleGame()
 		{
 			//var OutString = "You entered: " + AlgorithmTextBox1.Text + " and " + AlgorithmTextBox2.Text;
 			//MessageBox.Show(Application.Instance.MainForm, OutString, "GO Button", MessageBoxButtons.OK);
@@ -199,18 +252,21 @@ namespace NGSim
 			UpdateManager.SimManager.SetGameRunningMode(0);
 		}
 
+		// Function to run games until the window is closed
 		private void RunGamesContinuallyButton_Click(object sender, EventArgs e)
 		{ 
 			UpdateManager.SimManager.running = true;
 			UpdateManager.SimManager.SetGameRunningMode(1);
 		}
 
-		private void Run500GamesContinuallyButton_Click(object sender, EventArgs e)
+		// Function to run N games
+		private void RunNGames(int N)
 		{
 			UpdateManager.SimManager.running = true;
 			UpdateManager.SimManager.SetGameRunningMode(2);
 		}
 
+		// Functions for browsing files
 		private void AlgorithmBrowseButton1_Click(object sender, EventArgs e)
 		{
 			DialogResult result = AlgorithmOpenFile1.ShowDialog(AlgorithmBrowseButton1);
@@ -265,23 +321,14 @@ namespace NGSim
 
 		private void Team1Button_Click(object sender, EventArgs e)
 		{
-			//var OutString = "You entered: " + AlgorithmTextBox1.Text + " and " + AlgorithmTextBox2.Text;
-			//MessageBox.Show(Application.Instance.MainForm, OutString, "GO Button", MessageBoxButtons.OK);
-
 			UpdateManager.SimManager.running = true;
 		}
 		private void Team2Button_Click(object sender, EventArgs e)
 		{
-			//var OutString = "You entered: " + AlgorithmTextBox1.Text + " and " + AlgorithmTextBox2.Text;
-			//MessageBox.Show(Application.Instance.MainForm, OutString, "GO Button", MessageBoxButtons.OK);
-
 			UpdateManager.SimManager.running = true;
 		}
 		private void GodButton_Click(object sender, EventArgs e)
 		{
-			//var OutString = "You entered: " + AlgorithmTextBox1.Text + " and " + AlgorithmTextBox2.Text;
-			//MessageBox.Show(Application.Instance.MainForm, OutString, "GO Button", MessageBoxButtons.OK);
-
 			UpdateManager.SimManager.running = true;
 		}
 

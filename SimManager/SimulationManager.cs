@@ -256,7 +256,8 @@ namespace NGSim
 						Console.WriteLine("Tank was destroyed!!");
 						MissileInAir.Clear();
 					}
-					toRemove.Add(MissileInAir[i]);
+					if(team2Hit || team1Hit == false) // If no team has won.
+						toRemove.Add(MissileInAir[i]); //Remove grounded missile.
 				}
 			}
             //Remove missils listed as reached their target.

@@ -19,6 +19,7 @@ namespace NGAPI
 
 		//These are not used anywhere in the code, but should be in the future
 		internal const int MissilesTankCanFireInOneTurn = 1;
+		internal const int MissileAmmoCapacity = 1;
 		
 		internal const float maxUAVAcceleration = 1f;  /// meters per second per second
 		internal const float maxTankAcceleration = 1f; /// meters per second per second

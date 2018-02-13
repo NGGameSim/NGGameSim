@@ -249,21 +249,19 @@ namespace NGSim
 						Console.WriteLine("Tank was destroyed!!");
 						MissileInAir.Clear();
 					}
-					else if (MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
+					if (MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
 					{
 						// Team 2 tank is hit, Team one wins.
 						team2Hit = true;
 						Console.WriteLine("Tank was destroyed!!");
 						MissileInAir.Clear();
 					}
-					else { toRemove.Add(MissileInAir[i]); }
-						
+					toRemove.Add(MissileInAir[i]);
 				}
 			}
             //Remove missils listed as reached their target.
             foreach (Missile missile in toRemove)
-                if(!MissileInAir.Remove(missile)) { Console.WriteLine("CRITICAL ERROR IN REMOVING MISSILES");  }
-				else { Console.WriteLine("Correctly Removing Missile");  }
+                if(!MissileInAir.Remove(missile)) { logger.Debug("CRITICAL ERROR IN REMOVING MISSILES");  }
             toRemove.Clear();
 
 			if(team1Hit && team2Hit)

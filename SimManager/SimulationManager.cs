@@ -247,17 +247,22 @@ namespace NGSim
 						// Team 1 tank is hit, Team two wins.
 						team1Hit = true;
 						Console.WriteLine("Tank was destroyed!!");
-						MissileInAir.Clear();
 					}
 					if (MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
 					{
 						// Team 2 tank is hit, Team one wins.
 						team2Hit = true;
 						Console.WriteLine("Tank was destroyed!!");
-						MissileInAir.Clear();
 					}
+
 					if(team2Hit || team1Hit == false) // If no team has won.
-						toRemove.Add(MissileInAir[i]); //Remove grounded missile.
+						toRemove.Add(MissileInAir[i]); // Remove grounded missile.
+					else 
+					{
+						//Else remove both missile lists for a clean slate.
+						MissileInAir.Clear();
+						toRemove.Clear();
+					}
 				}
 			}
             //Remove missils listed as reached their target.

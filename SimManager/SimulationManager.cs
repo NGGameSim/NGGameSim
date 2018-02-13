@@ -237,29 +237,33 @@ namespace NGSim
 		{
 			bool team1Hit = false;
 			bool team2Hit = false;
-			List<int> toRemove = new List<int>();
+			List<Missile> toRemove = new List<Missile>();
 			for (int i = 0; i < MissileInAir.Count; i++)
 			{
 				if(MissileInAir[i].TurnsRemaining == 0)
 				{
-					if(MissileInAir[i].Target.DistanceTo(Simulation.Team1.Tank.Position) < boomRange)
+					if (MissileInAir[i].Target.DistanceTo(Simulation.Team1.Tank.Position) < boomRange)
 					{
 						// Team 1 tank is hit, Team two wins.
 						team1Hit = true;
 						Console.WriteLine("Tank was destroyed!!");
+						MissileInAir.Clear();
 					}
-					if(MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
+					else if (MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
 					{
 						// Team 2 tank is hit, Team one wins.
 						team2Hit = true;
 						Console.WriteLine("Tank was destroyed!!");
+						MissileInAir.Clear();
 					}
-					toRemove.Add(i);
+					else { toRemove.Add(MissileInAir[i]); }
+						
 				}
 			}
             //Remove missils listed as reached their target.
-            foreach (var i in toRemove)
-                MissileInAir.RemoveAt(i);
+            foreach (Missile missile in toRemove)
+                if(!MissileInAir.Remove(missile)) { Console.WriteLine("CRITICAL ERROR IN REMOVING MISSILES");  }
+				else { Console.WriteLine("Correctly Removing Missile");  }
             toRemove.Clear();
 
 			if(team1Hit && team2Hit)

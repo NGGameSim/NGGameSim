@@ -81,13 +81,13 @@ namespace NGSim
 				Rows =
 				{
 					new TableRow(
-						new Label { Text = "Red Team Algorithm" }, new TableCell(AlgorithmTextBox1, true), AlgorithmBrowseButton1	
+						new Label { Text = "Red Team Algorithm", TextAlignment = TextAlignment.Center }, new TableCell(AlgorithmTextBox1, true), AlgorithmBrowseButton1	
 					),
 					new TableRow(
-						new Label { Text = "Blue Team Algorithm" }, new TableCell(AlgorithmTextBox2, true), AlgorithmBrowseButton2	
+						new Label { Text = "Blue Team Algorithm", TextAlignment = TextAlignment.Center }, new TableCell(AlgorithmTextBox2, true), AlgorithmBrowseButton2	
 					),
 					new TableRow(
-						new Label { }	
+						new Label { }
 					),
 					new TableRow(
 						new TableLayout

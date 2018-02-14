@@ -24,7 +24,7 @@ namespace NGSim
 
 		Random rand = new Random();
 
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		//contains the position data of the missles in air. Since there can only be 20 missles(10 in each tank, each can have its own place
 		// private Missile[] MissilesInAir = new Missile[];
@@ -153,13 +153,13 @@ namespace NGSim
 			//int randY = rand.Next(-ylim, ylim);
 			Simulation.Team1.Tank.Position = new Position(100, 100);
 			Simulation.Team1.UAV.Position = new Position(100, 100);
-            logger.Info($"Team 1 Initial Position {Simulation.Team1.Tank.Position.X} {Simulation.Team1.Tank.Position.Y}");
+			logger.Info($"Team 1 Initial Position {Simulation.Team1.Tank.Position.X} {Simulation.Team1.Tank.Position.Y}");
 
 			//randX = rand.Next(-xlim, xlim);
 			//randY = rand.Next(-ylim, ylim);
 			Simulation.Team2.Tank.Position = new Position(-100, 100);
 			Simulation.Team2.UAV.Position = new Position(-100, 100);
-            logger.Info($"Team 2 Initial Position {Simulation.Team2.Tank.Position.X} {Simulation.Team2.Tank.Position.Y}");
+			logger.Info($"Team 2 Initial Position {Simulation.Team2.Tank.Position.X} {Simulation.Team2.Tank.Position.Y}");
 		}
 
 		public void UpdateGameState()
@@ -265,10 +265,10 @@ namespace NGSim
 					}
 				}
 			}
-            //Remove missils listed as reached their target.
-            foreach (Missile missile in toRemove)
-                if(!MissileInAir.Remove(missile)) { logger.Debug("CRITICAL ERROR IN REMOVING MISSILES");  }
-            toRemove.Clear();
+			//Remove missils listed as reached their target.
+			foreach (Missile missile in toRemove)
+				if(!MissileInAir.Remove(missile)) { logger.Debug("CRITICAL ERROR IN REMOVING MISSILES");  }
+			toRemove.Clear();
 
 			if(team1Hit && team2Hit)
 			{
@@ -297,71 +297,71 @@ namespace NGSim
 			{
 				Missile missile = new NGAPI.Missile();
 				MissileInAir.Add(missile);
-                missile.Source = new Position(Simulation.Team1.Tank.Position.X, Simulation.Team1.Tank.Position.Y);
+				missile.Source = new Position(Simulation.Team1.Tank.Position.X, Simulation.Team1.Tank.Position.Y);
 				missile.Target = Simulation.Team1.Tank.MissileTarget;
 				missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30; //M1 Abrams missiles move at 300 m/s
 				Simulation.Team1.Tank.FiresThisTurn = false;
 				Simulation.Team1.Tank.Cooldown = 20;
 				Simulation.Team1.Tank.MisslesLeft--;
 
-                //Calculate the Missile Heading
-                double dx = missile.Target.X - missile.Source.X;
-                double dy = missile.Target.Y - missile.Source.Y;
-                missile.CurrentHeading = (float)(Math.Atan2(dy, dx) * (180 / Math.PI));
-                if(missile.CurrentHeading < 0) { missile.CurrentHeading = missile.CurrentHeading + 360; }
+				//Calculate the Missile Heading
+				double dx = missile.Target.X - missile.Source.X;
+				double dy = missile.Target.Y - missile.Source.Y;
+				missile.CurrentHeading = (float)(Math.Atan2(dy, dx) * (180 / Math.PI));
+				if(missile.CurrentHeading < 0) { missile.CurrentHeading = missile.CurrentHeading + 360; }
 
-                //TARGET TESTING: PASS
-                if (missile.Target.X != 0 && missile.Target.Y != 0) { logger.Debug($"TARGET 1: FAIL {missile.Target.X} {missile.Target.Y}"); }
-                else { logger.Debug($"TARGET 1: PASS {missile.Target.X} {missile.Target.Y}"); }
+				//TARGET TESTING: PASS
+				if (missile.Target.X != 0 && missile.Target.Y != 0) { logger.Debug($"TARGET 1: FAIL {missile.Target.X} {missile.Target.Y}"); }
+				else { logger.Debug($"TARGET 1: PASS {missile.Target.X} {missile.Target.Y}"); }
 
-                //SOURCE TESTING: PASS
-                if (missile.Source.X != Simulation.Team1.Tank.Position.X || missile.Source.Y != Simulation.Team1.Tank.Position.Y) { logger.Debug($"SOURCE 1: FAIL {missile.Source.X} {missile.Source.Y}"); }
-                else { logger.Debug($"SOURCE 1: PASS {missile.Source.X} {missile.Source.Y}"); }
+				//SOURCE TESTING: PASS
+				if (missile.Source.X != Simulation.Team1.Tank.Position.X || missile.Source.Y != Simulation.Team1.Tank.Position.Y) { logger.Debug($"SOURCE 1: FAIL {missile.Source.X} {missile.Source.Y}"); }
+				else { logger.Debug($"SOURCE 1: PASS {missile.Source.X} {missile.Source.Y}"); }
 
-                //DIFFERENCE TESTING: PASS
-                if (dx != missile.Target.X - missile.Source.X || dy != missile.Target.Y - missile.Source.Y) { logger.Debug($"DIFFERENCE 1: FAIL {dx} {dy}"); }
-                else { logger.Debug($"DIFFERENCE 1: PASS {dx} {dy}"); }
+				//DIFFERENCE TESTING: PASS
+				if (dx != missile.Target.X - missile.Source.X || dy != missile.Target.Y - missile.Source.Y) { logger.Debug($"DIFFERENCE 1: FAIL {dx} {dy}"); }
+				else { logger.Debug($"DIFFERENCE 1: PASS {dx} {dy}"); }
 
-                //HEADING TESTING: PASS
-                if (missile.CurrentHeading != 225) { logger.Debug($"HEADING 1: FAIL {missile.CurrentHeading}"); }
-                else { logger.Debug($"HEADING 1: PASS {missile.CurrentHeading}"); }
+				//HEADING TESTING: PASS
+				if (missile.CurrentHeading != 225) { logger.Debug($"HEADING 1: FAIL {missile.CurrentHeading}"); }
+				else { logger.Debug($"HEADING 1: PASS {missile.CurrentHeading}"); }
 
-                missile.CurrentPostion = missile.Source;
+				missile.CurrentPostion = missile.Source;
 			}
 			if(Simulation.Team2.Tank.FiresThisTurn == true)
 			{
 				Missile missile2 = new NGAPI.Missile();
 				MissileInAir.Add(missile2);
-                missile2.Source = new Position(Simulation.Team2.Tank.Position.X, Simulation.Team2.Tank.Position.Y);
-                missile2.Target = Simulation.Team2.Tank.MissileTarget;
+				missile2.Source = new Position(Simulation.Team2.Tank.Position.X, Simulation.Team2.Tank.Position.Y);
+				missile2.Target = Simulation.Team2.Tank.MissileTarget;
 				missile2.TurnsRemaining = (int)missile2.Source.DistanceTo(missile2.Target) / 30;
 				Simulation.Team2.Tank.FiresThisTurn = false;
 				Simulation.Team2.Tank.Cooldown = 20;
 				Simulation.Team2.Tank.MisslesLeft--;
 
-                double dx = missile2.Target.X - missile2.Source.X;
-                double dy = missile2.Target.Y - missile2.Source.Y;
-                missile2.CurrentHeading = (float)(Math.Atan2(dx, dy) * (180 / Math.PI));
-                if (missile2.CurrentHeading < 0) { missile2.CurrentHeading = missile2.CurrentHeading + 360; }
+				double dx = missile2.Target.X - missile2.Source.X;
+				double dy = missile2.Target.Y - missile2.Source.Y;
+				missile2.CurrentHeading = (float)(Math.Atan2(dx, dy) * (180 / Math.PI));
+				if (missile2.CurrentHeading < 0) { missile2.CurrentHeading = missile2.CurrentHeading + 360; }
 
-                //TARGET TESTING
-                if(missile2.Target.X != 0 && missile2.Target.Y != 0) { logger.Debug($"TARGET 2: FAIL {missile2.Target.X} {missile2.Target.Y}"); }
-                else { logger.Debug($"TARGET 2: PASS {missile2.Target.X} {missile2.Target.Y}"); }
+				//TARGET TESTING
+				if(missile2.Target.X != 0 && missile2.Target.Y != 0) { logger.Debug($"TARGET 2: FAIL {missile2.Target.X} {missile2.Target.Y}"); }
+				else { logger.Debug($"TARGET 2: PASS {missile2.Target.X} {missile2.Target.Y}"); }
 
-                //SOURCE TESTING
-                if (missile2.Source.X != Simulation.Team2.Tank.Position.X || missile2.Source.Y != Simulation.Team2.Tank.Position.Y) { logger.Debug($"SOURCE 2: FAIL {missile2.Source.X} {missile2.Source.Y}"); }
-                else { logger.Debug($"SOURCE 2: PASS {missile2.Source.X} {missile2.Source.Y}"); }
+				//SOURCE TESTING
+				if (missile2.Source.X != Simulation.Team2.Tank.Position.X || missile2.Source.Y != Simulation.Team2.Tank.Position.Y) { logger.Debug($"SOURCE 2: FAIL {missile2.Source.X} {missile2.Source.Y}"); }
+				else { logger.Debug($"SOURCE 2: PASS {missile2.Source.X} {missile2.Source.Y}"); }
 
-                //DIFFERENCE TESTING
-                if (dx != missile2.Target.X - missile2.Source.X || dy != missile2.Target.Y - missile2.Source.Y) { logger.Debug($"DIFFERENCE 2: FAIL {dx} {dy}"); }
-                else { logger.Debug($"DIFFERENCE 2: PASS {dx} {dy}"); }
+				//DIFFERENCE TESTING
+				if (dx != missile2.Target.X - missile2.Source.X || dy != missile2.Target.Y - missile2.Source.Y) { logger.Debug($"DIFFERENCE 2: FAIL {dx} {dy}"); }
+				else { logger.Debug($"DIFFERENCE 2: PASS {dx} {dy}"); }
 
-                //HEADING TESTING
-                if(missile2.CurrentHeading != 135) { logger.Debug($"HEADING 2: FAIL {missile2.CurrentHeading}"); }
-                else { logger.Debug($"HEADING 2: PASS {missile2.CurrentHeading}"); }
+				//HEADING TESTING
+				if(missile2.CurrentHeading != 135) { logger.Debug($"HEADING 2: FAIL {missile2.CurrentHeading}"); }
+				else { logger.Debug($"HEADING 2: PASS {missile2.CurrentHeading}"); }
 
-                //Set an initial position for the missile
-                missile2.CurrentPostion = missile2.Source;
+				//Set an initial position for the missile
+				missile2.CurrentPostion = missile2.Source;
 			}
 		}
 
@@ -402,7 +402,7 @@ namespace NGSim
 
 		private void updateEntityPositions()
 		{
-            //Generate the changes in the X and Y position for all entities
+			//Generate the changes in the X and Y position for all entities
 			float X1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team1.Tank.CurrentHeading);
 			float X1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team1.UAV.CurrentHeading);
 			float X2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team2.Tank.CurrentHeading);
@@ -413,7 +413,7 @@ namespace NGSim
 			float Y2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team2.Tank.CurrentHeading);
 			float Y2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team2.UAV.CurrentHeading);
 
-            //Add the X and Y changes
+			//Add the X and Y changes
 			Simulation.Team1.Tank.Position = new Position(Simulation.Team1.Tank.Position.X + X1Tank, Simulation.Team1.Tank.Position.Y + Y1Tank);
 			Simulation.Team1.UAV.Position = new Position(Simulation.Team1.UAV.Position.X + X1UAV, Simulation.Team1.UAV.Position.Y + Y1UAV);
 
@@ -461,18 +461,18 @@ namespace NGSim
 				Simulation.Team2.UAV.DetectedTankThisTurn = true;
 				Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;
 			}
-            if (Simulation.Team1.Tank.Position.DistanceTo(Simulation.Team2.Tank.Position) < TankScanRange)
-            {
-                Simulation.Team1.UAV.DetectedTankThisTurn = true;
-                Simulation.Team1.UAV.LastKnownPosition = Simulation.Team2.Tank.Position;
-            }
+			if (Simulation.Team1.Tank.Position.DistanceTo(Simulation.Team2.Tank.Position) < TankScanRange)
+			{
+				Simulation.Team1.UAV.DetectedTankThisTurn = true;
+				Simulation.Team1.UAV.LastKnownPosition = Simulation.Team2.Tank.Position;
+			}
 
-            if (Simulation.Team2.Tank.Position.DistanceTo(Simulation.Team1.Tank.Position) < TankScanRange)
-            {
-                Simulation.Team2.UAV.DetectedTankThisTurn = true;
-                Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;
-            }
-        }
+			if (Simulation.Team2.Tank.Position.DistanceTo(Simulation.Team1.Tank.Position) < TankScanRange)
+			{
+				Simulation.Team2.UAV.DetectedTankThisTurn = true;
+				Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;
+			}
+		}
 
 		public int getRandomInteger(int maximum)
 		{

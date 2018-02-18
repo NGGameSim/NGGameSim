@@ -263,6 +263,7 @@ namespace NGSim
 		private void RunNGames(int N)
 		{
 			UpdateManager.SimManager.running = true;
+			UpdateManager.SimManager.SetNGames(N);
 			UpdateManager.SimManager.SetGameRunningMode(2);
 		}
 

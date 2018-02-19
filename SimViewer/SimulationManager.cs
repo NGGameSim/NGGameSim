@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
+using NGSim.Graphics;
 
 namespace NGSim
 {
@@ -16,13 +17,16 @@ namespace NGSim
 		public static SimulationManager Instance { get; private set; } = null;
 
 		internal Simulation Simulation { get; private set; }
+		private GraphicsDevice _device;
 
 		private List<Position> mposList = new List<Position>();
 
+		private WorldModel _world;
+		private CModel _uavModel;
+		private CModel _tankModel;
+
 		private readonly SpriteBatch _sb;
 		private readonly Texture2D _blankTex;
-		private readonly Rectangle _bgRect;
-		private readonly Matrix _projMatrix;
 		private readonly SpriteFont _font;
 		private readonly Rectangle _lRect;
 
@@ -39,13 +43,10 @@ namespace NGSim
 			_blankTex = new Texture2D(device, 1, 1);
 			_blankTex.SetData(new Color[] { Color.White });
 
-			int wx = (int)(Constants.WorldSize.X / 2);
-			int wy = (int)(Constants.WorldSize.Y / 2);
-			Rectangle view = _bgRect = new Rectangle(-wx, -wy, wx * 2, wy * 2);
-			//Matrix halfPix = Matrix.CreateTranslation(-0.5f, -0.5f, 0);
-			//_projMatrix = Matrix.CreateOrthographic(200, 200, 0, 1);// Matrix.CreateOrthographic(Constants.WorldSize.X, Constants.WorldSize.Y, 0, 1);
-
-			_projMatrix = Matrix.CreateScale(900 / Constants.WorldSize.Y) * Matrix.CreateTranslation(device.Viewport.Width / 2, device.Viewport.Height / 2, 0);
+			_device = device;
+			_world = new WorldModel(device, (int)Constants.WorldSize.X / 10);
+			_uavModel = new CModel(device, content.Load<Model>("UAV"));
+			_tankModel = new CModel(device, content.Load<Model>("tank"));
 
 			_font = content.Load<SpriteFont>("debugfont");
 			_lRect = new Rectangle(0, 0, 130, 70);
@@ -85,6 +86,20 @@ namespace NGSim
 
 		public void Render()
 		{
+			// Draw the world
+			Camera camera = CameraManager.ActiveCamera;
+			_world.Draw(_device, camera);
+
+			// Draw the entities
+			Position t1 = Simulation.Team1.Tank.Position;
+			Position t2 = Simulation.Team2.Tank.Position;
+			Position u1 = Simulation.Team1.UAV.Position;
+			Position u2 = Simulation.Team2.UAV.Position;
+			_tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10));
+			_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10));
+			_uavModel.Render(camera, new Vector3(u1.X / 10, 10, u1.Y / 10));
+			_uavModel.Render(camera, new Vector3(u2.X / 10, 10, u2.Y / 10));
+
 			// Draw legend
 			_sb.Begin();
 			_sb.Draw(_blankTex, _lRect, Color.White);
@@ -93,26 +108,6 @@ namespace NGSim
 			_sb.DrawString(_font, "Red  = Team 2 Tank", new Vector2(5, 31), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Pink = Team 2 UAV", new Vector2(5, 44), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Black = Missiles", new Vector2(5, 57), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
-			_sb.End();
-
-			_sb.Begin(transformMatrix: _projMatrix);
-
-			// Draw background
-			_sb.Draw(_blankTex, _bgRect, Color.DarkGreen);
-
-			// Draw entities
-			_sb.Draw(_blankTex, posToVec(Simulation.Team1.Tank.Position), null, Color.Blue, 0, Vector2.One /2 , 20, SpriteEffects.None, 0);
-			_sb.Draw(_blankTex, posToVec(Simulation.Team2.Tank.Position), null, Color.Red, 0, Vector2.One / 2, 20, SpriteEffects.None, 0);
-			_sb.Draw(_blankTex, posToVec(Simulation.Team1.UAV.Position), null, Color.Blue, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
-			_sb.Draw(_blankTex, posToVec(Simulation.Team2.UAV.Position), null, Color.Red, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
-            _sb.Draw(_blankTex, origin, null, Color.Brown, (float)Math.PI / 4, Vector2.One / 2, 20, SpriteEffects.None, 0);
-
-			// Draw Missiles
-			foreach (Position position in mposList)
-			{
-				_sb.Draw(_blankTex, posToVec(position), null, Color.Black, 0, Vector2.One / 2, 15, SpriteEffects.None, 0);
-			}
-            mposList.Clear();
 			_sb.End();
 		}
 

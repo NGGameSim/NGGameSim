@@ -29,8 +29,6 @@ namespace NGSim
 		//contains the position data of the missles in air. Since there can only be 20 missles(10 in each tank, each can have its own place
 		// private Missile[] MissilesInAir = new Missile[];
 		private List<Missile> MissileInAir = new List<Missile>();
-		private List<float> XMissiles = new List<float>();
-		private List<float> YMissiles = new List<float>();
 
 		public Boolean running = false;
 
@@ -301,7 +299,7 @@ namespace NGSim
 				missile.Target = Simulation.Team1.Tank.MissileTarget;
 				missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30; //M1 Abrams missiles move at 300 m/s
 				Simulation.Team1.Tank.FiresThisTurn = false;
-				Simulation.Team1.Tank.Cooldown = 20;
+				Simulation.Team1.Tank.Cooldown = 4;
 				Simulation.Team1.Tank.MisslesLeft--;
 
 				//Calculate the Missile Heading
@@ -336,7 +334,7 @@ namespace NGSim
 				missile2.Target = Simulation.Team2.Tank.MissileTarget;
 				missile2.TurnsRemaining = (int)missile2.Source.DistanceTo(missile2.Target) / 30;
 				Simulation.Team2.Tank.FiresThisTurn = false;
-				Simulation.Team2.Tank.Cooldown = 20;
+				Simulation.Team2.Tank.Cooldown = 4;
 				Simulation.Team2.Tank.MisslesLeft--;
 
 				double dx = missile2.Target.X - missile2.Source.X;
@@ -420,9 +418,12 @@ namespace NGSim
 			Simulation.Team2.Tank.Position = new Position(Simulation.Team2.Tank.Position.X + X2Tank, Simulation.Team2.Tank.Position.Y + Y2Tank);
 			Simulation.Team2.UAV.Position = new Position(Simulation.Team2.UAV.Position.X + X2UAV, Simulation.Team2.UAV.Position.Y + Y2UAV);
 
-			foreach (Missile missile in MissileInAir)
+            List<float> XMissiles = new List<float>();
+            List<float> YMissiles = new List<float>();
+
+            foreach (Missile missile in MissileInAir)
 			{
-				float XMissile = 30 * (float)Math.Sin(missile.CurrentHeading);
+                float XMissile = 30 * (float)Math.Sin(missile.CurrentHeading);
 				float YMissile = 30 * (float)Math.Cos(missile.CurrentHeading);
 				XMissiles.Add(XMissile);
 				YMissiles.Add(YMissile);
@@ -450,13 +451,15 @@ namespace NGSim
 
 		private void UAVScan()
 		{
-			if(Simulation.Team1.UAV.Position.DistanceTo(Simulation.Team2.Tank.Position) < UAVScanRange)
+            float viewRadius = 2*(Simulation.Team1.UAV.Altitude * (float)Math.Sin(5)); //Define viewRadius as a 5 degree cone of view from a fixed altitude
+
+			if(Simulation.Team1.UAV.Position.DistanceTo(Simulation.Team2.Tank.Position) < viewRadius)
 			{
 				Simulation.Team1.UAV.DetectedTankThisTurn = true;
 				Simulation.Team1.UAV.LastKnownPosition = Simulation.Team2.Tank.Position;
 			}
 
-			if (Simulation.Team2.UAV.Position.DistanceTo(Simulation.Team1.Tank.Position) < UAVScanRange)
+			if (Simulation.Team2.UAV.Position.DistanceTo(Simulation.Team1.Tank.Position) < viewRadius)
 			{
 				Simulation.Team2.UAV.DetectedTankThisTurn = true;
 				Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;

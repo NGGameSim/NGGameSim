@@ -95,10 +95,14 @@ namespace NGSim
 			Position t2 = Simulation.Team2.Tank.Position;
 			Position u1 = Simulation.Team1.UAV.Position;
 			Position u2 = Simulation.Team2.UAV.Position;
-			_tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10));
-			_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10));
-			_uavModel.Render(camera, new Vector3(u1.X / 10, 10, u1.Y / 10));
-			_uavModel.Render(camera, new Vector3(u2.X / 10, 10, u2.Y / 10));
+			float t1h = Simulation.Team1.Tank.CurrentHeading;
+			float t2h = Simulation.Team2.Tank.CurrentHeading;
+			float u1h = Simulation.Team1.UAV.CurrentHeading;
+			float u2h = Simulation.Team2.UAV.CurrentHeading;
+			_tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Blue);
+			_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t2h, Color.Red);
+			_uavModel.Render(camera, new Vector3(u1.X / 10, 10, u1.Y / 10), u1h, Color.Cyan);
+			_uavModel.Render(camera, new Vector3(u2.X / 10, 10, u2.Y / 10), u2h, Color.Pink);
 
 			// Draw legend
 			_sb.Begin();

@@ -13,10 +13,10 @@ namespace NGSim
 			UpdateManager.Initialize();
 
 			MainWindow mainWindow = new MainWindow();
-			ClientWindow clientWindow = new ClientWindow();
+			//ClientWindow clientWindow = new ClientWindow();
 
 			mainWindow.Show();
-			clientWindow.Show();
+			//clientWindow.Show();
 
 			mainWindow.Shown += (sender, e) => { UpdateManager.LaunchThread(); };
 			mainWindow.Closing += (sender, e) => { UpdateManager.CloseThread(); };

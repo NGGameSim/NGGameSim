@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Diagnostics;
-using NGSim.Simulation;
-using NGSim.Network;
 
 namespace NGSim
 {

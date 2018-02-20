@@ -1,41 +1,63 @@
-﻿using System;
+using System;
 using NGAPI;
-using System.Collections.Generic;
+
 namespace NGSim
 {
-    class StupidAlgorithm2 : NGAPI.Algorithm
-    {
+	class StupidAlgorithm2 : Algorithm
+	{
 		int lastChange = 30;
 
-        public override void Update()
+		public override void Update()
 		{
-			Random rnd = new Random();
+			Position TankPosition = API.GetTankPosition();
+			float TankHeading = API.GetTankHeading();
+			float TankSpeed = API.GetTankSpeed();
 
-			Position CurrentTankPosition = API.GetTankPosition();
-			float CurrentTankHeading = API.GetTankHeading();
-			float CurrentTankSpeed = API.GetTankSpeed();
+			Position UAVPosition = API.GetUAVPosition();
+			float UAVHeading = API.GetUAVHeading();
+			float UAVSpeed = API.GetUAVSpeed();
 
-			Position CurrentUAVPosition = API.GetUAVPosition();
-			float CurrentUAVHeading = API.GetUAVHeading();
-			float CurrentUAVSpeed = API.GetUAVSpeed();
+            Position Origin = new Position(0, 0);
 
 			if (lastChange-- == 0)
 			{
-				float newTankHeading = rnd.Next(0, 359);
-				float newUAVHeading = rnd.Next(0, 359);
-				float newTankSpeed = rnd.Next(0, 2);
-				float newUAVSpeed = rnd.Next(7, 17);
-				API.SetTankHeading(newTankHeading);
-				API.SetTankSpeed(newTankSpeed);
-				API.SetUAVHeading(newUAVHeading);
-				API.SetUAVSpeed(newUAVSpeed);
+				TankHeading = API.GetRandomInteger(360);
+				UAVHeading = API.GetRandomInteger(360);
+				TankSpeed = API.GetRandomInteger(14);
+				UAVSpeed = 7 + API.GetRandomInteger(20);
+				API.SetTankHeading(TankHeading);
+				API.SetTankSpeed(TankSpeed);
+				API.SetUAVHeading(UAVHeading);
+				API.SetUAVSpeed(UAVSpeed);
 				lastChange = 30;
 			}
 
-			if (API.FriendlyUAV.DetectedTankThisTurn == true)
+			//Check if tank is heading out of bounds
+			Position tankDirection = new Position((float)Math.Cos(TankHeading), (float)Math.Sin(TankHeading));
+			Position headingToPositionTank = TankPosition + TankSpeed * tankDirection;
+			while (headingToPositionTank.X >= 500 || headingToPositionTank.X <= -500 || headingToPositionTank.Y >= 500 || headingToPositionTank.Y <= -500)
+			{
+				TankHeading = API.GetRandomInteger(360);
+				API.SetTankHeading(TankHeading);
+				tankDirection = new Position((float)Math.Cos(TankHeading), (float)Math.Sin(TankHeading));
+				headingToPositionTank = TankPosition + TankSpeed * tankDirection;
+			}
+
+			//Check if UAV is heading out of bounds
+			Position UAVDirection = new Position((float)Math.Cos(UAVHeading), (float)Math.Sin(UAVHeading));
+			Position headingToPositionUAV = UAVPosition + UAVSpeed * UAVDirection;
+			while (headingToPositionUAV.X >= 500 || headingToPositionUAV.X <= -500 || headingToPositionUAV.Y >= 500 || headingToPositionUAV.Y <= -500)
+			{
+				UAVHeading = API.GetRandomInteger(360);
+				API.SetUAVHeading(UAVHeading);
+				UAVDirection = new Position((float)Math.Cos(UAVHeading), (float)Math.Sin(UAVHeading));
+				headingToPositionUAV = UAVPosition + UAVSpeed * UAVDirection;
+			}
+
+			if (API.DetectedThisTurn())
 			{
 				API.Fire(API.GetLastKnownPosition());
 			}
 		}
-    }
+	}
 }

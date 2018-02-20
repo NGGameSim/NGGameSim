@@ -12,7 +12,7 @@ namespace NGSim
 	public class SimViewer : Game
 	{
 		private GraphicsDeviceManager _graphics;
-        private Client _client;
+		private Client _client;
 		private SimulationManager _simManager;
 
 		private CModel _uavModel;
@@ -34,6 +34,8 @@ namespace NGSim
 
 			// Setup graphics device settings
 			_graphics.PreferMultiSampling = true;
+			_graphics.PreferredBackBufferWidth = 1600;
+			_graphics.PreferredBackBufferHeight = 900;
 			GraphicsDevice.PresentationParameters.MultiSampleCount = 4;
 			_graphics.ApplyChanges();
 
@@ -46,13 +48,13 @@ namespace NGSim
 			// Create the camera
 			CameraManager.Set(new ArcBallCamera(GraphicsDevice, distance: 20f, yaw: 0f, pitch: 45f), new ArcBallCameraBehavior());
 			(CameraManager.ActiveCamera as ArcBallCamera).MinDistance = 2f;
-      
+	  
 			// Setup the network stuff
 			_client = new Client();
 			_client.Connect();
 
 			// Create the simulation
-			_simManager = new SimulationManager();
+			_simManager = new SimulationManager(GraphicsDevice, Content);
 		}
 
 		protected override void LoadContent()
@@ -84,16 +86,16 @@ namespace NGSim
 
 			Camera camera = CameraManager.ActiveCamera;
 
-			_world.Draw(GraphicsDevice, camera);
-			_tankModel.Render(camera, Vector3.Right * 3 + Vector3.Up * 2);
-			_uavModel.Render(camera, Vector3.Left * 3 + Vector3.Up * 5);
+			//_world.Draw(GraphicsDevice, camera);
+			//_tankModel.Render(camera, Vector3.Right * 3 + Vector3.Up * 2);
+			//_uavModel.Render(camera, Vector3.Left * 3 + Vector3.Up * 5);
 
 			// Render the simulation
 			_simManager.Render();
 
 			base.Draw(gameTime);
 		}
-    
+	
 		protected override void OnExiting(object sender, EventArgs args)
 		{
 			_client.Disconnect();

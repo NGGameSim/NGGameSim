@@ -144,19 +144,22 @@ namespace NGSim
 
 		public void SetInitialRandomPositions()
 		{
+			//Set limits on the spawn positions
 			int xlim = (int)(WorldSize.X / 3);
 			int ylim = (int)(WorldSize.Y / 3);
 
-			//int randX = rand.Next(-xlim, xlim);
-			//int randY = rand.Next(-ylim, ylim);
-			Simulation.Team1.Tank.Position = new Position(100, 100);
-			Simulation.Team1.UAV.Position = new Position(100, 100);
+			//Generate random positions and place team 1
+			int randX = rand.Next(-xlim, xlim);
+			int randY = rand.Next(-ylim, ylim);
+			Simulation.Team1.Tank.Position = new Position(randX, randY);
+			Simulation.Team1.UAV.Position = new Position(randX, randY);
 			logger.Info($"Team 1 Initial Position {Simulation.Team1.Tank.Position.X} {Simulation.Team1.Tank.Position.Y}");
 
-			//randX = rand.Next(-xlim, xlim);
-			//randY = rand.Next(-ylim, ylim);
-			Simulation.Team2.Tank.Position = new Position(-100, 100);
-			Simulation.Team2.UAV.Position = new Position(-100, 100);
+			//Do the same for team 2
+			randX = rand.Next(-xlim, xlim);
+			randY = rand.Next(-ylim, ylim);
+			Simulation.Team2.Tank.Position = new Position(randX, randY);
+			Simulation.Team2.UAV.Position = new Position(randX, randY);
 			logger.Info($"Team 2 Initial Position {Simulation.Team2.Tank.Position.X} {Simulation.Team2.Tank.Position.Y}");
 		}
 
@@ -293,6 +296,7 @@ namespace NGSim
 
 			if (Simulation.Team1.Tank.FiresThisTurn == true)
 			{
+				//Update all members of the missile class
 				Missile missile = new NGAPI.Missile();
 				MissileInAir.Add(missile);
 				missile.Source = new Position(Simulation.Team1.Tank.Position.X, Simulation.Team1.Tank.Position.Y);
@@ -308,20 +312,20 @@ namespace NGSim
 				missile.CurrentHeading = (float)(Math.Atan2(dy, dx) * (180 / Math.PI));
 				if(missile.CurrentHeading < 0) { missile.CurrentHeading = missile.CurrentHeading + 360; }
 
-				//TARGET TESTING: PASS
-				if (missile.Target.X != 0 && missile.Target.Y != 0) { logger.Debug($"TARGET 1: FAIL {missile.Target.X} {missile.Target.Y}"); }
+				//TARGET TESTING
+				if (missile.Target.X != Simulation.Team1.Tank.MissileTarget.X && missile.Target.Y != Simulation.Team1.Tank.MissileTarget.Y) { logger.Debug($"TARGET 1: FAIL {missile.Target.X} {missile.Target.Y}"); }
 				else { logger.Debug($"TARGET 1: PASS {missile.Target.X} {missile.Target.Y}"); }
 
-				//SOURCE TESTING: PASS
+				//SOURCE TESTING
 				if (missile.Source.X != Simulation.Team1.Tank.Position.X || missile.Source.Y != Simulation.Team1.Tank.Position.Y) { logger.Debug($"SOURCE 1: FAIL {missile.Source.X} {missile.Source.Y}"); }
 				else { logger.Debug($"SOURCE 1: PASS {missile.Source.X} {missile.Source.Y}"); }
 
-				//DIFFERENCE TESTING: PASS
+				//DIFFERENCE TESTING
 				if (dx != missile.Target.X - missile.Source.X || dy != missile.Target.Y - missile.Source.Y) { logger.Debug($"DIFFERENCE 1: FAIL {dx} {dy}"); }
 				else { logger.Debug($"DIFFERENCE 1: PASS {dx} {dy}"); }
 
-				//HEADING TESTING: PASS
-				if (missile.CurrentHeading != 225) { logger.Debug($"HEADING 1: FAIL {missile.CurrentHeading}"); }
+				//HEADING TESTING
+				if (missile.CurrentHeading != (float)(Math.Atan2(dy, dx) * (180 / Math.PI))) { logger.Debug($"HEADING 1: FAIL {missile.CurrentHeading}"); }
 				else { logger.Debug($"HEADING 1: PASS {missile.CurrentHeading}"); }
 
 				missile.CurrentPostion = missile.Source;
@@ -343,8 +347,8 @@ namespace NGSim
 				if (missile2.CurrentHeading < 0) { missile2.CurrentHeading = missile2.CurrentHeading + 360; }
 
 				//TARGET TESTING
-				if(missile2.Target.X != 0 && missile2.Target.Y != 0) { logger.Debug($"TARGET 2: FAIL {missile2.Target.X} {missile2.Target.Y}"); }
-				else { logger.Debug($"TARGET 2: PASS {missile2.Target.X} {missile2.Target.Y}"); }
+				if (missile2.Target.X != Simulation.Team2.Tank.MissileTarget.X && missile2.Target.Y != Simulation.Team2.Tank.MissileTarget.Y) { logger.Debug($"TARGET 1: FAIL {missile2.Target.X} {missile2.Target.Y}"); }
+				else { logger.Debug($"TARGET 1: PASS {missile2.Target.X} {missile2.Target.Y}"); }
 
 				//SOURCE TESTING
 				if (missile2.Source.X != Simulation.Team2.Tank.Position.X || missile2.Source.Y != Simulation.Team2.Tank.Position.Y) { logger.Debug($"SOURCE 2: FAIL {missile2.Source.X} {missile2.Source.Y}"); }
@@ -355,12 +359,19 @@ namespace NGSim
 				else { logger.Debug($"DIFFERENCE 2: PASS {dx} {dy}"); }
 
 				//HEADING TESTING
-				if(missile2.CurrentHeading != 135) { logger.Debug($"HEADING 2: FAIL {missile2.CurrentHeading}"); }
-				else { logger.Debug($"HEADING 2: PASS {missile2.CurrentHeading}"); }
+				if (missile2.CurrentHeading != (float)(Math.Atan2(dy, dx) * (180 / Math.PI))) { logger.Debug($"HEADING 1: FAIL {missile2.CurrentHeading}"); }
+				else { logger.Debug($"HEADING 1: PASS {missile2.CurrentHeading}"); }
 
 				//Set an initial position for the missile
 				missile2.CurrentPostion = missile2.Source;
 			}
+			//Reload if both tanks are empty
+			if (Simulation.Team1.Tank.MisslesLeft == 0 && Simulation.Team2.Tank.MisslesLeft == 0)
+			{
+				Simulation.Team1.Tank.MisslesLeft = 15;
+				Simulation.Team2.Tank.MisslesLeft = 15;
+			}
+
 		}
 
 		private void checkBounds()
@@ -418,12 +429,12 @@ namespace NGSim
 			Simulation.Team2.Tank.Position = new Position(Simulation.Team2.Tank.Position.X + X2Tank, Simulation.Team2.Tank.Position.Y + Y2Tank);
 			Simulation.Team2.UAV.Position = new Position(Simulation.Team2.UAV.Position.X + X2UAV, Simulation.Team2.UAV.Position.Y + Y2UAV);
 
-            List<float> XMissiles = new List<float>();
-            List<float> YMissiles = new List<float>();
+			List<float> XMissiles = new List<float>();
+			List<float> YMissiles = new List<float>();
 
-            foreach (Missile missile in MissileInAir)
+			foreach (Missile missile in MissileInAir)
 			{
-                float XMissile = 30 * (float)Math.Sin(missile.CurrentHeading);
+				float XMissile = 30 * (float)Math.Sin(missile.CurrentHeading);
 				float YMissile = 30 * (float)Math.Cos(missile.CurrentHeading);
 				XMissiles.Add(XMissile);
 				YMissiles.Add(YMissile);
@@ -451,7 +462,7 @@ namespace NGSim
 
 		private void UAVScan()
 		{
-            float viewRadius = 2*(Simulation.Team1.UAV.Altitude * (float)Math.Sin(5)); //Define viewRadius as a 5 degree cone of view from a fixed altitude
+			float viewRadius = Simulation.Team1.UAV.Altitude * (float)Math.Sin(5); //Define viewRadius as a 5 degree cone of view from a fixed altitude
 
 			if(Simulation.Team1.UAV.Position.DistanceTo(Simulation.Team2.Tank.Position) < viewRadius)
 			{

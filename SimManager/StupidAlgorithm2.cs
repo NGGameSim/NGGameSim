@@ -54,10 +54,13 @@ namespace NGSim
 				headingToPositionUAV = UAVPosition + UAVSpeed * UAVDirection;
 			}
 
-			if (API.DetectedThisTurn())
+            /*if (API.DetectedThisTurn())
 			{
 				API.Fire(API.GetLastKnownPosition());
-			}
-		}
-	}
+			}*/
+
+            API.Fire(Origin);
+        }
+    }
+	
 }

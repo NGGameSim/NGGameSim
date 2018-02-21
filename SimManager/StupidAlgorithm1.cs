@@ -17,6 +17,8 @@ namespace NGSim
 			float UAVHeading = API.GetUAVHeading();
 			float UAVSpeed = API.GetUAVSpeed();
 
+            Position Origin = new Position(0, 0);
+
 			if (lastChange-- == 0)
 			{
 				TankHeading = API.GetRandomInteger(360);
@@ -52,10 +54,12 @@ namespace NGSim
 				headingToPositionUAV = UAVPosition + UAVSpeed * UAVDirection;
 			}
 
-			if (API.DetectedThisTurn())
+            /*if (API.DetectedThisTurn())
 			{
 				API.Fire(API.GetLastKnownPosition());
-			}
+			}*/
+
+            API.Fire(Origin);
 		}
 	}
 }

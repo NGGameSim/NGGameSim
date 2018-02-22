@@ -144,7 +144,7 @@ namespace NGSim
 			try
 			{
 				Algorithm a = String.IsNullOrWhiteSpace(AlgorithmTextBox2.Text) ?
-							  new StupidAlgorithm1() :
+							  new StupidAlgorithm2() :
 							  AlgorithmLoader.LoadAlgorithm(AlgorithmTextBox2.Text);
 
 				UpdateManager.SimManager.Algo2 = a;

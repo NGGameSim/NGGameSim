@@ -10,7 +10,6 @@
     <Reference Include="Eto.Forms.External" />
     <Reference Include="Lidgren.Network.External" />
     <Reference Include="MonoGame.Framework.External" />
-    <Reference Include="SimCommon" />
     <Reference Include="NGAPI" />
     <Reference Include="NLog.External" />
   </References>

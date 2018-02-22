@@ -23,15 +23,15 @@ namespace NGSim.Graphics
 				{
 					modelEffect = new BasicEffect(device);
 					modelEffect.VertexColorEnabled = true;
-					modelEffect.LightingEnabled = false;
+					modelEffect.LightingEnabled = true;
 					modelEffect.TextureEnabled = true;
 				}
 			}
 		}
 
-		public void Render(Camera camera, Vector3 position)
+		public void Render(Camera camera, Vector3 position, float rotation, Color color)
 		{
-			Matrix world = Matrix.CreateTranslation(position);
+			Matrix world = Matrix.CreateRotationY(MathHelper.ToRadians(-rotation)) * Matrix.CreateTranslation(position);
 
 			foreach (var mesh in Model.Meshes)
 			{
@@ -40,6 +40,7 @@ namespace NGSim.Graphics
 					effect.World = world;
 					effect.View = camera.ViewMatrix;
 					effect.Projection = camera.ProjectionMatrix;
+					effect.DiffuseColor = color.ToVector3();
 				}
 
 				mesh.Draw();

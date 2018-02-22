@@ -1,6 +1,7 @@
 ﻿using System;
 using Eto.Forms;
 using Eto.Drawing;
+using Eto;
 using NLog;
 using NGAPI;
 
@@ -19,10 +20,12 @@ namespace NGSim
 		private CheckBox NGameCheckBox;
 		private TextBox NGameTextBox;
 		private Button LaunchButton;
-		private TextArea StateInfoTextArea;
+		private StateInfoTextArea MyStateInfoTextArea;
 		private TextArea NetworkInfoTextArea;
 		private OpenFileDialog AlgorithmOpenFile1;
 		private OpenFileDialog AlgorithmOpenFile2;
+
+		private Eto.Platform platform;
 
 		// Main Window contains a layout with the algorithm controls and simulation controls added to it
 		public SimManagerWindow()
@@ -118,9 +121,9 @@ namespace NGSim
 		{
 			var group = new GroupBox { Text = "Simulation Control" };
 
-			StateInfoTextArea = new TextArea();
+			MyStateInfoTextArea = new StateInfoTextArea();
 			NetworkInfoTextArea = new TextArea();
-			StateInfoTextArea.ReadOnly = true;
+			MyStateInfoTextArea.ReadOnly = true;
 			NetworkInfoTextArea.ReadOnly = true;
 
 			var layout = new TableLayout
@@ -131,7 +134,7 @@ namespace NGSim
 				Rows =
 				{
 					new TableRow(
-						new TableCell(StateInfoTextArea, true), new TableCell(NetworkInfoTextArea, true)
+						new TableCell(MyStateInfoTextArea, true), new TableCell(NetworkInfoTextArea, true)
 					)
 				}
 			};
@@ -187,7 +190,7 @@ namespace NGSim
 		// Function to log information about the game state
 		private void LogStateInfo(string text)
 		{
-			StateInfoTextArea.Append(text);
+			MyStateInfoTextArea.Append(text);
 		}
 		// Function to log information about the network state
 		private void LogNetworkInfo(string text)

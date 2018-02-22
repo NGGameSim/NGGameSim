@@ -1,5 +1,6 @@
 ﻿using System;
 using Eto.Forms;
+using Eto;
 
 namespace NGSim
 {
@@ -8,6 +9,7 @@ namespace NGSim
         [STAThread]
 		public static void Main(string[] args)
 		{
+
 			Application app = new Application();
 
 			UpdateManager.Initialize();

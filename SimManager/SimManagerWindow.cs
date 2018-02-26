@@ -25,8 +25,6 @@ namespace NGSim
 		private OpenFileDialog AlgorithmOpenFile1;
 		private OpenFileDialog AlgorithmOpenFile2;
 
-		private Eto.Platform platform;
-
 		// Main Window contains a layout with the algorithm controls and simulation controls added to it
 		public SimManagerWindow()
 		{
@@ -122,8 +120,9 @@ namespace NGSim
 			var group = new GroupBox { Text = "Simulation Control" };
 
 			MyStateInfoTextArea = new StateInfoTextArea();
+			MyStateInfoTextArea.Warnings = "Test Warning";
 			NetworkInfoTextArea = new TextArea();
-			MyStateInfoTextArea.ReadOnly = true;
+			//MyStateInfoTextArea.ReadOnly = true;
 			NetworkInfoTextArea.ReadOnly = true;
 
 			var layout = new TableLayout
@@ -190,7 +189,7 @@ namespace NGSim
 		// Function to log information about the game state
 		private void LogStateInfo(string text)
 		{
-			MyStateInfoTextArea.Append(text);
+			//MyStateInfoTextArea.Append(text);
 		}
 		// Function to log information about the network state
 		private void LogNetworkInfo(string text)

@@ -120,9 +120,7 @@ namespace NGSim
 			var group = new GroupBox { Text = "Simulation Control" };
 
 			MyStateInfoTextArea = new StateInfoTextArea();
-			MyStateInfoTextArea.Warnings = "Test Warning";
 			NetworkInfoTextArea = new TextArea();
-			//MyStateInfoTextArea.ReadOnly = true;
 			NetworkInfoTextArea.ReadOnly = true;
 
 			var layout = new TableLayout

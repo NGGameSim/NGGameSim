@@ -21,7 +21,9 @@ namespace NGSim
 		private TextBox NGameTextBox;
 		private Button LaunchButton;
 		private StateInfoTextArea MyStateInfoTextArea;
-		private TextArea NetworkInfoTextArea;
+		private NetworkInfoTextArea MyNetworkInfoTextArea;
+		private Button PlayPauseButton;
+		private Button GodModeButton;
 		private OpenFileDialog AlgorithmOpenFile1;
 		private OpenFileDialog AlgorithmOpenFile2;
 
@@ -73,6 +75,38 @@ namespace NGSim
 			AlgorithmOpenFile1 = new OpenFileDialog();
 			AlgorithmOpenFile2 = new OpenFileDialog();
 
+			var GameLaunchRow = new TableRow(
+				new TableLayout
+				{
+					Spacing = new Size(5,5),
+					Padding = new Padding(5),
+					Rows =
+					{
+						new TableRow(
+							SingleGameCheckBox, new Label { }
+						),
+						new TableRow(
+							NGameCheckBox, new Label { }, NGameTextBox
+						)
+					}
+				}, new TableCell(LaunchButton, true)
+			);
+
+			var AlgoLoaderRows = new TableLayout
+			{
+				Spacing = new Size(5, 5),
+				Padding = new Padding(5),
+				Rows =
+				{
+					new TableRow(
+						new Label { Text = "Red Team Algorithm", TextAlignment = TextAlignment.Center }, new TableCell(AlgorithmTextBox1, true), AlgorithmBrowseButton1
+					),
+					new TableRow(
+						new Label { Text = "Blue Team Algorithm", TextAlignment = TextAlignment.Center }, new TableCell(AlgorithmTextBox2, true), AlgorithmBrowseButton2
+					)
+				}
+			};
+
 			// Add the controls to the layout
 			var algoLayout = new TableLayout
 			{
@@ -81,29 +115,10 @@ namespace NGSim
 				Width = 800,
 				Rows =
 				{
-					new TableRow(
-						new Label { Text = "Red Team Algorithm", TextAlignment = TextAlignment.Center }, new TableCell(AlgorithmTextBox1, true), AlgorithmBrowseButton1	
-					),
-					new TableRow(
-						new Label { Text = "Blue Team Algorithm", TextAlignment = TextAlignment.Center }, new TableCell(AlgorithmTextBox2, true), AlgorithmBrowseButton2	
-					),
-					new TableRow(
-						new Label { }
-					),
-					new TableRow(
-						new TableLayout
-						{
-							Rows =
-							{
-								new TableRow(
-									SingleGameCheckBox, new Label { }
-								),
-								new TableRow(
-									NGameCheckBox, new Label { }, NGameTextBox
-								)
-							}
-						}, new TableCell(LaunchButton, true)
-					)
+					new TableRow(AlgoLoaderRows),
+					new TableRow( new Label { } ),
+					new TableRow(GameLaunchRow)
+					
 				}
 			};
 
@@ -120,8 +135,23 @@ namespace NGSim
 			var group = new GroupBox { Text = "Simulation Control" };
 
 			MyStateInfoTextArea = new StateInfoTextArea();
-			NetworkInfoTextArea = new TextArea();
-			NetworkInfoTextArea.ReadOnly = true;
+			MyNetworkInfoTextArea = new NetworkInfoTextArea();
+
+			PlayPauseButton = new Button { Text = "PLAY/PAUSE", Height = 30 };
+			GodModeButton = new Button { Text = "GODMODE", Height = 30 };
+
+			var rightLayout = new TableLayout
+			{
+				Spacing = new Size(5, 5),
+				Padding = new Padding(0),
+				Width = 400,
+				Rows =
+				{
+					new TableRow(new TableCell(MyNetworkInfoTextArea, false)){ ScaleHeight = true },
+					new TableRow(new TableRow(new TableCell(PlayPauseButton, true), new TableCell(GodModeButton, true)){ ScaleHeight = false }) 
+				}
+			};
+
 
 			var layout = new TableLayout
 			{
@@ -131,7 +161,7 @@ namespace NGSim
 				Rows =
 				{
 					new TableRow(
-						new TableCell(MyStateInfoTextArea, true), new TableCell(NetworkInfoTextArea, true)
+						new TableCell(MyStateInfoTextArea, true), rightLayout
 					)
 				}
 			};
@@ -192,7 +222,7 @@ namespace NGSim
 		// Function to log information about the network state
 		private void LogNetworkInfo(string text)
 		{
-			NetworkInfoTextArea.Append(text);
+			//NetworkInfoTextArea.Append(text);
 		}
 
 		// Function to attempt to load the specified algorithms

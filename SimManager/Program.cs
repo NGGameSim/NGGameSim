@@ -1,5 +1,6 @@
 ﻿using System;
 using Eto.Forms;
+using Eto;
 
 namespace NGSim
 {
@@ -8,15 +9,23 @@ namespace NGSim
         [STAThread]
 		public static void Main(string[] args)
 		{
+			var pf = Platform.Detect;
+			if (pf.IsWpf)
+			{
+				Console.WriteLine("Using wpf...");
+				pf.Add(typeof(StateInfoTextArea), () => new StateInfoTextAreaHandler());
+				pf.Add(typeof(NetworkInfoTextArea), () => new NetworkInfoTextAreaHandler());
+			} else
+			{
+				Console.WriteLine("Platform not supported...");
+				return;
+			}
+
 			Application app = new Application();
 
 			UpdateManager.Initialize();
 
-			MainWindow mainWindow = new MainWindow();
-			//ClientWindow clientWindow = new ClientWindow();
-
-			mainWindow.Show();
-			//clientWindow.Show();
+			SimManagerWindow mainWindow = new SimManagerWindow();
 
 			mainWindow.Shown += (sender, e) => { UpdateManager.LaunchThread(); };
 			mainWindow.Closing += (sender, e) => { UpdateManager.CloseThread(); };

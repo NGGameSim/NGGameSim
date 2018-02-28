@@ -16,8 +16,9 @@ namespace NGSim
 
 		//when gameRunningMode = 0, 1 game is ran and game state info is printed,
 		//when it is 1, games are continuously ran and the result is displayed
-		//when it is 2, 500 games are ran the winning percentage is displayed
+		//when it is 2, N games are ran the winning percentage is displayed
 		public int gameRunningMode;
+		public int NGames;
 		private int gameResult; //0 means game is running, 1 means Team1 won, 2  means Team2 won, 3 means a draw
 		private int numMoves;
 		private bool switchedGameMode = false;  //prevents race condition when switching the mode
@@ -91,7 +92,8 @@ namespace NGSim
 			}
 			else if (gameRunningMode == 2)
 			{
-				Run500Games();
+				//Run500Games();
+				RunNGames();
 			}
 		}
 
@@ -100,6 +102,11 @@ namespace NGSim
 			switchedGameMode = true;
 			gameRunningMode = mode;
 			Console.WriteLine("Game set to run in mode {0}", gameRunningMode);
+		}
+
+		public void SetNGames(int games)
+		{
+			NGames = games;
 		}
 
 		public void Run500Games()
@@ -126,6 +133,32 @@ namespace NGSim
 			}
 
 			Console.WriteLine("Of the 500 games Team 1 won {0}%, team 2 won {1}%, and {2}% are draws", 100*((float)numberOfVictoriesTeam1)/500, 100 * ((float)numberOfVictoriesTeam2) / 500, 100 * ((float)numberOfDraws) / 500);
+		}
+
+		public void RunNGames()
+		{
+			int numberOfVictoriesTeam1 = 0;
+			int numberOfVictoriesTeam2 = 0;
+			int numberOfDraws = 0;
+
+			for (int i = 0; i < NGames; i++)
+			{
+				RunOneGame();
+				if (gameResult == 1)
+				{
+					numberOfVictoriesTeam1++;
+				}
+				else if (gameResult == 2)
+				{
+					numberOfVictoriesTeam2++;
+				}
+				else
+				{
+					numberOfDraws++;
+				}
+			}
+
+			Console.WriteLine("Of the {0} games Team 1 won {1}%, team 2 won {2}%, and {3}% are draws", NGames, 100 * ((float)numberOfVictoriesTeam1) / 500, 100 * ((float)numberOfVictoriesTeam2) / 500, 100 * ((float)numberOfDraws) / 500);
 		}
 
 		public void RunOneGame()

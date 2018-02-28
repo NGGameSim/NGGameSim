@@ -16,82 +16,22 @@ namespace NGSim
 			get { return (INetworkInfoTextArea)base.Handler; }
 		}
 
-		public Position RedUAVXY
+		public string View
 		{
-			get { return Handler.RedUAVXY; }
-			set { Handler.RedUAVXY = value; }
+			get { return Handler.View; }
+			set { Handler.View = value; }
 		}
 
-		public Position BlueUAVXY
+		public string BitRate
 		{
-			get { return Handler.BlueUAVXY; }
-			set { Handler.BlueUAVXY = value; }
+			get { return Handler.BitRate; }
+			set { Handler.BitRate = value; }
 		}
 
-		public Position RedTankXY
+		public string ConnectionStatus
 		{
-			get { return Handler.RedTankXY; }
-			set { Handler.RedTankXY = value; }
-		}
-
-		public Position BlueTankXY
-		{
-			get { return Handler.BlueTankXY; }
-			set { Handler.BlueTankXY = value; }
-		}
-
-		public Position RedMissileXY
-		{
-			get { return Handler.RedMissileXY; }
-			set { Handler.RedMissileXY = value; }
-		}
-
-		public Position BlueMissileXY
-		{
-			get { return Handler.BlueMissileXY; }
-			set { Handler.BlueMissileXY = value; }
-		}
-
-		public int RedMissilesRemaining
-		{
-			get { return Handler.RedMissilesRemaining; }
-			set { Handler.RedMissilesRemaining = value; }
-		}
-
-		public int BlueMissilesRemaining
-		{
-			get { return Handler.BlueMissilesRemaining; }
-			set { Handler.BlueMissilesRemaining = value; }
-		}
-
-		public Position LastKnownRedTankXY
-		{
-			get { return Handler.LastKnownRedTankXY; }
-			set { Handler.LastKnownRedTankXY = value; }
-		}
-
-		public Position LastKnownBlueTankXY
-		{
-			get { return Handler.LastKnownBlueTankXY; }
-			set { Handler.LastKnownBlueTankXY = value; }
-		}
-
-		public int TurnsElapsed
-		{
-			get { return Handler.TurnsElapsed; }
-			set { Handler.TurnsElapsed = value; }
-		}
-
-		public float WinPercent
-		{
-			get { return Handler.WinPercent; }
-			set { Handler.WinPercent = value; }
-		}
-
-		public int GamesRun
-		{
-			get { return Handler.GamesRun; }
-			set { Handler.GamesRun = value; }
+			get { return Handler.ConnectionStatus; }
+			set { Handler.ConnectionStatus = value; }
 		}
 
 		public string Warnings
@@ -110,24 +50,13 @@ namespace NGSim
 		// interface to the platform implementations
 		public interface INetworkInfoTextArea : Control.IHandler
 		{
-			Position RedUAVXY { get; set; }
-			Position BlueUAVXY { get; set; }
-			Position RedTankXY { get; set; }
-			Position BlueTankXY { get; set; }
-			Position RedMissileXY { get; set; }
-			Position BlueMissileXY { get; set; }
-			int RedMissilesRemaining { get; set; }
-			int BlueMissilesRemaining { get; set; }
-			Position LastKnownRedTankXY { get; set; }
-			Position LastKnownBlueTankXY { get; set; }
-			int TurnsElapsed { get; set; }
-			float WinPercent { get; set; }
-			int GamesRun { get; set; }
+			string View { get; set; }
+			string BitRate { get; set; }
+			string ConnectionStatus { get; set; }
 			string Warnings { get; set; }
 			event EventHandler PropertyChanged;
 			void OnPropertyChanged(EventArgs e);
 		}
-
 	}
 
 	public class NetworkInfoTextAreaHandler : WpfControl<System.Windows.Controls.TextBox, NetworkInfoTextArea , NetworkInfoTextArea.ICallback>, NetworkInfoTextArea.INetworkInfoTextArea
@@ -135,16 +64,8 @@ namespace NGSim
 		public NetworkInfoTextAreaHandler()
 		{
 			Control = new System.Windows.Controls.TextBox{ IsReadOnly = true };
-			Control.AppendText("\t\tRed Team\t\tBlue Team\n");
-			Control.AppendText("UAV Position:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Tank Position:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Missile Position:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Missiles Left:\t0\t\t\t0\n");
-			Control.AppendText("Enemy Last Seen:\t0,0\t\t\t0,0\n");
-			Control.AppendText("\n");
-			Control.AppendText("Game #1\n");
-			Control.AppendText("Turns Elapsed: 0\n");
-			Control.AppendText("Red Win %: 50%\t\t Blue Win %: 50%\n");
+			Control.AppendText("View: \tNormal\n");
+			Control.AppendText("BitRate: \t0 b/s");
 			Control.AppendText("\n");
 			Control.AppendText("Warnings:\n");
 			PropertyChanged += UpdateText;
@@ -154,68 +75,13 @@ namespace NGSim
 		{
 			Console.WriteLine("A field was changed...");
 			Control.Clear();
-			Control.AppendText("\t\tRed Team\t\tBlue Team\n");
-			Control.AppendText("UAV Position:\t");
-			Control.AppendText(RedUAVXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(RedUAVXY.Y.ToString());
-			Control.AppendText("\t\t\t");
-			Control.AppendText(BlueUAVXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(BlueUAVXY.Y.ToString());
+			Control.AppendText("View: \t");
+			Control.AppendText(View);
 			Control.AppendText("\n");
 
-			Control.AppendText("Tank Position:\t");
-			Control.AppendText(RedTankXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(RedTankXY.Y.ToString());
-			Control.AppendText("\t\t\t");
-			Control.AppendText(BlueTankXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(BlueTankXY.Y.ToString());
+			Control.AppendText("BitRate: \t");
+			Control.AppendText(BitRate);
 			Control.AppendText("\n");
-
-			Control.AppendText("Missile Position:\t");
-			Control.AppendText(RedMissileXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(RedMissileXY.Y.ToString());
-			Control.AppendText("\t\t\t");
-			Control.AppendText(BlueMissileXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(BlueMissileXY.Y.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Missiles Left:\t");
-			Control.AppendText(RedMissilesRemaining.ToString());
-			Control.AppendText("\t\t\t");
-			Control.AppendText(BlueMissilesRemaining.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Enemy Last Seen:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Enemy Last Seen:\t");
-			Control.AppendText(LastKnownBlueTankXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(LastKnownBlueTankXY.Y.ToString());
-			Control.AppendText("\t\t\t");
-			Control.AppendText(lastKnownRedTankXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(lastKnownRedTankXY.Y.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("\n");
-			Control.AppendText("Game #");
-			Control.AppendText(GamesRun.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Turns Elapsed: ");
-			Control.AppendText(TurnsElapsed.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Red Win %: ");
-			Control.AppendText(WinPercent.ToString());
-			Control.AppendText("%\t\t Blue Win %: ");
-			Control.AppendText((100 - WinPercent).ToString());
-			Control.AppendText("%\n");
 
 			Control.AppendText("\n");
 			Control.AppendText("Warnings:\n");
@@ -228,95 +94,25 @@ namespace NGSim
 			PropertyChanged?.Invoke(this, e);
 		}
 
-		private Position redUAVXY;
-		public Position RedUAVXY
+		private string view;
+		public string View
 		{
-			get { return redUAVXY; }
-			set { redUAVXY = value; OnPropertyChanged(EventArgs.Empty); }
+			get { return view; }
+			set { view = value; OnPropertyChanged(EventArgs.Empty); }
 		}
 
-		private Position blueUAVXY;
-		public Position BlueUAVXY
+		private string bitRate;
+		public string BitRate
 		{
-			get { return blueUAVXY; }
-			set { blueUAVXY = value; OnPropertyChanged(EventArgs.Empty); }
+			get { return bitRate; }
+			set { bitRate = value; OnPropertyChanged(EventArgs.Empty); }
 		}
 
-		private Position redTankXY;
-		public Position RedTankXY
+		private string connectionStatus;
+		public string ConnectionStatus
 		{
-			get { return redTankXY; }
-			set { redTankXY = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private Position blueTankXY;
-		public Position BlueTankXY
-		{
-			get { return blueTankXY; }
-			set { blueTankXY = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private Position redMissileXY;
-		public Position RedMissileXY
-		{
-			get { return redMissileXY; }
-			set { redMissileXY = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private Position blueMissileXY;
-		public Position BlueMissileXY
-		{
-			get { return blueMissileXY; }
-			set { blueMissileXY = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private int redMissilesRemaining;
-		public int RedMissilesRemaining
-		{
-			get { return redMissilesRemaining; }
-			set { redMissilesRemaining = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private int blueMissilesRemaining;
-		public int BlueMissilesRemaining
-		{
-			get { return blueMissilesRemaining; }
-			set { blueMissilesRemaining = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private Position lastKnownRedTankXY;
-		public Position LastKnownRedTankXY
-		{
-			get { return lastKnownRedTankXY; }
-			set { lastKnownRedTankXY = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private Position lastKnownblueTankXY;
-		public Position LastKnownBlueTankXY
-		{
-			get { return lastKnownblueTankXY; }
-			set { lastKnownblueTankXY = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private int turnsElapsed;
-		public int TurnsElapsed
-		{
-			get { return turnsElapsed; }
-			set { turnsElapsed = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private float winPercent;
-		public float WinPercent
-		{
-			get { return winPercent; }
-			set { winPercent = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private int gamesRun;
-		public int GamesRun
-		{
-			get { return gamesRun; }
-			set { gamesRun = value; OnPropertyChanged(EventArgs.Empty); }
+			get { return connectionStatus; }
+			set { connectionStatus = value; OnPropertyChanged(EventArgs.Empty); }
 		}
 
 		private string warnings;

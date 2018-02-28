@@ -43,6 +43,7 @@ namespace NGSim
 		{
 			if(switchedGameMode)
 			{
+				Console.WriteLine("Game Mode Reset");
 				gameResult = 0;
 				numMoves = 0;
 				SetInitialRandomPositions();
@@ -146,19 +147,23 @@ namespace NGSim
 				RunOneGame();
 				if (gameResult == 1)
 				{
+					Console.WriteLine("Team 1 Victory");
 					numberOfVictoriesTeam1++;
 				}
 				else if (gameResult == 2)
 				{
+					Console.WriteLine("Team 2 Victory");
 					numberOfVictoriesTeam2++;
 				}
 				else
 				{
+					Console.WriteLine("Draw");
 					numberOfDraws++;
 				}
 			}
 
-			Console.WriteLine("Of the {0} games Team 1 won {1}%, team 2 won {2}%, and {3}% are draws", NGames, 100 * ((float)numberOfVictoriesTeam1) / 500, 100 * ((float)numberOfVictoriesTeam2) / 500, 100 * ((float)numberOfDraws) / 500);
+			Console.WriteLine("Of the {0} games Team 1 won {1}%, team 2 won {2}%, and {3}% are draws", NGames, 100 * ((float)numberOfVictoriesTeam1) / NGames, 100 * ((float)numberOfVictoriesTeam2) / NGames, 100 * ((float)numberOfDraws) / NGames);
+			SetGameRunningMode(0);
 		}
 
 		public void RunOneGame()

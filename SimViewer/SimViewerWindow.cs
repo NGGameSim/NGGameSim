@@ -59,33 +59,13 @@ namespace NGSim
 		{
 			var group = new GroupBox();
 
-			// Create the controls
+			// Create the top row controls (view modes)
 			BlueUAVButton = new TableCell(new Button { Text = "BLUE UAV" }, true);
 			BlueTankButton = new TableCell(new Button { Text = "BLUE TANK" }, true);
 			RedUAVButton = new TableCell(new Button { Text = "RED UAV" }, true);
 			RedTankButton = new TableCell(new Button { Text = "RED TANK" }, true);
 			FreeCameraButton = new TableCell(new Button { Text = "FREE CAMERA" }, true);
 			ResetButton = new TableCell(new Button { Text = "RESET" }, true);
-
-			TranslateRightButton = new Button();
-			TranslateLeftButton = new Button();
-			TranslateUpButton = new Button();
-			TranslateDownButton = new Button();
-
-			RotateRightButton = new Button();
-			RotateLeftButton = new Button();
-			RotateUpButton = new Button();
-			RotateDownButton = new Button();
-
-			IncreaseZoomButton = new TableCell(new Button { Text = "+" }, true);
-			DecreaseZoomButton = new TableCell(new Button { Text = "-" }, true);
-			var ZoomSlider_ = new Slider();
-			ZoomSlider_.Orientation = Orientation.Vertical;
-			ZoomSlider_.Height = 150;
-			ZoomSlider_.Value = 50;
-			ZoomSlider = new TableCell(ZoomSlider_, true);
-			var ZoomTextBox_ = new TextBox { Text = ZoomSlider_.Value.ToString() };
-			ZoomTextBox = new TableCell(ZoomTextBox_, true);
 
 			// Layout for view modes
 			var entityControls = new TableLayout
@@ -119,40 +99,110 @@ namespace NGSim
 				}
 			};
 
+			// Add view mode controls to top row
+			var topRow = new TableRow(new TableRow(entityControls, freeCameraControls, resetControls));
+
+
+			// Create the bottom row controls (translate, rotate, zoom)
+			var ButtonSize = new Size(50, 50);
+
+			TranslateRightButton = new Button() { Size = ButtonSize };
+			TranslateLeftButton = new Button() { Size = ButtonSize };
+			TranslateUpButton = new Button() { Size = ButtonSize };
+			TranslateDownButton = new Button() { Size = ButtonSize };
+
+			RotateRightButton = new Button() { Size = ButtonSize };
+			RotateLeftButton = new Button() { Size = ButtonSize };
+			RotateUpButton = new Button() { Size = ButtonSize };
+			RotateDownButton = new Button() { Size = ButtonSize };
+
+
 			// Layout for translate controls
-			var translateControls = new TableLayout
+			var TranslateTM = new TableCell(TranslateUpButton) { ScaleWidth = false };
+			var TranslateML = new TableCell(TranslateLeftButton) { ScaleWidth = false };
+			var TranslateMR = new TableCell(TranslateRightButton) { ScaleWidth = false };
+			var TranslateBM = new TableCell(TranslateDownButton) { ScaleWidth = false };
+
+			var TranslateNull = new TableCell(null) { ScaleWidth = false };
+
+			var TranslateLabel = new TableCell(new Label { Text = "TRANSLATION", TextAlignment = TextAlignment.Center }) { ScaleWidth = false };
+
+			var translateButtons = new TableLayout
 			{
-				Spacing = new Size(5, 5),
-				Padding = new Padding(10, 10, 10, 10),
+				Spacing = new Size(0, 0),
+				Padding = new Padding(0),
 				Rows =
 				{
-					new TableRow(null, TranslateUpButton, null) { ScaleHeight = true },
-					new TableRow(TranslateLeftButton, null, TranslateRightButton) { ScaleHeight = true },
-					new TableRow(null, TranslateDownButton, null) { ScaleHeight = true },
-					new TableRow(null, new Label { Text = "TRANSLATION" }, null) { ScaleHeight = false }
+					new TableRow(TranslateNull, TranslateTM, TranslateNull) { ScaleHeight = false },
+					new TableRow(TranslateML, TranslateNull, TranslateMR) { ScaleHeight = false },
+					new TableRow(TranslateNull, TranslateBM, TranslateNull) { ScaleHeight = false },
 				}
 			};
 
-			// Layout for rotate controls
-			var rotateControls = new TableLayout
+			var translateControls = new TableLayout
 			{
-				Spacing = new Size(5, 5),
-				Padding = new Padding(10, 10, 10, 10),
+				Spacing = new Size(0, 10),
+				Padding = new Padding(0, 15, 10, 10),
 				Rows =
 				{
-					new TableRow(null, RotateUpButton, null) { ScaleHeight = true },
-					new TableRow(RotateLeftButton, null, RotateRightButton) { ScaleHeight = true },
-					new TableRow(null, RotateDownButton, null) { ScaleHeight = true },
-					new TableRow(null, new Label { Text = "ROTATION" }, null) { ScaleHeight = false } 
+					new TableRow(translateButtons),
+					new TableRow(TranslateLabel)
+				}
+			};
+
+
+			// Layout for rotate controls
+			var RotateTM = new TableCell(RotateUpButton) { ScaleWidth = false };
+			var RotateML = new TableCell(RotateLeftButton) { ScaleWidth = false };
+			var RotateMR = new TableCell(RotateRightButton) { ScaleWidth = false };
+			var RotateBM = new TableCell(RotateDownButton) { ScaleWidth = false };
+
+			var RotateNull = new TableCell(null) { ScaleWidth = false };
+
+			var RotateLabel = new TableCell(new Label { Text = "ROTATION", TextAlignment = TextAlignment.Center }) { ScaleWidth = false };
+			var rotateButtons = new TableLayout
+			{
+				Spacing = new Size(0,0),
+				Padding = new Padding(0),
+				Rows =
+				{
+					new TableRow(RotateNull, RotateTM, RotateNull) { ScaleHeight = false },
+					new TableRow(RotateML, RotateNull, RotateMR) { ScaleHeight = false },
+					new TableRow(RotateNull, RotateBM, RotateNull) { ScaleHeight = false },
+				}
+			};
+
+			var rotateControls = new TableLayout
+			{
+				Spacing = new Size(0, 10),
+				Padding = new Padding(10, 15, 10, 10),
+				Rows =
+				{
+					new TableRow(rotateButtons),
+					new TableRow(RotateLabel)
 				}
 			};
 
 			// Layout for zoom controls
+
+			var zoomButtonSize = new Size(30, 30);
+
+			IncreaseZoomButton = new TableCell(new Button { Text = "+", Size = zoomButtonSize }, false);
+			DecreaseZoomButton = new TableCell(new Button { Text = "-", Size = zoomButtonSize }, false);
+
+			var ZoomSlider_ = new Slider();
+			ZoomSlider_.Orientation = Orientation.Vertical;
+			ZoomSlider_.Height = 100;
+			ZoomSlider_.Value = 100;
+			ZoomSlider = new TableCell(ZoomSlider_, false);
+
+			var ZoomTextBox_ = new TextBox { Text = ZoomSlider_.Value.ToString(), Size = zoomButtonSize };
+			ZoomTextBox = new TableCell(ZoomTextBox_, false);
+
 			var zoomControls = new TableLayout
 			{
 				Spacing = new Size(5, 5),
-				Padding = new Padding(10, 10, 10, 10),
-				Width = 10,
+				Padding = new Padding(5, 0),
 				Rows =
 				{
 					new TableRow(IncreaseZoomButton) { ScaleHeight = true },
@@ -162,8 +212,10 @@ namespace NGSim
 				}
 			};
 
-			var topRow = new TableRow(entityControls, freeCameraControls, resetControls);
-			var bottomRow = new TableRow(translateControls, rotateControls, zoomControls);
+
+			// Add controls to bottom row
+			var bottomRow = new TableRow(translateControls, rotateControls, zoomControls) { ScaleHeight = true };
+
 
 			// Add the controls to the layout
 			var layout = new TableLayout
@@ -173,7 +225,7 @@ namespace NGSim
 				Rows =
 				{
 					topRow,
-					bottomRow,
+					new TableRow(bottomRow),
 				}
 			};
 
@@ -194,7 +246,7 @@ namespace NGSim
 			{
 				Spacing = new Size(5, 5),
 				Padding = new Padding(10),
-				Width = 800,
+				//Width = 800,
 				Rows =
 				{
 					new TableRow(

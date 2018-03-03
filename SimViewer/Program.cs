@@ -1,5 +1,6 @@
 ﻿using System;
 using Eto.Forms;
+using Eto.Wpf;
 using NLog;
 
 namespace NGSim
@@ -11,7 +12,19 @@ namespace NGSim
 		[STAThread]
 		public static void Main(string[] args)
 		{
-            logger.Fatal("Sample fatal error message");
+			var pf = Platform.Detect;
+			if (pf.IsWpf)
+			{
+				Console.WriteLine("Using wpf...");
+				pf.Add(typeof(StateInfoTextArea), () => new StateInfoTextAreaHandler());
+			}
+			else
+			{
+				Console.WriteLine("Platform not supported...");
+				return;
+			}
+
+			logger.Fatal("Sample fatal error message");
 
 			Application app = new Application();
 

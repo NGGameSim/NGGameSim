@@ -33,7 +33,7 @@ namespace NGSim
 		private TableCell ZoomSlider;
 		private TableCell ZoomTextBox;
 
-		private TextArea StateInfoTextArea;
+		private StateInfoTextArea MyStateInfoTextArea;
 
 		// Main Window contains 
 		public SimViewerWindow()
@@ -240,6 +240,7 @@ namespace NGSim
 			var group = new GroupBox();
 
 			// Create the controls
+			MyStateInfoTextArea = new StateInfoTextArea();
 
 			// Add controls to layout
 			var layout = new TableLayout
@@ -249,9 +250,8 @@ namespace NGSim
 				//Width = 800,
 				Rows =
 				{
-					new TableRow(
-						new Label { Text = "Right Group" }
-					)
+					new Label{ Text = "STATE INFORMATION" },
+					new TableRow(MyStateInfoTextArea){ ScaleHeight = true }
 				}
 			};
 

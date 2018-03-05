@@ -106,15 +106,20 @@ namespace NGSim
 			// Create the bottom row controls (translate, rotate, zoom)
 			var ButtonSize = new Size(50, 50);
 
-			TranslateRightButton = new Button() { Size = ButtonSize };
-			TranslateLeftButton = new Button() { Size = ButtonSize };
-			TranslateUpButton = new Button() { Size = ButtonSize };
-			TranslateDownButton = new Button() { Size = ButtonSize };
+			var RightButtonImage = new Icon("RightArrow.ico");
+			var LeftButtonImage = new Icon("LeftArrow.ico");
+			var DownButtonImage = new Icon("DownArrow.ico");
+			var UpButtonImage = new Icon("UpArrow.ico");
 
-			RotateRightButton = new Button() { Size = ButtonSize };
-			RotateLeftButton = new Button() { Size = ButtonSize };
-			RotateUpButton = new Button() { Size = ButtonSize };
-			RotateDownButton = new Button() { Size = ButtonSize };
+			TranslateRightButton = new Button() { Size = ButtonSize, Image = RightButtonImage };
+			TranslateLeftButton = new Button() { Size = ButtonSize, Image = LeftButtonImage };
+			TranslateUpButton = new Button() { Size = ButtonSize, Image = UpButtonImage };
+			TranslateDownButton = new Button() { Size = ButtonSize, Image = DownButtonImage };
+
+			RotateRightButton = new Button() { Size = ButtonSize, Image = RightButtonImage };
+			RotateLeftButton = new Button() { Size = ButtonSize, Image = LeftButtonImage };
+			RotateUpButton = new Button() { Size = ButtonSize, Image = UpButtonImage };
+			RotateDownButton = new Button() { Size = ButtonSize, Image = DownButtonImage };
 
 
 			// Layout for translate controls
@@ -129,7 +134,7 @@ namespace NGSim
 
 			var translateButtons = new TableLayout
 			{
-				Spacing = new Size(0, 0),
+				Spacing = new Size(5, 5),
 				Padding = new Padding(0),
 				Rows =
 				{
@@ -162,7 +167,7 @@ namespace NGSim
 			var RotateLabel = new TableCell(new Label { Text = "ROTATION", TextAlignment = TextAlignment.Center }) { ScaleWidth = false };
 			var rotateButtons = new TableLayout
 			{
-				Spacing = new Size(0,0),
+				Spacing = new Size(5, 5),
 				Padding = new Padding(0),
 				Rows =
 				{
@@ -241,6 +246,8 @@ namespace NGSim
 
 			// Create the controls
 			MyStateInfoTextArea = new StateInfoTextArea();
+			MyStateInfoTextArea.Height = 286;
+			MyStateInfoTextArea.Width = 200;
 
 			// Add controls to layout
 			var layout = new TableLayout

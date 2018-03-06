@@ -22,6 +22,7 @@ namespace NGSim
 		private int gameResult; //0 means game is running, 1 means Team1 won, 2  means Team2 won, 3 means a draw
 		private int numMoves;
 		private bool switchedGameMode = false;  //prevents race condition when switching the mode
+		private bool playing = true;
 
 		Random rand = new Random();
 
@@ -48,6 +49,11 @@ namespace NGSim
 				numMoves = 0;
 				SetInitialRandomPositions();
 				switchedGameMode = false;
+			}
+
+			if(!playing)
+			{
+				return;
 			}
 
 			if (gameRunningMode == 0)
@@ -108,6 +114,11 @@ namespace NGSim
 		public void SetNGames(int games)
 		{
 			NGames = games;
+		}
+
+		public void PausePlay()
+		{
+			playing = !playing;
 		}
 
 		public void Run500Games()

@@ -3,6 +3,7 @@ using Eto.Forms;
 using Eto.Drawing;
 using NLog;
 using NGAPI;
+using System.Windows.Input;
 
 namespace NGSim
 {
@@ -28,9 +29,13 @@ namespace NGSim
 		private Button RotateUpButton;
 		private Button RotateDownButton;
 
+		private Button IncreaseZoomButton_;
 		private TableCell IncreaseZoomButton;
+		private Button DecreaseZoomButton_;
 		private TableCell DecreaseZoomButton;
+		private Slider ZoomSlider_;
 		private TableCell ZoomSlider;
+		private TextBox ZoomTextBox_;
 		private TableCell ZoomTextBox;
 
 		private StateInfoTextArea MyStateInfoTextArea;
@@ -192,16 +197,23 @@ namespace NGSim
 
 			var zoomButtonSize = new Size(30, 30);
 
-			IncreaseZoomButton = new TableCell(new Button { Text = "+", Size = zoomButtonSize }, false);
-			DecreaseZoomButton = new TableCell(new Button { Text = "-", Size = zoomButtonSize }, false);
+			IncreaseZoomButton_ = new Button { Text = "+", Size = zoomButtonSize };
+			IncreaseZoomButton_.Click += IncreaseZoomButton__Click;
+			IncreaseZoomButton = new TableCell(IncreaseZoomButton_, false);
 
-			var ZoomSlider_ = new Slider();
+			DecreaseZoomButton_ = new Button { Text = "-", Size = zoomButtonSize };
+			DecreaseZoomButton_.Click += DecreaseZoomButton__Click;
+			DecreaseZoomButton = new TableCell(DecreaseZoomButton_, false);
+
+			ZoomSlider_ = new Slider();
 			ZoomSlider_.Orientation = Orientation.Vertical;
 			ZoomSlider_.Height = 100;
 			ZoomSlider_.Value = 100;
+			ZoomSlider_.ValueChanged += ZoomSliderValueChanged;
 			ZoomSlider = new TableCell(ZoomSlider_, false);
 
-			var ZoomTextBox_ = new TextBox { Text = ZoomSlider_.Value.ToString(), Size = zoomButtonSize };
+			ZoomTextBox_ = new TextBox { Text = ZoomSlider_.Value.ToString(), Size = zoomButtonSize };
+			ZoomTextBox_.TextChanged += ZoomTextBoxValueChanged;
 			ZoomTextBox = new TableCell(ZoomTextBox_, false);
 
 			var zoomControls = new TableLayout
@@ -237,6 +249,36 @@ namespace NGSim
 			// Add the layout to the returned group
 			group.Content = layout;
 			return group;
+		}
+
+		private void DecreaseZoomButton__Click(object sender, EventArgs e)
+		{
+			if (ZoomSlider_.Value > 0)
+			{
+				ZoomSlider_.Value -= 1;
+			}
+		}
+
+		private void IncreaseZoomButton__Click(object sender, EventArgs e)
+		{
+			if (ZoomSlider_.Value < 100)
+			{
+				ZoomSlider_.Value += 1;
+			}
+		}
+
+		private void ZoomSliderValueChanged(object sender, EventArgs e)
+		{
+			ZoomTextBox_.Text = ZoomSlider_.Value.ToString();
+		}
+
+		private void ZoomTextBoxValueChanged(object sender, EventArgs e)
+		{
+			var parseResult = 0;
+			if (Int32.TryParse(ZoomTextBox_.Text, out parseResult))
+			{
+				ZoomSlider_.Value = parseResult;
+			}
 		}
 
 		// Right Group

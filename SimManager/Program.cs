@@ -21,8 +21,6 @@ namespace NGSim
 				return;
 			}
 
-			Application app = new Application();
-
 			UpdateManager.Initialize();
 
 			SimManagerWindow mainWindow = new SimManagerWindow();
@@ -30,6 +28,7 @@ namespace NGSim
 			mainWindow.Shown += (sender, e) => { UpdateManager.LaunchThread(); };
 			mainWindow.Closing += (sender, e) => { UpdateManager.CloseThread(); };
 
+			Application app = new Application();
 			app.Run(mainWindow);
 		}
 	}

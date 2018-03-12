@@ -1,13 +1,11 @@
 ﻿using Eto;
 using Eto.Forms;
 using Eto.Wpf.Forms;
-using Eto.CustomControls;
 using NGAPI;
 using System;
 
 namespace NGSim
 {
-	// control to use in your eto.forms code
 	[Handler(typeof(IStateInfoTextArea))]
 	public class StateInfoTextArea : Control
 	{
@@ -101,10 +99,14 @@ namespace NGSim
 		}
 
 		public event EventHandler PropertyChanged;
-
 		protected virtual void OnPropertyChanged(EventArgs e)
 		{
 			PropertyChanged?.Invoke(this, e);
+		}
+
+		public void GameReset()
+		{
+
 		}
 
 		// interface to the platform implementations
@@ -126,8 +128,8 @@ namespace NGSim
 			string Warnings { get; set; }
 			event EventHandler PropertyChanged;
 			void OnPropertyChanged(EventArgs e);
+			void GameReset();
 		}
-
 	}
 
 	public class StateInfoTextAreaHandler : WpfControl<System.Windows.Controls.TextBox, StateInfoTextArea , StateInfoTextArea.ICallback>, StateInfoTextArea.IStateInfoTextArea
@@ -152,7 +154,6 @@ namespace NGSim
 
 		private void UpdateText(object sender, EventArgs e)
 		{
-			Console.WriteLine("A field was changed...");
 			Control.Clear();
 			Control.AppendText("\t\tRed Team\t\tBlue Team\n");
 			Control.AppendText("UAV Position:\t");
@@ -220,6 +221,23 @@ namespace NGSim
 			Control.AppendText("\n");
 			Control.AppendText("Warnings:\n");
 			Control.AppendText(Warnings);
+		}
+
+		public void GameReset()
+		{
+			Control.Clear();
+			Control.AppendText("\t\tRed Team\t\tBlue Team\n");
+			Control.AppendText("UAV Position:\t0,0\t\t\t0,0\n");
+			Control.AppendText("Tank Position:\t0,0\t\t\t0,0\n");
+			Control.AppendText("Missile Position:\t0,0\t\t\t0,0\n");
+			Control.AppendText("Missiles Left:\t0\t\t\t0\n");
+			Control.AppendText("Enemy Last Seen:\t0,0\t\t\t0,0\n");
+			Control.AppendText("\n");
+			Control.AppendText("Game #1\n");
+			Control.AppendText("Turns Elapsed: 0\n");
+			Control.AppendText("Red Win %: 50%\t\t Blue Win %: 50%\n");
+			Control.AppendText("\n");
+			Control.AppendText("Warnings:\n");
 		}
 
 		public event EventHandler PropertyChanged;

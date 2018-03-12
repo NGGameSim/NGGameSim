@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using static NGAPI.Constants;
 using NLog;
+using System.Windows.Threading;
 
 namespace NGSim
 {
@@ -484,6 +485,27 @@ namespace NGSim
                 MissileInAir[i].CurrentPostion = new Position(MissileInAir[i].CurrentPostion.X + XMissiles[i], MissileInAir[i].CurrentPostion.Y + YMissiles[i]);
 			}
 
+			System.Windows.Application.Current.Dispatcher.Invoke(() =>
+			{
+				SimManagerWindow.MyStateInfoTextArea.RedTankXY = Simulation.Team1.Tank.Position;
+				SimManagerWindow.MyStateInfoTextArea.RedUAVXY = Simulation.Team1.UAV.Position;
+				SimManagerWindow.MyStateInfoTextArea.RedMissilesRemaining = Simulation.Team1.Tank.MisslesLeft;
+				SimManagerWindow.MyStateInfoTextArea.LastKnownBlueTankXY = Simulation.Team1.UAV.LastKnownPosition;
+
+				SimManagerWindow.MyStateInfoTextArea.BlueTankXY = Simulation.Team2.Tank.Position;
+				SimManagerWindow.MyStateInfoTextArea.BlueUAVXY = Simulation.Team2.UAV.Position;
+				SimManagerWindow.MyStateInfoTextArea.BlueMissilesRemaining = Simulation.Team2.Tank.MisslesLeft;
+				SimManagerWindow.MyStateInfoTextArea.LastKnownRedTankXY = Simulation.Team2.UAV.LastKnownPosition;
+
+				if(Simulation.Team1.Missiles.Count > 0)
+				{
+					SimManagerWindow.MyStateInfoTextArea.RedMissileXY = Simulation.Team1.Missiles[0].CurrentPostion;
+				}
+				if(Simulation.Team2.Missiles.Count > 0)
+				{
+					SimManagerWindow.MyStateInfoTextArea.BlueMissileXY = Simulation.Team2.Missiles[0].CurrentPostion;
+				}
+			});
 		}
 
 		private void updateEntityVelocities()

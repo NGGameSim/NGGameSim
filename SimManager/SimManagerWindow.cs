@@ -20,7 +20,7 @@ namespace NGSim
 		private CheckBox NGameCheckBox;
 		private TextBox NGameTextBox;
 		private Button LaunchButton;
-		private StateInfoTextArea MyStateInfoTextArea;
+		public static StateInfoTextArea MyStateInfoTextArea;
 		private NetworkInfoTextArea MyNetworkInfoTextArea;
 		private Button PlayPauseButton;
 		private Button GodModeButton;

@@ -10,6 +10,10 @@ namespace NGSim
 	// performing entity and game state logic updates, and dispatching state packets to all of the connected clients.
 	public class SimulationManager
 	{
+		private const float TURN_RATE = 6f;
+		private const float ACC_RATE = 1f;
+		private const float TWO_PI = (float)(Math.PI * 2);
+
 		internal Simulation Simulation { get; private set; }
 		public Algorithm Algo1;
 		public Algorithm Algo2;
@@ -449,15 +453,68 @@ namespace NGSim
 
 		private void updateEntityVelocities()
 		{
-			// TODO: right now this just immediately updates the speeds and headings, interpolate in the future
-			Simulation.Team1.Tank.CurrentHeading = Simulation.Team1.Tank.TargetHeading;
-			Simulation.Team1.UAV.CurrentHeading = Simulation.Team1.UAV.TargetHeading;
-			Simulation.Team2.Tank.CurrentHeading = Simulation.Team2.Tank.TargetHeading;
-			Simulation.Team2.UAV.CurrentHeading = Simulation.Team2.UAV.TargetHeading;
-			Simulation.Team1.Tank.CurrentSpeed = Simulation.Team1.Tank.TargetSpeed;
-			Simulation.Team1.UAV.CurrentSpeed = Simulation.Team1.UAV.TargetSpeed;
-			Simulation.Team2.Tank.CurrentSpeed = Simulation.Team2.Tank.TargetSpeed;
-			Simulation.Team2.UAV.CurrentSpeed = Simulation.Team2.UAV.TargetSpeed;
+			float[] th = { Simulation.Team1.Tank.CurrentHeading, Simulation.Team2.Tank.CurrentHeading };
+			float[] uh = { Simulation.Team1.UAV.CurrentHeading, Simulation.Team2.UAV.CurrentHeading };
+			float[] tth = { Simulation.Team1.Tank.TargetHeading, Simulation.Team2.Tank.TargetHeading };
+			float[] uth = { Simulation.Team1.UAV.TargetHeading, Simulation.Team2.UAV.TargetHeading };
+			float[] ts = { Simulation.Team1.Tank.CurrentSpeed, Simulation.Team2.Tank.CurrentSpeed };
+			float[] us = { Simulation.Team1.UAV.CurrentSpeed, Simulation.Team2.UAV.CurrentSpeed }; 
+			float[] tts = { Simulation.Team1.Tank.TargetSpeed, Simulation.Team2.Tank.TargetSpeed };
+			float[] uts = { Simulation.Team1.UAV.TargetSpeed, Simulation.Team2.UAV.TargetSpeed };
+			float[] thdiff = { th[0] - tth[0], th[1] - tth[1] };
+			float[] uhdiff = { uh[0] - uth[0], uh[1] - uth[1] };
+			float[] tsdiff = { ts[0] - tts[0], ts[1] - tts[1] };
+			float[] usdiff = { us[0] - uts[0], us[1] - uts[1] };
+
+			if (thdiff[0] != 0f) // Team 1 tank heading
+			{
+				int dir = Math.Sign(thdiff[0]);
+				float nh = (Math.Abs(thdiff[0]) <= TURN_RATE) ? tth[0] : (th[0] + (TURN_RATE * dir)) % 360;
+				Simulation.Team1.Tank.CurrentHeading = nh;
+			}
+			if (thdiff[1] != 0f) // Team 2 tank heading
+			{
+				int dir = Math.Sign(thdiff[1]);
+				float nh = (Math.Abs(thdiff[1]) <= TURN_RATE) ? tth[1] : (th[1] + (TURN_RATE * dir)) % 360;
+				Simulation.Team2.Tank.CurrentHeading = nh;
+			}
+			if (uhdiff[0] != 0f) // Team 1 uav heading
+			{
+				int dir = Math.Sign(uhdiff[0]);
+				float nh = (Math.Abs(uhdiff[0]) <= TURN_RATE) ? uth[0] : (uh[0] + (TURN_RATE * dir)) % 360;
+				Simulation.Team1.UAV.CurrentHeading = nh;
+			}
+			if (uhdiff[1] != 0f) // Team 2 uav heading
+			{
+				int dir = Math.Sign(uhdiff[1]);
+				float nh = (Math.Abs(uhdiff[1]) <= TURN_RATE) ? uth[1] : (uh[1] + (TURN_RATE * dir)) % 360;
+				Simulation.Team2.UAV.CurrentHeading = nh;
+			}
+
+			if (tsdiff[0] != 0f) // Team 1 tank speed
+			{
+				int dir = Math.Sign(tsdiff[0]);
+				float ns = (Math.Abs(tsdiff[0]) <= ACC_RATE) ? tts[0] : (ts[0] + (ACC_RATE * dir));
+				Simulation.Team1.Tank.CurrentSpeed = ns;
+			}
+			if (tsdiff[1] != 0f) // Team 2 tank speed
+			{
+				int dir = Math.Sign(tsdiff[1]);
+				float ns = (Math.Abs(tsdiff[1]) <= ACC_RATE) ? tts[1] : (ts[1] + (ACC_RATE * dir));
+				Simulation.Team2.Tank.CurrentSpeed = ns;
+			}
+			if (usdiff[0] != 0f) // Team 1 uav speed
+			{
+				int dir = Math.Sign(usdiff[0]);
+				float ns = (Math.Abs(usdiff[0]) <= ACC_RATE) ? uts[0] : (us[0] + (ACC_RATE * dir));
+				Simulation.Team1.UAV.CurrentSpeed = ns;
+			}
+			if (usdiff[1] != 0f) // Team 2 uav speed
+			{
+				int dir = Math.Sign(usdiff[1]);
+				float nh = (Math.Abs(usdiff[1]) <= ACC_RATE) ? uts[1] : (us[1] + (ACC_RATE * dir));
+				Simulation.Team2.UAV.CurrentSpeed = nh;
+			}
 		}
 
 		private void UAVScan()

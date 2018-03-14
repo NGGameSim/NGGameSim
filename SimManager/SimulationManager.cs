@@ -451,69 +451,73 @@ namespace NGSim
 
 		}
 
+		private float angleClamp(float angle)
+		{
+			return (angle + 360f) % 360f;
+		}
+
+		private void entityNeedsInterp(Entity e, out bool heading, out bool speed)
+		{
+			heading = (e.CurrentHeading != e.TargetHeading);
+			speed = (e.CurrentSpeed != e.TargetSpeed);
+		}
+
+		private float getAngleDiff(Entity e)
+		{
+			float nc = angleClamp(e.CurrentHeading);
+			float nt = angleClamp(e.TargetHeading);
+			float diff = (((nt - nc) + 180f) % 360f) - 180f;
+			if (diff < -180f)
+				diff += 360f;
+			else if (diff > 180f)
+				diff -= 360f;
+			return diff;
+		}
+
 		private void updateEntityVelocities()
 		{
-			float[] th = { Simulation.Team1.Tank.CurrentHeading, Simulation.Team2.Tank.CurrentHeading };
-			float[] uh = { Simulation.Team1.UAV.CurrentHeading, Simulation.Team2.UAV.CurrentHeading };
-			float[] tth = { Simulation.Team1.Tank.TargetHeading, Simulation.Team2.Tank.TargetHeading };
-			float[] uth = { Simulation.Team1.UAV.TargetHeading, Simulation.Team2.UAV.TargetHeading };
-			float[] ts = { Simulation.Team1.Tank.CurrentSpeed, Simulation.Team2.Tank.CurrentSpeed };
-			float[] us = { Simulation.Team1.UAV.CurrentSpeed, Simulation.Team2.UAV.CurrentSpeed }; 
-			float[] tts = { Simulation.Team1.Tank.TargetSpeed, Simulation.Team2.Tank.TargetSpeed };
-			float[] uts = { Simulation.Team1.UAV.TargetSpeed, Simulation.Team2.UAV.TargetSpeed };
-			float[] thdiff = { th[0] - tth[0], th[1] - tth[1] };
-			float[] uhdiff = { uh[0] - uth[0], uh[1] - uth[1] };
-			float[] tsdiff = { ts[0] - tts[0], ts[1] - tts[1] };
-			float[] usdiff = { us[0] - uts[0], us[1] - uts[1] };
+			// Get the needed changes
+			bool t1h, t1s;
+			entityNeedsInterp(Simulation.Team1.Tank, out t1h, out t1s);
+			bool t2h, t2s;
+			entityNeedsInterp(Simulation.Team2.Tank, out t2h, out t2s);
+			bool u1h, u1s;
+			entityNeedsInterp(Simulation.Team1.UAV, out u1h, out u1s);
+			bool u2h, u2s;
+			entityNeedsInterp(Simulation.Team2.UAV, out u2h, out u2s);
 
-			if (thdiff[0] != 0f) // Team 1 tank heading
+			// Interpolate Team 1 Tank Heading
+			if (t1h)
 			{
-				int dir = Math.Sign(thdiff[0]);
-				float nh = (Math.Abs(thdiff[0]) <= TURN_RATE) ? tth[0] : (th[0] + (TURN_RATE * dir)) % 360;
-				Simulation.Team1.Tank.CurrentHeading = nh;
+				float diff = getAngleDiff(Simulation.Team1.Tank);
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < TURN_RATE;
+				Simulation.Team1.Tank.CurrentHeading = angleClamp(Simulation.Team1.Tank.CurrentHeading + (substep ? diff : TURN_RATE * dir));
 			}
-			if (thdiff[1] != 0f) // Team 2 tank heading
+			// Interpolate Team 1 UAV Heading
+			if (u1h)
 			{
-				int dir = Math.Sign(thdiff[1]);
-				float nh = (Math.Abs(thdiff[1]) <= TURN_RATE) ? tth[1] : (th[1] + (TURN_RATE * dir)) % 360;
-				Simulation.Team2.Tank.CurrentHeading = nh;
-			}
-			if (uhdiff[0] != 0f) // Team 1 uav heading
-			{
-				int dir = Math.Sign(uhdiff[0]);
-				float nh = (Math.Abs(uhdiff[0]) <= TURN_RATE) ? uth[0] : (uh[0] + (TURN_RATE * dir)) % 360;
-				Simulation.Team1.UAV.CurrentHeading = nh;
-			}
-			if (uhdiff[1] != 0f) // Team 2 uav heading
-			{
-				int dir = Math.Sign(uhdiff[1]);
-				float nh = (Math.Abs(uhdiff[1]) <= TURN_RATE) ? uth[1] : (uh[1] + (TURN_RATE * dir)) % 360;
-				Simulation.Team2.UAV.CurrentHeading = nh;
+				float diff = getAngleDiff(Simulation.Team1.UAV);
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < TURN_RATE;
+				Simulation.Team1.UAV.CurrentHeading = angleClamp(Simulation.Team1.UAV.CurrentHeading + (substep ? diff : TURN_RATE * dir));
 			}
 
-			if (tsdiff[0] != 0f) // Team 1 tank speed
+			// Interpolate Team 2 Tank Heading
+			if (t2h)
 			{
-				int dir = Math.Sign(tsdiff[0]);
-				float ns = (Math.Abs(tsdiff[0]) <= ACC_RATE) ? tts[0] : (ts[0] + (ACC_RATE * dir));
-				Simulation.Team1.Tank.CurrentSpeed = ns;
+				float diff = getAngleDiff(Simulation.Team2.Tank);
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < TURN_RATE;
+				Simulation.Team2.Tank.CurrentHeading = angleClamp(Simulation.Team2.Tank.CurrentHeading + (substep ? diff : TURN_RATE * dir));
 			}
-			if (tsdiff[1] != 0f) // Team 2 tank speed
+			// Interpolate Team 2 UAV Heading
+			if (u2h)
 			{
-				int dir = Math.Sign(tsdiff[1]);
-				float ns = (Math.Abs(tsdiff[1]) <= ACC_RATE) ? tts[1] : (ts[1] + (ACC_RATE * dir));
-				Simulation.Team2.Tank.CurrentSpeed = ns;
-			}
-			if (usdiff[0] != 0f) // Team 1 uav speed
-			{
-				int dir = Math.Sign(usdiff[0]);
-				float ns = (Math.Abs(usdiff[0]) <= ACC_RATE) ? uts[0] : (us[0] + (ACC_RATE * dir));
-				Simulation.Team1.UAV.CurrentSpeed = ns;
-			}
-			if (usdiff[1] != 0f) // Team 2 uav speed
-			{
-				int dir = Math.Sign(usdiff[1]);
-				float nh = (Math.Abs(usdiff[1]) <= ACC_RATE) ? uts[1] : (us[1] + (ACC_RATE * dir));
-				Simulation.Team2.UAV.CurrentSpeed = nh;
+				float diff = getAngleDiff(Simulation.Team2.UAV);
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < TURN_RATE;
+				Simulation.Team2.UAV.CurrentHeading = angleClamp(Simulation.Team2.UAV.CurrentHeading + (substep ? diff : TURN_RATE * dir));
 			}
 		}
 

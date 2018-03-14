@@ -25,9 +25,12 @@ namespace NGSim
 				UAVHeading = API.GetRandomInteger(360);
 				TankSpeed = API.GetRandomInteger(14);
 				UAVSpeed = 7 + API.GetRandomInteger(20);
-				API.SetTankHeading(TankHeading);
+
+                if (!API.IsTankTurning())
+                    API.SetTankHeading(TankHeading);
 				API.SetTankSpeed(TankSpeed);
-				API.SetUAVHeading(UAVHeading);
+                if (!API.IsUAVTurning())
+				    API.SetUAVHeading(UAVHeading);
 				API.SetUAVSpeed(UAVSpeed);
 				lastChange = 30;
 			}

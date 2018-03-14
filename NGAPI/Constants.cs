@@ -12,7 +12,7 @@ namespace NGAPI
 		internal static readonly Position WorldSize = new Position(1000, 1000); // The size of the world, the valid place for entities to stay, centered on 0, 0
 		internal const int boomRange = 22;  ///meters, 22 meters is effective blast radius of 120mm cannon on M1 Abrams
 		internal const int firingRange = 4000;  ///meters, 4000 meters is firing range of M1 Abrams cannon
-        internal const float UAVAltitude = 1500;
+		internal const float UAVAltitude = 1500;
 
 		internal const float maxUAVSpeed = 26f;  /// meters per second
 		internal const float minUAVSpeed = 7f;  /// meters per second
@@ -27,7 +27,7 @@ namespace NGAPI
 		internal const float maxUAVTurningSpeed = 1f; ///angles per second
 		internal const float maxTankTurningSpeed = 1f; ///angles per second
 		internal const float UAVScanRange = 100f;  ///meters
-        internal const float TankScanRange = 10f;
+		internal const float TankScanRange = 10f;
 		internal const float missileSpeed = 1f; ///meters per second
 	}
 }

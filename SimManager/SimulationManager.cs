@@ -165,6 +165,10 @@ namespace NGSim
 			Simulation.Team2.Tank.Position = new Position(randX, randY);
 			Simulation.Team2.UAV.Position = new Position(randX, randY);
 			logger.Info($"Team 2 Initial Position {Simulation.Team2.Tank.Position.X} {Simulation.Team2.Tank.Position.Y}");
+
+			//Reset Team Missiles
+			Simulation.Team1.Tank.MisslesLeft = 15;
+			Simulation.Team2.Tank.MisslesLeft = 15;
 		}
 
 		public void UpdateGameState()
@@ -436,10 +440,11 @@ namespace NGSim
 			List<float> XMissiles = new List<float>();
 			List<float> YMissiles = new List<float>();
 
+			//Do the same for each missile
 			foreach (Missile missile in MissileInAir)
 			{
-				float XMissile = 30 * (float)Math.Cos(missile.CurrentHeading);
-				float YMissile = 30 * (float)Math.Sin(missile.CurrentHeading);
+				float XMissile = 30 * (float)Math.Cos(missile.CurrentHeading * Math.PI/180);
+				float YMissile = 30 * (float)Math.Sin(missile.CurrentHeading * Math.PI/180);
 				XMissiles.Add(XMissile);
 				YMissiles.Add(YMissile);
 			}

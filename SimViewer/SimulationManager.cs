@@ -20,17 +20,19 @@ namespace NGSim
 		private GraphicsDevice _device;
 
 		private List<Position> mposList = new List<Position>();
+		private List<float> mheadingList = new List<float>();
 
 		private WorldModel _world;
 		private CModel _uavModel;
 		private CModel _tankModel;
+		private CModel _missModel;
 
 		private readonly SpriteBatch _sb;
 		private readonly Texture2D _blankTex;
 		private readonly SpriteFont _font;
 		private readonly Rectangle _lRect;
 
-        private Vector2 origin = new Vector2(0, 0);
+		private Vector2 origin = new Vector2(0, 0);
 
 
 		public SimulationManager(GraphicsDevice device, ContentManager content)
@@ -47,6 +49,7 @@ namespace NGSim
 			_world = new WorldModel(device, (int)Constants.WorldSize.X / 10);
 			_uavModel = new CModel(device, content.Load<Model>("UAV"));
 			_tankModel = new CModel(device, content.Load<Model>("tank"));
+			_missModel = new CModel(device, content.Load<Model>("missile"));
 
 			_font = content.Load<SpriteFont>("debugfont");
 			_lRect = new Rectangle(0, 0, 130, 70);
@@ -81,6 +84,7 @@ namespace NGSim
 				byte team = msg.ReadByte();
 
 				mposList.Add(mpos);
+				mheadingList.Add(heading);
 			}
 		}
 
@@ -104,8 +108,15 @@ namespace NGSim
 			_uavModel.Render(camera, new Vector3(u1.X / 10, 10, u1.Y / 10), u1h, Color.Cyan);
 			_uavModel.Render(camera, new Vector3(u2.X / 10, 10, u2.Y / 10), u2h, Color.Pink);
 
-			// Draw legend
-			_sb.Begin();
+			for (int i = 0; i < mposList.Count; i++)
+			{
+				_missModel.Render(camera, new Vector3(mposList[i].X / 10, 1, mposList[i].Y / 10), mheadingList[i], Color.Black);
+			}
+			mposList.Clear();
+		
+
+		// Draw legend
+		_sb.Begin();
 			_sb.Draw(_blankTex, _lRect, Color.White);
 			_sb.DrawString(_font, "Blue = Team 1 Tank", new Vector2(5, 5), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Cyan = Team 1 UAV", new Vector2(5, 18), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);

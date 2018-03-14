@@ -26,11 +26,11 @@ namespace NGSim
 				TankSpeed = API.GetRandomInteger(14);
 				UAVSpeed = 7 + API.GetRandomInteger(20);
 
-                if (!API.IsTankTurning())
-                    API.SetTankHeading(TankHeading);
+				if (!API.IsTankTurning())
+					API.SetTankHeading(TankHeading);
 				API.SetTankSpeed(TankSpeed);
-                if (!API.IsUAVTurning())
-				    API.SetUAVHeading(UAVHeading);
+				if (!API.IsUAVTurning())
+					API.SetUAVHeading(UAVHeading);
 				API.SetUAVSpeed(UAVSpeed);
 				lastChange = 30;
 			}
@@ -57,10 +57,7 @@ namespace NGSim
 				headingToPositionUAV = UAVPosition + UAVSpeed * UAVDirection;
 			}
 
-			if (API.DetectedThisTurn())
-			{
-				API.Fire(API.GetLastKnownPosition());
-			}
+			API.Fire(Origin);
 		}
 	}
 }

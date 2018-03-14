@@ -74,7 +74,7 @@ namespace NGSim
 
 		protected override void Draw(GameTime gameTime)
 		{
-			GraphicsDevice.Clear(Color.Black);
+			GraphicsDevice.Clear(new Color(153, 217, 234));
 
 			Camera camera = CameraManager.ActiveCamera;
 

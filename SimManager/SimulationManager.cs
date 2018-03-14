@@ -519,6 +519,40 @@ namespace NGSim
 				bool substep = Math.Abs(diff) < TURN_RATE;
 				Simulation.Team2.UAV.CurrentHeading = angleClamp(Simulation.Team2.UAV.CurrentHeading + (substep ? diff : TURN_RATE * dir));
 			}
+
+			// Interpolate Team 1 Tank Speed
+			if (t1s)
+			{
+				float diff = Simulation.Team1.Tank.TargetSpeed - Simulation.Team1.Tank.CurrentSpeed;
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < ACC_RATE;
+				Simulation.Team1.Tank.CurrentSpeed = angleClamp(Simulation.Team1.Tank.CurrentSpeed + (substep ? diff : ACC_RATE * dir));
+			}
+			// Interpolate Team 1 UAV Speed
+			if (u1s)
+			{
+				float diff = Simulation.Team1.UAV.TargetSpeed - Simulation.Team1.UAV.CurrentSpeed;
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < ACC_RATE;
+				Simulation.Team1.UAV.CurrentSpeed = angleClamp(Simulation.Team1.UAV.CurrentSpeed + (substep ? diff : ACC_RATE * dir));
+			}
+
+			// Interpolate Team 2 Tank Speed
+			if (t2s)
+			{
+				float diff = Simulation.Team2.Tank.TargetSpeed - Simulation.Team2.Tank.CurrentSpeed;
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < ACC_RATE;
+				Simulation.Team2.Tank.CurrentSpeed = angleClamp(Simulation.Team2.Tank.CurrentSpeed + (substep ? diff : ACC_RATE * dir));
+			}
+			// Interpolate Team 2 UAV Speed
+			if (u2s)
+			{
+				float diff = Simulation.Team2.UAV.TargetSpeed - Simulation.Team2.UAV.CurrentSpeed;
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < ACC_RATE;
+				Simulation.Team2.UAV.CurrentSpeed = angleClamp(Simulation.Team2.UAV.CurrentSpeed + (substep ? diff : ACC_RATE * dir));
+			}
 		}
 
 		private void UAVScan()

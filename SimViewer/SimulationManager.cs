@@ -105,8 +105,8 @@ namespace NGSim
 			float u2h = Simulation.Team2.UAV.CurrentHeading;
 			_tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Blue);
 			_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t2h, Color.Red);
-			_uavModel.Render(camera, new Vector3(u1.X / 10, 10, u1.Y / 10), u1h, Color.Cyan);
-			_uavModel.Render(camera, new Vector3(u2.X / 10, 10, u2.Y / 10), u2h, Color.Pink);
+			_uavModel.TextureRender(camera, new Vector3(u1.X / 10, 10, u1.Y / 10), u1h);
+			_uavModel.TextureRender(camera, new Vector3(u2.X / 10, 10, u2.Y / 10), u2h);
 
 			for (int i = 0; i < mposList.Count; i++)
 			{

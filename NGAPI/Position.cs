@@ -72,5 +72,12 @@ namespace NGAPI
 		{
 			return new Position(pos.X / f, pos.Y / f);
 		}
+
+		public override string ToString()
+		{
+			String xStr = String.Format("{0:N1}", X);
+			String ySTr = String.Format("{0:N1}", Y);
+			return (xStr + "," + ySTr);
+		}
 	}
 }

@@ -20,6 +20,7 @@ namespace NGSim
 		//when it is 2, N games are ran the winning percentage is displayed
 		public int gameRunningMode;
 		public int NGames;
+		private int CurrentGameNumber;
 		private int gameResult; //0 means game is running, 1 means Team1 won, 2  means Team2 won, 3 means a draw
 		private int numMoves;
 		private bool switchedGameMode = false;  //prevents race condition when switching the mode
@@ -33,6 +34,10 @@ namespace NGSim
 		private List<Missile> MissileInAir = new List<Missile>();
 
 		public Boolean running = false;
+
+		private int numberOfVictoriesTeam1;
+		private int numberOfVictoriesTeam2;
+		private int numberOfDraws;
 
 		public SimulationManager()
 		{
@@ -113,11 +118,11 @@ namespace NGSim
 
 		public void Run500Games()
 		{
-			int numberOfVictoriesTeam1 = 0;
-			int numberOfVictoriesTeam2 = 0;
-			int numberOfDraws = 0;
+			numberOfVictoriesTeam1 = 0;
+			numberOfVictoriesTeam2 = 0;
+			numberOfDraws = 0;
 
-			for(int i=0; i<500;i++)
+			for(CurrentGameNumber = 0; CurrentGameNumber<500;CurrentGameNumber++)
 			{
 				RunOneGame();
 				if(gameResult == 1)
@@ -139,11 +144,11 @@ namespace NGSim
 
 		public void RunNGames()
 		{
-			int numberOfVictoriesTeam1 = 0;
-			int numberOfVictoriesTeam2 = 0;
-			int numberOfDraws = 0;
+			numberOfVictoriesTeam1 = 0;
+			numberOfVictoriesTeam2 = 0;
+			numberOfDraws = 0;
 
-			for (int i = 0; i < NGames; i++)
+			for (CurrentGameNumber = 0; CurrentGameNumber < 500; CurrentGameNumber++)
 			{
 				RunOneGame();
 				if (gameResult == 1)
@@ -179,6 +184,8 @@ namespace NGSim
 				UpdateGameState();
 				numMoves++;
 			}
+
+			SimManagerWindow.MyStateInfoTextArea.GameReset();
 		}
 
 		public void SetInitialRandomPositions()
@@ -228,6 +235,45 @@ namespace NGSim
 			runUserAlgorithms();
 			// Send network update packets
 			sendNetworkPackets();
+			// Write relevant information to the TextAreas
+			writeStateInfo();
+			
+		}
+
+		private void writeStateInfo()
+		{
+			System.Windows.Application.Current.Dispatcher.Invoke(() =>
+			{
+				SimManagerWindow.MyStateInfoTextArea.RedTankXY = Simulation.Team1.Tank.Position;
+				SimManagerWindow.MyStateInfoTextArea.RedUAVXY = Simulation.Team1.UAV.Position;
+				SimManagerWindow.MyStateInfoTextArea.RedMissilesRemaining = Simulation.Team1.Tank.MisslesLeft;
+				SimManagerWindow.MyStateInfoTextArea.LastKnownBlueTankXY = Simulation.Team1.UAV.LastKnownPosition;
+
+				SimManagerWindow.MyStateInfoTextArea.BlueTankXY = Simulation.Team2.Tank.Position;
+				SimManagerWindow.MyStateInfoTextArea.BlueUAVXY = Simulation.Team2.UAV.Position;
+				SimManagerWindow.MyStateInfoTextArea.BlueMissilesRemaining = Simulation.Team2.Tank.MisslesLeft;
+				SimManagerWindow.MyStateInfoTextArea.LastKnownRedTankXY = Simulation.Team2.UAV.LastKnownPosition;
+
+				SimManagerWindow.MyStateInfoTextArea.TurnsElapsed = numMoves;
+				if (CurrentGameNumber != 0)
+				{
+					SimManagerWindow.MyStateInfoTextArea.WinPercent = numberOfVictoriesTeam1 / (CurrentGameNumber + 1);
+				}
+				else
+				{
+					SimManagerWindow.MyStateInfoTextArea.WinPercent = 0;
+				}
+				SimManagerWindow.MyStateInfoTextArea.GamesRun = CurrentGameNumber + 1;
+
+				if (Simulation.Team1.Missiles.Count > 0)
+				{
+					SimManagerWindow.MyStateInfoTextArea.RedMissileXY = Simulation.Team1.Missiles[0].CurrentPostion;
+				}
+				if (Simulation.Team2.Missiles.Count > 0)
+				{
+					SimManagerWindow.MyStateInfoTextArea.BlueMissileXY = Simulation.Team2.Missiles[0].CurrentPostion;
+				}
+			});
 		}
 
 		private void sendNetworkPackets()
@@ -484,28 +530,6 @@ namespace NGSim
                 //MissileInAir.ForEach((missile) => { missile.CurrentPostion = new Position(missile.CurrentPostion.X + XMissiles[i], missile.CurrentPostion.Y + YMissiles[i]); });
                 MissileInAir[i].CurrentPostion = new Position(MissileInAir[i].CurrentPostion.X + XMissiles[i], MissileInAir[i].CurrentPostion.Y + YMissiles[i]);
 			}
-
-			System.Windows.Application.Current.Dispatcher.Invoke(() =>
-			{
-				SimManagerWindow.MyStateInfoTextArea.RedTankXY = Simulation.Team1.Tank.Position;
-				SimManagerWindow.MyStateInfoTextArea.RedUAVXY = Simulation.Team1.UAV.Position;
-				SimManagerWindow.MyStateInfoTextArea.RedMissilesRemaining = Simulation.Team1.Tank.MisslesLeft;
-				SimManagerWindow.MyStateInfoTextArea.LastKnownBlueTankXY = Simulation.Team1.UAV.LastKnownPosition;
-
-				SimManagerWindow.MyStateInfoTextArea.BlueTankXY = Simulation.Team2.Tank.Position;
-				SimManagerWindow.MyStateInfoTextArea.BlueUAVXY = Simulation.Team2.UAV.Position;
-				SimManagerWindow.MyStateInfoTextArea.BlueMissilesRemaining = Simulation.Team2.Tank.MisslesLeft;
-				SimManagerWindow.MyStateInfoTextArea.LastKnownRedTankXY = Simulation.Team2.UAV.LastKnownPosition;
-
-				if(Simulation.Team1.Missiles.Count > 0)
-				{
-					SimManagerWindow.MyStateInfoTextArea.RedMissileXY = Simulation.Team1.Missiles[0].CurrentPostion;
-				}
-				if(Simulation.Team2.Missiles.Count > 0)
-				{
-					SimManagerWindow.MyStateInfoTextArea.BlueMissileXY = Simulation.Team2.Missiles[0].CurrentPostion;
-				}
-			});
 		}
 
 		private void updateEntityVelocities()

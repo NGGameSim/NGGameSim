@@ -136,108 +136,72 @@ namespace NGSim
 	{
 		public StateInfoTextAreaHandler()
 		{
-			Control = new System.Windows.Controls.TextBox{ IsReadOnly = true };
-			Control.AppendText("\t\tRed Team\t\tBlue Team\n");
-			Control.AppendText("UAV Position:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Tank Position:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Missile Position:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Missiles Left:\t0\t\t\t0\n");
-			Control.AppendText("Enemy Last Seen:\t0,0\t\t\t0,0\n");
-			Control.AppendText("\n");
-			Control.AppendText("Game #1\n");
-			Control.AppendText("Turns Elapsed: 0\n");
-			Control.AppendText("Red Win %: 50%\t\t Blue Win %: 50%\n");
-			Control.AppendText("\n");
-			Control.AppendText("Warnings:\n");
+			Control = new System.Windows.Controls.TextBox{ IsReadOnly = true, TextWrapping = System.Windows.TextWrapping.Wrap };
+			string text = String.Format("{0,35} {1,35}", "Red Team", "Blue Team\n");
+			text += String.Format("{0,-18} {1,13} {2,40}\n", "UAV Position:", RedUAVXY, BlueUAVXY);
+			text += String.Format("{0,-18} {1,14} {2,40}\n", "Tank Position:", RedTankXY, BlueTankXY);
+			text += String.Format("{0,-18} {1,13} {2,40}\n", "Missile Position:", RedMissileXY, BlueMissileXY);
+			text += String.Format("{0,-18} {1,18} {2,42}\n", "Missiles Left:", RedMissilesRemaining, BlueMissilesRemaining);
+			text += String.Format("{0,-18} {1,10} {2,40}\n\n", "Enemy Last Seen:", LastKnownBlueTankXY, LastKnownRedTankXY);
+			text += String.Format("Game #{0}\n", GamesRun);
+			text += String.Format("Turns Elapsed: {0}\n", TurnsElapsed);
+			if (GamesRun <= 1)
+			{
+				text += String.Format("Red Win: {0,10}%\t{1,10}{2,10}%\n", "0", "Blue Win: ", "0");
+			}
+			else
+			{
+				text += String.Format("Red Win: {0,10}%\t{1,10}{2,10}%\n", WinPercent, "Blue Win: ", (100 - WinPercent));
+			}
+			text += String.Format("\nWarnings:\n{0}", Warnings);
+			Control.AppendText(text);
 			PropertyChanged += UpdateText;
 		}
 
 		private void UpdateText(object sender, EventArgs e)
 		{
 			Control.Clear();
-			Control.AppendText("\t\tRed Team\t\tBlue Team\n");
-			Control.AppendText("UAV Position:\t");
-			Control.AppendText(RedUAVXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(RedUAVXY.Y.ToString());
-			Control.AppendText("\t\t\t");
-			Control.AppendText(BlueUAVXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(BlueUAVXY.Y.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Tank Position:\t");
-			Control.AppendText(RedTankXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(RedTankXY.Y.ToString());
-			Control.AppendText("\t\t\t");
-			Control.AppendText(BlueTankXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(BlueTankXY.Y.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Missile Position:\t");
-			Control.AppendText(RedMissileXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(RedMissileXY.Y.ToString());
-			Control.AppendText("\t\t\t");
-			Control.AppendText(BlueMissileXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(BlueMissileXY.Y.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Missiles Left:\t");
-			Control.AppendText(RedMissilesRemaining.ToString());
-			Control.AppendText("\t\t\t");
-			Control.AppendText(BlueMissilesRemaining.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Enemy Last Seen:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Enemy Last Seen:\t");
-			Control.AppendText(LastKnownBlueTankXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(LastKnownBlueTankXY.Y.ToString());
-			Control.AppendText("\t\t\t");
-			Control.AppendText(lastKnownRedTankXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(lastKnownRedTankXY.Y.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("\n");
-			Control.AppendText("Game #");
-			Control.AppendText(GamesRun.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Turns Elapsed: ");
-			Control.AppendText(TurnsElapsed.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Red Win %: ");
-			Control.AppendText(WinPercent.ToString());
-			Control.AppendText("%\t\t Blue Win %: ");
-			Control.AppendText((100 - WinPercent).ToString());
-			Control.AppendText("%\n");
-
-			Control.AppendText("\n");
-			Control.AppendText("Warnings:\n");
-			Control.AppendText(Warnings);
+			string text = String.Format("{0,35} {1,35}", "Red Team", "Blue Team\n");
+			text += String.Format("{0,-18} {1,13} {2,40}\n", "UAV Position:", RedUAVXY, BlueUAVXY);
+			text += String.Format("{0,-18} {1,14} {2,40}\n", "Tank Position:", RedTankXY, BlueTankXY);
+			text += String.Format("{0,-18} {1,13} {2,40}\n", "Missile Position:", RedMissileXY, BlueMissileXY);
+			text += String.Format("{0,-18} {1,18} {2,42}\n", "Missiles Left:", RedMissilesRemaining, BlueMissilesRemaining);
+			text += String.Format("{0,-18} {1,10} {2,40}\n\n", "Enemy Last Seen:", LastKnownBlueTankXY, LastKnownRedTankXY);
+			text += String.Format("Game #{0}\n", GamesRun);
+			text += String.Format("Turns Elapsed: {0}\n", TurnsElapsed);
+			if(GamesRun <= 1)
+			{
+				text += String.Format("Red Win: {0,10}%\t{1,10}{2,10}%\n", "0", "Blue Win: ", "0");
+			}
+			else
+			{
+				text += String.Format("Red Win: {0,10}%\t{1,10}{2,10}%\n", WinPercent, "Blue Win: ", (100 - WinPercent));
+			}
+			text += String.Format("\nWarnings:\n{0}", Warnings);
+			Control.AppendText(text);
 		}
 
 		public void GameReset()
 		{
 			Control.Clear();
-			Control.AppendText("\t\tRed Team\t\tBlue Team\n");
-			Control.AppendText("UAV Position:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Tank Position:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Missile Position:\t0,0\t\t\t0,0\n");
-			Control.AppendText("Missiles Left:\t0\t\t\t0\n");
-			Control.AppendText("Enemy Last Seen:\t0,0\t\t\t0,0\n");
-			Control.AppendText("\n");
-			Control.AppendText("Game #1\n");
-			Control.AppendText("Turns Elapsed: 0\n");
-			Control.AppendText("Red Win %: 50%\t\t Blue Win %: 50%\n");
-			Control.AppendText("\n");
-			Control.AppendText("Warnings:\n");
+			var zeroPosition = new Position(0, 0);
+			redUAVXY = zeroPosition;
+			blueUAVXY = zeroPosition;
+			redTankXY = zeroPosition;
+			blueTankXY = zeroPosition;
+			redMissileXY = zeroPosition;
+			blueMissileXY = zeroPosition;
+			lastKnownRedTankXY = zeroPosition;
+			lastKnownBlueTankXY = zeroPosition;
+
+			redMissilesRemaining = 0;
+			blueMissilesRemaining = 0;
+			turnsElapsed = 0;
+			winPercent = 0;
+			warnings = "";
+
+			EventArgs args = new EventArgs();
+			OnPropertyChanged(args);
 		}
 
 		public event EventHandler PropertyChanged;
@@ -309,11 +273,11 @@ namespace NGSim
 			set { lastKnownRedTankXY = value; OnPropertyChanged(EventArgs.Empty); }
 		}
 
-		private Position lastKnownblueTankXY;
+		private Position lastKnownBlueTankXY;
 		public Position LastKnownBlueTankXY
 		{
-			get { return lastKnownblueTankXY; }
-			set { lastKnownblueTankXY = value; OnPropertyChanged(EventArgs.Empty); }
+			get { return lastKnownBlueTankXY; }
+			set { lastKnownBlueTankXY = value; OnPropertyChanged(EventArgs.Empty); }
 		}
 
 		private int turnsElapsed;

@@ -108,6 +108,7 @@ namespace NGSim
 			_uavModel.TextureRender(camera, new Vector3(u1.X / 10, 10, u1.Y / 10), u1h);
 			_uavModel.TextureRender(camera, new Vector3(u2.X / 10, 10, u2.Y / 10), u2h);
 
+			//Draw all missiles
 			for (int i = 0; i < mposList.Count; i++)
 			{
 				_missModel.Render(camera, new Vector3(mposList[i].X / 10, 1, mposList[i].Y / 10), mheadingList[i], Color.Black);

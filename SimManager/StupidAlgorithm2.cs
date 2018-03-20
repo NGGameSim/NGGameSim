@@ -33,7 +33,7 @@ namespace NGSim
 			}
 
 			//Check if tank is heading out of bounds
-			Position tankDirection = new Position((float)Math.Cos(TankHeading * Math.PI / 180), (float)Math.Sin(TankHeading * Math.PI / 180));
+			/*Position tankDirection = new Position((float)Math.Cos(TankHeading * Math.PI / 180), (float)Math.Sin(TankHeading * Math.PI / 180));
 			Position headingToPositionTank = TankPosition + TankSpeed * tankDirection;
 			while (headingToPositionTank.X >= 500 || headingToPositionTank.X <= -500 || headingToPositionTank.Y >= 500 || headingToPositionTank.Y <= -500)
 			{
@@ -41,7 +41,6 @@ namespace NGSim
 				API.SetTankHeading(TankHeading);
 				tankDirection = new Position((float)Math.Cos(TankHeading * Math.PI / 180), (float)Math.Sin(TankHeading * Math.PI / 180));
 				headingToPositionTank = TankPosition + TankSpeed * tankDirection;
-			}
 
 			//Check if UAV is heading out of bounds
 			Position UAVDirection = new Position((float)Math.Cos(UAVHeading * Math.PI / 180), (float)Math.Sin(UAVHeading * Math.PI / 180));
@@ -52,7 +51,7 @@ namespace NGSim
 				API.SetUAVHeading(UAVHeading);
 				UAVDirection = new Position((float)Math.Cos(UAVHeading * Math.PI / 180), (float)Math.Sin(UAVHeading * Math.PI / 180));
 				headingToPositionUAV = UAVPosition + UAVSpeed * UAVDirection;
-			}
+			}*/
 
 			API.Fire(Origin);
 		}

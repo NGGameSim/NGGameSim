@@ -76,6 +76,7 @@ namespace NGSim
 		public void TranslateMissilePacket(NetIncomingMessage msg)
 		{
 			int mcount = msg.ReadInt32();
+			mposList.Clear();
 
 			for (int i = 0; i < mcount; ++i)
 			{
@@ -113,7 +114,7 @@ namespace NGSim
 			{
 				_missModel.Render(camera, new Vector3(mposList[i].X / 10, 1, mposList[i].Y / 10), mheadingList[i], Color.Black);
 			}
-			mposList.Clear();
+			
 		
 
 		// Draw legend

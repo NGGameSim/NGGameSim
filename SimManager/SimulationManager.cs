@@ -351,7 +351,7 @@ namespace NGSim
 
 				double dx = missile2.Target.X - missile2.Source.X;
 				double dy = missile2.Target.Y - missile2.Source.Y;
-				missile2.CurrentHeading = (float)(Math.Atan2(dx, dy) * (180 / Math.PI));
+				missile2.CurrentHeading = (float)(Math.Atan2(dy, dx) * (180 / Math.PI));
 				if (missile2.CurrentHeading < 0) { missile2.CurrentHeading = missile2.CurrentHeading + 360; }
 
 				//TARGET TESTING

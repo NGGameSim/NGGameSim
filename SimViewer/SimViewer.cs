@@ -39,7 +39,7 @@ namespace NGSim
 			InputManager.Initialize();
 
 			// Create the camera
-			CameraManager.Set(new ArcBallCamera(GraphicsDevice, distance: 100f, yaw: 45f, pitch: 30f), new ArcBallCameraBehavior());
+			CameraManager.Set(new ArcBallCamera(GraphicsDevice, distance: 200f, yaw: 45f, pitch: 35f), new ArcBallCameraBehavior());
 			(CameraManager.ActiveCamera as ArcBallCamera).MinDistance = 50f;
 	  
 			// Setup the network stuff

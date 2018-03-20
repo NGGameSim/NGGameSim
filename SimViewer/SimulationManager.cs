@@ -49,7 +49,7 @@ namespace NGSim
 			_world = new WorldModel(device, (int)Constants.WorldSize.X / 10);
 			_uavModel = new CModel(device, content.Load<Model>("UAV"));
 			_tankModel = new CModel(device, content.Load<Model>("tank"));
-			_missModel = new CModel(device, content.Load<Model>("missile"));
+			_missModel = new CModel(device, content.Load<Model>("sphere_missile"));
 
 			_font = content.Load<SpriteFont>("debugfont");
 			_lRect = new Rectangle(0, 0, 130, 70);

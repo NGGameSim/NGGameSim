@@ -21,7 +21,7 @@ namespace NGSim
 		private TextBox NGameTextBox;
 		private Button LaunchButton;
 		public static StateInfoTextArea MyStateInfoTextArea;
-		private NetworkInfoTextArea MyNetworkInfoTextArea;
+		public static NetworkInfoTextArea MyNetworkInfoTextArea;
 		private Button PlayPauseButton;
 		private Button GodModeButton;
 		private OpenFileDialog AlgorithmOpenFile1;

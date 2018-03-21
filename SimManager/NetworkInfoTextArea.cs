@@ -28,7 +28,7 @@ namespace NGSim
 			set { Handler.BitRate = value; }
 		}
 
-		public string ConnectionStatus
+		public bool ConnectionStatus
 		{
 			get { return Handler.ConnectionStatus; }
 			set { Handler.ConnectionStatus = value; }
@@ -52,7 +52,7 @@ namespace NGSim
 		{
 			string View { get; set; }
 			string BitRate { get; set; }
-			string ConnectionStatus { get; set; }
+			bool ConnectionStatus { get; set; }
 			string Warnings { get; set; }
 			event EventHandler PropertyChanged;
 			void OnPropertyChanged(EventArgs e);
@@ -65,7 +65,8 @@ namespace NGSim
 		{
 			Control = new System.Windows.Controls.TextBox{ IsReadOnly = true };
 			Control.AppendText("View: \tNormal\n");
-			Control.AppendText("BitRate: \t0 b/s");
+			Control.AppendText("BitRate: \t0 bytes/second\n");
+			Control.AppendText("Connection Status: \tN/A");
 			Control.AppendText("\n");
 			Control.AppendText("Warnings:\n");
 			PropertyChanged += UpdateText;
@@ -82,6 +83,15 @@ namespace NGSim
 			Control.AppendText("BitRate: \t");
 			Control.AppendText(BitRate);
 			Control.AppendText("\n");
+
+			Control.AppendText("Connection Status: \t");
+			if (ConnectionStatus)
+			{
+				Control.AppendText("Connected\n");
+			} else
+			{
+				Control.AppendText("Not Connected\n");
+			}
 
 			Control.AppendText("\n");
 			Control.AppendText("Warnings:\n");
@@ -108,8 +118,8 @@ namespace NGSim
 			set { bitRate = value; OnPropertyChanged(EventArgs.Empty); }
 		}
 
-		private string connectionStatus;
-		public string ConnectionStatus
+		private bool connectionStatus;
+		public bool ConnectionStatus
 		{
 			get { return connectionStatus; }
 			set { connectionStatus = value; OnPropertyChanged(EventArgs.Empty); }

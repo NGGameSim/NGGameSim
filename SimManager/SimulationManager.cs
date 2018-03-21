@@ -4,6 +4,7 @@ using System;
 using static NGAPI.Constants;
 using NLog;
 using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace NGSim
 {
@@ -38,6 +39,8 @@ namespace NGSim
 		private int numberOfVictoriesTeam1;
 		private int numberOfVictoriesTeam2;
 		private int numberOfDraws;
+
+		private Stopwatch myStopwatch = new Stopwatch();
 
 		public SimulationManager()
 		{
@@ -233,11 +236,27 @@ namespace NGSim
 			checkMissileImpacts();
 			// Run the user algorithms
 			runUserAlgorithms();
-			// Send network update packets
+
+			// Send network update packets with timing
+			var sentBytesInitial = Server.Instance.TotalSentBytes;
+			myStopwatch.Start();
 			sendNetworkPackets();
+			myStopwatch.Stop();
+			var bytesSent = Server.Instance.TotalSentBytes - sentBytesInitial;
+			var bytesPerSecond = bytesSent / (myStopwatch.ElapsedMilliseconds/ 1000);
+
 			// Write relevant information to the TextAreas
+			writeNetworkInfo(bytesPerSecond);
 			writeStateInfo();
 			
+		}
+
+		private void writeNetworkInfo(float bytesPerSec)
+		{
+			SimManagerWindow.MyNetworkInfoTextArea.BitRate = bytesPerSec.ToString();
+			SimManagerWindow.MyNetworkInfoTextArea.ConnectionStatus = Server.Instance.isConnected;
+			//SimManagerWindow.MyNetworkInfoTextArea.View
+			//SimManagerWindow.MyNetworkInfoTextArea.Warnings
 		}
 
 		private void writeStateInfo()

@@ -49,7 +49,7 @@ namespace NGSim
 			_world = new WorldModel(device, (int)Constants.WorldSize.X / 10);
 			_uavModel = new CModel(device, content.Load<Model>("UAV"));
 			_tankModel = new CModel(device, content.Load<Model>("tank"));
-			_missModel = new CModel(device, content.Load<Model>("missile"));
+			_missModel = new CModel(device, content.Load<Model>("sphere_missile"));
 
 			_font = content.Load<SpriteFont>("debugfont");
 			_lRect = new Rectangle(0, 0, 130, 70);
@@ -76,6 +76,7 @@ namespace NGSim
 		public void TranslateMissilePacket(NetIncomingMessage msg)
 		{
 			int mcount = msg.ReadInt32();
+			mposList.Clear();
 
 			for (int i = 0; i < mcount; ++i)
 			{
@@ -113,7 +114,7 @@ namespace NGSim
 			{
 				_missModel.Render(camera, new Vector3(mposList[i].X / 10, 1, mposList[i].Y / 10), mheadingList[i], Color.Black);
 			}
-			mposList.Clear();
+			
 		
 
 		// Draw legend

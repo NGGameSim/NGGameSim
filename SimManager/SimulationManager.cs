@@ -311,7 +311,7 @@ namespace NGSim
 				missile.Target = Simulation.Team1.Tank.MissileTarget;
 				missile.TurnsRemaining = (int)missile.Source.DistanceTo(missile.Target) / 30; //M1 Abrams missiles move at 300 m/s
 				Simulation.Team1.Tank.FiresThisTurn = false;
-				Simulation.Team1.Tank.Cooldown = 40;
+				Simulation.Team1.Tank.Cooldown = 4;
 				Simulation.Team1.Tank.MisslesLeft--;
 
 				//Calculate the Missile Heading
@@ -346,12 +346,12 @@ namespace NGSim
 				missile2.Target = Simulation.Team2.Tank.MissileTarget;
 				missile2.TurnsRemaining = (int)missile2.Source.DistanceTo(missile2.Target) / 30;
 				Simulation.Team2.Tank.FiresThisTurn = false;
-				Simulation.Team2.Tank.Cooldown = 40;
+				Simulation.Team2.Tank.Cooldown = 4;
 				Simulation.Team2.Tank.MisslesLeft--;
 
 				double dx = missile2.Target.X - missile2.Source.X;
 				double dy = missile2.Target.Y - missile2.Source.Y;
-				missile2.CurrentHeading = (float)(Math.Atan2(dx, dy) * (180 / Math.PI));
+				missile2.CurrentHeading = (float)(Math.Atan2(dy, dx) * (180 / Math.PI));
 				if (missile2.CurrentHeading < 0) { missile2.CurrentHeading = missile2.CurrentHeading + 360; }
 
 				//TARGET TESTING

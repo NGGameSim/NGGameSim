@@ -9,7 +9,7 @@ namespace NGAPI
 	internal static class Constants
 	{
 		internal const int maxTurns = 10000;   //maximum number of turns in one game 
-		internal static readonly Position WorldSize = new Position(1000, 1000); // The size of the world, the valid place for entities to stay, centered on 0, 0
+		internal static readonly Position WorldSize = new Position(2000, 2000); // The size of the world, the valid place for entities to stay, centered on 0, 0
 		internal const int boomRange = 22;  ///meters, 22 meters is effective blast radius of 120mm cannon on M1 Abrams
 		internal const int firingRange = 4000;  ///meters, 4000 meters is firing range of M1 Abrams cannon
 		internal const float UAVAltitude = 1500;

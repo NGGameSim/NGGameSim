@@ -26,6 +26,7 @@ namespace NGSim
 		private CModel _uavModel;
 		private CModel _tankModel;
 		private CModel _missModel;
+		private ConeModel _cone;
 
 		private readonly SpriteBatch _sb;
 		private readonly Texture2D _blankTex;
@@ -50,6 +51,7 @@ namespace NGSim
 			_uavModel = new CModel(device, content.Load<Model>("UAV"));
 			_tankModel = new CModel(device, content.Load<Model>("tank"));
 			_missModel = new CModel(device, content.Load<Model>("sphere_missile"));
+			_cone = new ConeModel(device);
 
 			_font = content.Load<SpriteFont>("debugfont");
 			_lRect = new Rectangle(0, 0, 130, 70);
@@ -114,6 +116,9 @@ namespace NGSim
 			{
 				_missModel.Render(camera, new Vector3(mposList[i].X / 10, 1, mposList[i].Y / 10), mheadingList[i], Color.Black);
 			}
+
+
+			_cone.Render(_device, Vector2.Zero, camera);
 			
 		
 

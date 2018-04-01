@@ -242,8 +242,15 @@ namespace NGSim
 			myStopwatch.Start();
 			sendNetworkPackets();
 			myStopwatch.Stop();
-			var bytesSent = Server.Instance.TotalSentBytes - sentBytesInitial;
-			var bytesPerSecond = bytesSent / (myStopwatch.ElapsedMilliseconds/ 1000);
+			Console.WriteLine(Server.Instance.TotalSentBytes);
+			var bytesSent = Convert.ToDouble(Server.Instance.TotalSentBytes - sentBytesInitial);
+			var elapsedSeconds = myStopwatch.ElapsedMilliseconds / 1000.0;
+			Console.WriteLine(elapsedSeconds);
+			Console.WriteLine(bytesSent);
+
+			var bytesPerSecond = bytesSent / elapsedSeconds;
+
+			Console.WriteLine(bytesPerSecond);
 
 			// Write relevant information to the TextAreas
 			writeNetworkInfo(bytesPerSecond);
@@ -251,12 +258,15 @@ namespace NGSim
 			
 		}
 
-		private void writeNetworkInfo(float bytesPerSec)
+		private void writeNetworkInfo(double bytesPerSec)
 		{
-			SimManagerWindow.MyNetworkInfoTextArea.BitRate = bytesPerSec.ToString();
-			SimManagerWindow.MyNetworkInfoTextArea.ConnectionStatus = Server.Instance.isConnected;
-			//SimManagerWindow.MyNetworkInfoTextArea.View
-			//SimManagerWindow.MyNetworkInfoTextArea.Warnings
+			System.Windows.Application.Current.Dispatcher.Invoke(() =>
+			{
+				SimManagerWindow.MyNetworkInfoTextArea.BitRate = bytesPerSec.ToString();
+				SimManagerWindow.MyNetworkInfoTextArea.ConnectionStatus = Server.Instance.isConnected;
+				SimManagerWindow.MyNetworkInfoTextArea.View = "Normal";
+				//SimManagerWindow.MyNetworkInfoTextArea.Warnings
+			});
 		}
 
 		private void writeStateInfo()

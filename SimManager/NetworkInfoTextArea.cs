@@ -74,7 +74,6 @@ namespace NGSim
 
 		private void UpdateText(object sender, EventArgs e)
 		{
-			Console.WriteLine("A field was changed...");
 			Control.Clear();
 			Control.AppendText("View: \t");
 			Control.AppendText(View);

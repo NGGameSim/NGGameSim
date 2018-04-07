@@ -64,13 +64,27 @@ namespace NGSim
 		{
 			var group = new GroupBox();
 
+			// Create Buttons to add to cells
+			var BlueUAVButton_ = new Button { Text = "BLUE UAV" };
+			BlueUAVButton_.Click += BlueUAVButton_Click;
+			var BlueTankButton_ = new Button { Text = "BLUE Tank" };
+			BlueTankButton_.Click += BlueTankButton_Click;
+			var RedUAVButton_ = new Button { Text = "Red UAV" };
+			RedUAVButton_.Click += RedUAVButton_Click;
+			var RedTankButton_ = new Button { Text = "Red Tank" };
+			RedTankButton_.Click += RedTankButton_Click;
+			var FreeCameraButton_ = new Button { Text = "FREE CAMERA" };
+			FreeCameraButton_.Click += FreeCameraButton_Click;
+			var ResetButton_ = new Button { Text = "RESET" };
+			ResetButton_.Click += ResetButton_Click;
+
 			// Create the top row controls (view modes)
-			BlueUAVButton = new TableCell(new Button { Text = "BLUE UAV" }, true);
-			BlueTankButton = new TableCell(new Button { Text = "BLUE TANK" }, true);
-			RedUAVButton = new TableCell(new Button { Text = "RED UAV" }, true);
-			RedTankButton = new TableCell(new Button { Text = "RED TANK" }, true);
-			FreeCameraButton = new TableCell(new Button { Text = "FREE CAMERA" }, true);
-			ResetButton = new TableCell(new Button { Text = "RESET" }, true);
+			BlueUAVButton = new TableCell(BlueUAVButton_, true);
+			BlueTankButton = new TableCell(BlueTankButton_, true);
+			RedUAVButton = new TableCell(RedUAVButton_, true);
+			RedTankButton = new TableCell(RedTankButton_, true);
+			FreeCameraButton = new TableCell(FreeCameraButton_, true);
+			ResetButton = new TableCell(ResetButton_, true);
 
 			// Layout for view modes
 			var entityControls = new TableLayout
@@ -121,10 +135,20 @@ namespace NGSim
 			TranslateUpButton = new Button() { Size = ButtonSize, Image = UpButtonImage };
 			TranslateDownButton = new Button() { Size = ButtonSize, Image = DownButtonImage };
 
+			TranslateRightButton.Click += TranslateRightButton_Click;
+			TranslateLeftButton.Click += TranslateLeftButton_Click;
+			TranslateUpButton.Click += TranslateUpButton_Click;
+			TranslateDownButton.Click += TranslateDownButton_Click;
+
 			RotateRightButton = new Button() { Size = ButtonSize, Image = RightButtonImage };
 			RotateLeftButton = new Button() { Size = ButtonSize, Image = LeftButtonImage };
 			RotateUpButton = new Button() { Size = ButtonSize, Image = UpButtonImage };
 			RotateDownButton = new Button() { Size = ButtonSize, Image = DownButtonImage };
+
+			RotateRightButton.Click += RotateRightButton_Click;
+			RotateLeftButton.Click += RotateLeftButton_Click;
+			RotateUpButton.Click += RotateUpButton_Click;
+			RotateDownButton.Click += RotateDownButton_Click;
 
 
 			// Layout for translate controls
@@ -249,6 +273,76 @@ namespace NGSim
 			// Add the layout to the returned group
 			group.Content = layout;
 			return group;
+		}
+
+		private void RotateDownButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void RotateUpButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void RotateLeftButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void RotateRightButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void TranslateDownButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void TranslateUpButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void TranslateLeftButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void TranslateRightButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void ResetButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void FreeCameraButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void RedTankButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void RedUAVButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void BlueTankButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void BlueUAVButton_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
 		}
 
 		private void DecreaseZoomButton__Click(object sender, EventArgs e)

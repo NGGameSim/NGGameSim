@@ -4,6 +4,7 @@ using Eto.Drawing;
 using NLog;
 using NGAPI;
 using System.Windows.Input;
+using NGSim.Graphics;
 
 namespace NGSim
 {
@@ -277,71 +278,95 @@ namespace NGSim
 
 		private void RotateDownButton_Click(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			// Pitch Down
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			cam.Pitch -= 20f;
 		}
 
 		private void RotateUpButton_Click(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			// Pitch Up
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			cam.Pitch += 20f;
 		}
 
 		private void RotateLeftButton_Click(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			// Yaw -
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			cam.Yaw -= 20f;
 		}
 
 		private void RotateRightButton_Click(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			// Yaw +
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			cam.Yaw += 20f;
 		}
 
 		private void TranslateDownButton_Click(object sender, EventArgs e)
 		{
+			// Target y -= 5
 			throw new NotImplementedException();
 		}
 
 		private void TranslateUpButton_Click(object sender, EventArgs e)
 		{
+			// Target y += 5
 			throw new NotImplementedException();
 		}
 
 		private void TranslateLeftButton_Click(object sender, EventArgs e)
 		{
+			// Target x -= 5
 			throw new NotImplementedException();
 		}
 
 		private void TranslateRightButton_Click(object sender, EventArgs e)
 		{
+			// Target x += 5
 			throw new NotImplementedException();
 		}
 
 		private void ResetButton_Click(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			cam.Pitch = 45f;
+			cam.Yaw = 0f;
 		}
 
 		private void FreeCameraButton_Click(object sender, EventArgs e)
 		{
+			// Enable translate buttons
+			// Set target to current posititon (stop following entity
 			throw new NotImplementedException();
 		}
 
 		private void RedTankButton_Click(object sender, EventArgs e)
 		{
+			// Disable translate buttons
+			// Set target to red tank
 			throw new NotImplementedException();
 		}
 
 		private void RedUAVButton_Click(object sender, EventArgs e)
 		{
+			// Disable translate buttons
+			// Set target to red uav
 			throw new NotImplementedException();
 		}
 
 		private void BlueTankButton_Click(object sender, EventArgs e)
 		{
+			// Disable translate buttons
+			// Set target to blue tank
 			throw new NotImplementedException();
 		}
 
 		private void BlueUAVButton_Click(object sender, EventArgs e)
 		{
+			// Disable translate buttons
+			// Set target to blue uav
 			throw new NotImplementedException();
 		}
 
@@ -351,6 +376,7 @@ namespace NGSim
 			{
 				ZoomSlider_.Value -= 1;
 			}
+			// Update camera distance
 		}
 
 		private void IncreaseZoomButton__Click(object sender, EventArgs e)
@@ -359,11 +385,13 @@ namespace NGSim
 			{
 				ZoomSlider_.Value += 1;
 			}
+			// Update camera distance
 		}
 
 		private void ZoomSliderValueChanged(object sender, EventArgs e)
 		{
 			ZoomTextBox_.Text = ZoomSlider_.Value.ToString();
+			// Update camera distance
 		}
 
 		private void ZoomTextBoxValueChanged(object sender, EventArgs e)
@@ -373,6 +401,7 @@ namespace NGSim
 			{
 				ZoomSlider_.Value = parseResult;
 			}
+			// Update camera distance
 		}
 
 		// Right Group

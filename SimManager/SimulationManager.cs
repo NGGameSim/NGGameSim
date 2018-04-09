@@ -275,24 +275,44 @@ namespace NGSim
 					{
 						// Team 1 tank is hit, Team two wins.
 						team1Hit = true;
-						Console.WriteLine("Tank was destroyed!!");
 					}
 					if (MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
 					{
 						// Team 2 tank is hit, Team one wins.
 						team2Hit = true;
-						Console.WriteLine("Tank was destroyed!!");
 					}
+                    if (team2Hit || team1Hit == false) // If no team has won.
+                        toRemove.Add(MissileInAir[i]); // Remove grounded missile.
+                    else
+                    {
+                        //Else remove both missile lists for a clean slate.
+                        MissileInAir.Clear();
+                        toRemove.Clear();
+                    }
+                }
 
-					if(team2Hit || team1Hit == false) // If no team has won.
-						toRemove.Add(MissileInAir[i]); // Remove grounded missile.
-					else 
-					{
-						//Else remove both missile lists for a clean slate.
-						MissileInAir.Clear();
-						toRemove.Clear();
-					}
-				}
+                //Check for impacts mid flight
+                else
+                {
+                    if ((MissileInAir[i].CurrentPostion.DistanceTo(Simulation.Team1.Tank.Position) < boomRange))
+                    {
+                        if((MissileInAir[i].Source.X == Simulation.Team2.Tank.Position.X) && (MissileInAir[i].Source.Y == Simulation.Team2.Tank.Position.Y))
+                        {
+                            team1Hit = true;
+                            toRemove.Add(MissileInAir[i]);
+                        }
+                    }
+
+                    if (MissileInAir[i].CurrentPostion.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
+                    {
+                        if ((MissileInAir[i].Source.X == Simulation.Team1.Tank.Position.X) && (MissileInAir[i].Source.Y == Simulation.Team1.Tank.Position.Y))
+                        {
+                            team2Hit = true;
+                            toRemove.Add(MissileInAir[i]);
+                        } 
+                    }
+                }
+
 			}
 			//Remove missils listed as reached their target.
 			foreach (Missile missile in toRemove)

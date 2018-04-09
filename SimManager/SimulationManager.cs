@@ -164,29 +164,29 @@ namespace NGSim
 			
 			logger.Info($"Team 2 Initial Position {Simulation.Team2.Tank.Position.X} {Simulation.Team2.Tank.Position.Y}");
 
-            //Make sure they don't spawn right next to each other
-            Position Team1Pos = new Position(randX1, randY1);
-            Position Team2Pos = new Position(randX2, randY2);
+			//Make sure they don't spawn right next to each other
+			Position Team1Pos = new Position(randX1, randY1);
+			Position Team2Pos = new Position(randX2, randY2);
 
-            while (Team1Pos.DistanceTo(Team2Pos) < 100)
-            {
-                randX1 = rand.Next(-xlim, xlim);
-                randY1 = rand.Next(-ylim, ylim);
-                randX2 = rand.Next(-xlim, xlim);
-                randY2 = rand.Next(-ylim, ylim);
+			while (Team1Pos.DistanceTo(Team2Pos) < 100)
+			{
+				randX1 = rand.Next(-xlim, xlim);
+				randY1 = rand.Next(-ylim, ylim);
+				randX2 = rand.Next(-xlim, xlim);
+				randY2 = rand.Next(-ylim, ylim);
 
-                Team1Pos = new Position(randX1, randY1);
-                Team2Pos = new Position(randX2, randY2);
-            }
+				Team1Pos = new Position(randX1, randY1);
+				Team2Pos = new Position(randX2, randY2);
+			}
 
-            //Set the positions of the entities
-            Simulation.Team1.Tank.Position = new Position(randX1, randY1);
-            Simulation.Team1.UAV.Position = new Position(randX1, randY1);
-            Simulation.Team2.Tank.Position = new Position(randX2, randY2);
-            Simulation.Team2.UAV.Position = new Position(randX2, randY2);
+			//Set the positions of the entities
+			Simulation.Team1.Tank.Position = new Position(randX1, randY1);
+			Simulation.Team1.UAV.Position = new Position(randX1, randY1);
+			Simulation.Team2.Tank.Position = new Position(randX2, randY2);
+			Simulation.Team2.UAV.Position = new Position(randX2, randY2);
 
-            //Reset Team Missiles
-            Simulation.Team1.Tank.MisslesLeft = 15;
+			//Reset Team Missiles
+			Simulation.Team1.Tank.MisslesLeft = 15;
 			Simulation.Team2.Tank.MisslesLeft = 15;
 		}
 
@@ -236,7 +236,7 @@ namespace NGSim
 			entityPacket.Write(Simulation.Team2.UAV.CurrentHeading);
 			entityPacket.Write((byte)Simulation.Team1.Tank.MisslesLeft);
 			entityPacket.Write((byte)Simulation.Team2.Tank.MisslesLeft);
-            entityPacket.Write((byte)gameResult);
+			entityPacket.Write((byte)gameResult);
 
 			// Missile update packet
 			var missilePacket = Server.Instance.CreateMessage(2);
@@ -281,37 +281,37 @@ namespace NGSim
 						// Team 2 tank is hit, Team one wins.
 						team2Hit = true;
 					}
-                    if (team2Hit || team1Hit == false) // If no team has won.
-                        toRemove.Add(MissileInAir[i]); // Remove grounded missile.
-                    else
-                    {
-                        //Else remove both missile lists for a clean slate.
-                        MissileInAir.Clear();
-                        toRemove.Clear();
-                    }
-                }
+					if (team2Hit || team1Hit == false) // If no team has won.
+						toRemove.Add(MissileInAir[i]); // Remove grounded missile.
+					else
+					{
+						//Else remove both missile lists for a clean slate.
+						MissileInAir.Clear();
+						toRemove.Clear();
+					}
+				}
 
-                //Check for impacts mid flight
-                else
-                {
-                    if ((MissileInAir[i].CurrentPostion.DistanceTo(Simulation.Team1.Tank.Position) < boomRange))
-                    {
-                        if((MissileInAir[i].Source.X == Simulation.Team2.Tank.Position.X) && (MissileInAir[i].Source.Y == Simulation.Team2.Tank.Position.Y))
-                        {
-                            team1Hit = true;
-                            toRemove.Add(MissileInAir[i]);
-                        }
-                    }
+				//Check for impacts mid flight
+				else
+				{
+					if ((MissileInAir[i].CurrentPostion.DistanceTo(Simulation.Team1.Tank.Position) < boomRange))
+					{
+						if((MissileInAir[i].Source.X == Simulation.Team2.Tank.Position.X) && (MissileInAir[i].Source.Y == Simulation.Team2.Tank.Position.Y))
+						{
+							team1Hit = true;
+							toRemove.Add(MissileInAir[i]);
+						}
+					}
 
-                    if (MissileInAir[i].CurrentPostion.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
-                    {
-                        if ((MissileInAir[i].Source.X == Simulation.Team1.Tank.Position.X) && (MissileInAir[i].Source.Y == Simulation.Team1.Tank.Position.Y))
-                        {
-                            team2Hit = true;
-                            toRemove.Add(MissileInAir[i]);
-                        } 
-                    }
-                }
+					if (MissileInAir[i].CurrentPostion.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
+					{
+						if ((MissileInAir[i].Source.X == Simulation.Team1.Tank.Position.X) && (MissileInAir[i].Source.Y == Simulation.Team1.Tank.Position.Y))
+						{
+							team2Hit = true;
+							toRemove.Add(MissileInAir[i]);
+						} 
+					}
+				}
 
 			}
 			//Remove missils listed as reached their target.
@@ -319,7 +319,7 @@ namespace NGSim
 				if(!MissileInAir.Remove(missile)) { logger.Debug("CRITICAL ERROR IN REMOVING MISSILES");  }
 			toRemove.Clear();
 
-            //Check for game ending scenarios
+			//Check for game ending scenarios
 			if(team1Hit && team2Hit)
 			{
 				gameResult = 3;
@@ -332,10 +332,10 @@ namespace NGSim
 			{
 				gameResult = 1;
 			}
-            else if(Simulation.Team1.Tank.Position.DistanceTo(Simulation.Team2.Tank.Position) < 15)
-            {
-                gameResult = 3;
-            }
+			else if(Simulation.Team1.Tank.Position.DistanceTo(Simulation.Team2.Tank.Position) < 15)
+			{
+				gameResult = 3;
+			}
 		}
 		private void updateMissiles()
 		{

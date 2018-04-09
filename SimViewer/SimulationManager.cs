@@ -110,12 +110,21 @@ namespace NGSim
 			_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t2h, Color.Red);
 			_uavModel.TextureRender(camera, new Vector3(u1.X / 10, 10, u1.Y / 10), u1h);
 			_uavModel.TextureRender(camera, new Vector3(u2.X / 10, 10, u2.Y / 10), u2h);
-
+            
 			//Draw all missiles
 			for (int i = 0; i < mposList.Count; i++)
 			{
 				_missModel.Render(camera, new Vector3(mposList[i].X / 10, 1, mposList[i].Y / 10), mheadingList[i], Color.Black);
 			}
+
+            //Derender dead tanks
+            if(gameResult == 1) { _tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t1h, Color.Transparent); }
+            if(gameResult == 2) { _tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Transparent); }
+            if (gameResult == 3)
+            {
+                _tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Transparent);
+                _tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t1h, Color.Transparent);
+            }
 			
 		
 
@@ -127,9 +136,14 @@ namespace NGSim
 			_sb.DrawString(_font, "Red  = Team 2 Tank", new Vector2(5, 31), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Pink = Team 2 UAV", new Vector2(5, 44), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Black = Missiles", new Vector2(5, 57), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
-
+            
+            //Draw a message to annouonce the result
             if(gameResult != 0)
             {
+                if(gameResult == 3)
+                {
+                    _sb.DrawString(_font, $"Both tanks destroyed. It's a draw!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                }
                 _sb.DrawString(_font, $"Team {gameResult} Wins!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             }
 			_sb.End();

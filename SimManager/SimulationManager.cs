@@ -217,6 +217,7 @@ namespace NGSim
 			entityPacket.Write(Simulation.Team2.UAV.CurrentHeading);
 			entityPacket.Write((byte)Simulation.Team1.Tank.MisslesLeft);
 			entityPacket.Write((byte)Simulation.Team2.Tank.MisslesLeft);
+            entityPacket.Write((byte)gameResult);
 
 			// Missile update packet
 			var missilePacket = Server.Instance.CreateMessage(2);

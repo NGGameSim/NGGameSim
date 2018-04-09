@@ -33,6 +33,7 @@ namespace NGSim
 		private readonly Rectangle _lRect;
 
 		private Vector2 origin = new Vector2(0, 0);
+        int gameResult;
 
 
 		public SimulationManager(GraphicsDevice device, ContentManager content)
@@ -70,6 +71,7 @@ namespace NGSim
 			Simulation.Team2.UAV.CurrentHeading = msg.ReadSingle();
 			Simulation.Team1.Tank.MisslesLeft = msg.ReadByte();
 			Simulation.Team2.Tank.MisslesLeft = msg.ReadByte();
+            gameResult = msg.ReadByte();
 		}
 
 		// Reads information for a missile update packet (opcode 2)
@@ -125,6 +127,11 @@ namespace NGSim
 			_sb.DrawString(_font, "Red  = Team 2 Tank", new Vector2(5, 31), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Pink = Team 2 UAV", new Vector2(5, 44), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Black = Missiles", new Vector2(5, 57), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
+
+            if(gameResult != 0)
+            {
+                _sb.DrawString(_font, $"Team {gameResult} Wins!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            }
 			_sb.End();
 		}
 

@@ -154,7 +154,7 @@ namespace NGSim
 			numberOfVictoriesTeam2 = 0;
 			numberOfDraws = 0;
 
-			for (CurrentGameNumber = 0; CurrentGameNumber < 500; CurrentGameNumber++)
+			for (CurrentGameNumber = 0; CurrentGameNumber < NGames-1; CurrentGameNumber++)
 			{
 				RunOneGame();
 				if (gameResult == 1)

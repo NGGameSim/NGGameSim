@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NGAPI;
 
 namespace NGSim.Graphics
 {
@@ -9,7 +10,7 @@ namespace NGSim.Graphics
 		private static VertexBuffer vertices = null;
 		private static IndexBuffer indices = null;
 		private static BasicEffect effect = null;
-		private static readonly Color VERT_COLOR = Color.Yellow;
+		private static readonly Color VERT_COLOR = Color.White;
 
 		public ConeModel(GraphicsDevice device)
 		{
@@ -21,9 +22,9 @@ namespace NGSim.Graphics
 				for (int i = 0; i < 51; ++i)
 				{
 					double angle = i * Math.PI / 25f;
-					float x = 5 * (float)Math.Cos(angle);
-					float y = 5 * (float)Math.Sin(angle);
-					verts[i + 1] = new VertexPositionColor(new Vector3(x, -11, y), VERT_COLOR);
+					float x = (Constants.UAVScanRange / 10f) * (float)Math.Cos(angle);
+					float y = (Constants.UAVScanRange / 10f) * (float)Math.Sin(angle);
+					verts[i + 1] = new VertexPositionColor(new Vector3(x, -10.1f, y), VERT_COLOR);
 				}
 				vertices.SetData(verts);
 
@@ -46,12 +47,16 @@ namespace NGSim.Graphics
 			}
 		}
 
-		public void Render(GraphicsDevice device, Vector2 pos, Camera camera)
+		public void Render(GraphicsDevice device, Vector2 pos, Camera camera, int team, bool seen)
 		{
 			Matrix world = Matrix.CreateTranslation(pos.X, 10, pos.Y);
 			effect.World = world;
 			effect.View = camera.ViewMatrix;
 			effect.Projection = camera.ProjectionMatrix;
+			if (seen)
+				effect.EmissiveColor = Color.Yellow.ToVector3(); // Vector3.Lerp(((team == 1) ? Color.Blue : Color.Red).ToVector3(), Color.Yellow.ToVector3(), 0.5f);
+			else
+				effect.EmissiveColor = ((team == 1) ? Color.Blue : Color.Red).ToVector3();
 			device.SetVertexBuffer(vertices);
 			device.Indices = indices;
 			effect.CurrentTechnique.Passes[0].Apply();

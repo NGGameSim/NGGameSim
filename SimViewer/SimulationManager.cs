@@ -117,13 +117,11 @@ namespace NGSim
 				_missModel.Render(camera, new Vector3(mposList[i].X / 10, 1, mposList[i].Y / 10), mheadingList[i], Color.Black);
 			}
 
+			_cone.Render(_device, new Vector2(u1.X / 10, u1.Y / 10), camera, 1, Simulation.Team1.UAV.DetectedTankThisTurn);
+			_cone.Render(_device, new Vector2(u2.X / 10, u2.Y / 10), camera, 2, Simulation.Team2.UAV.DetectedTankThisTurn);
 
-			_cone.Render(_device, Vector2.Zero, camera);
-			
-		
-
-		// Draw legend
-		_sb.Begin();
+			// Draw legend
+			_sb.Begin();
 			_sb.Draw(_blankTex, _lRect, Color.White);
 			_sb.DrawString(_font, "Blue = Team 1 Tank", new Vector2(5, 5), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Cyan = Team 1 UAV", new Vector2(5, 18), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);

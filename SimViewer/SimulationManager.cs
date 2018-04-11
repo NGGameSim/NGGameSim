@@ -108,8 +108,8 @@ namespace NGSim
 			float u2h = Simulation.Team2.UAV.CurrentHeading;
 			_tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Blue);
 			_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t2h, Color.Red);
-			_uavModel.TextureRender(camera, new Vector3(u1.X / 10, 10, u1.Y / 10), u1h);
-			_uavModel.TextureRender(camera, new Vector3(u2.X / 10, 10, u2.Y / 10), u2h);
+			_uavModel.TextureRender(camera, new Vector3(u1.X / 10, 20, u1.Y / 10), u1h);
+			_uavModel.TextureRender(camera, new Vector3(u2.X / 10, 20, u2.Y / 10), u2h);
 
 			//Draw all missiles
 			for (int i = 0; i < mposList.Count; i++)

@@ -1,7 +1,7 @@
 using NGAPI;
 using System.Collections.Generic;
 using System;
-using static NGAPI.Constants;
+using NGAPI;
 using NLog;
 
 namespace NGSim
@@ -55,7 +55,7 @@ namespace NGSim
 			if (gameRunningMode == 0)
 			{
 				
-				if (gameResult == 0 && numMoves < maxTurns)
+				if (gameResult == 0 && numMoves < Constants.MaxTurns)
 				{
 					UpdateGameState();
 					numMoves++;
@@ -139,7 +139,7 @@ namespace NGSim
 
 			SetInitialRandomPositions();
 
-			while (numMoves < maxTurns && gameResult == 0)
+			while (numMoves < Constants.MaxTurns && gameResult == 0)
 			{
 				UpdateGameState();
 				numMoves++;
@@ -149,8 +149,8 @@ namespace NGSim
 		public void SetInitialRandomPositions()
 		{
 			//Set limits on the spawn positions
-			int xlim = (int)(WorldSize.X / 3);
-			int ylim = (int)(WorldSize.Y / 3);
+			int xlim = (int)(Constants.WorldSize.X / 3);
+			int ylim = (int)(Constants.WorldSize.Y / 3);
 
 			//Generate random positions and place team 1
 			int randX = rand.Next(-xlim, xlim);
@@ -251,13 +251,13 @@ namespace NGSim
 			{
 				if(MissileInAir[i].TurnsRemaining == 0)
 				{
-					if (MissileInAir[i].Target.DistanceTo(Simulation.Team1.Tank.Position) < boomRange)
+					if (MissileInAir[i].Target.DistanceTo(Simulation.Team1.Tank.Position) < Constants.BoomRange)
 					{
 						// Team 1 tank is hit, Team two wins.
 						team1Hit = true;
 						Console.WriteLine("Tank was destroyed!!");
 					}
-					if (MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
+					if (MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < Constants.BoomRange)
 					{
 						// Team 2 tank is hit, Team one wins.
 						team2Hit = true;
@@ -411,8 +411,8 @@ namespace NGSim
 
 		private bool inBounds(Position pos)
 		{
-			float xlim = WorldSize.X / 2;
-			float ylim = WorldSize.Y / 2;
+			float xlim = Constants.WorldSize.X / 2;
+			float ylim = Constants.WorldSize.Y / 2;
 
 			return (pos.X < xlim && pos.X > -xlim) && (pos.Y < ylim && pos.Y > -ylim);
 		}
@@ -562,7 +562,7 @@ namespace NGSim
 
 		private void UAVScan()
 		{
-			float viewRadius = Simulation.Team1.UAV.Altitude * (float)Math.Sin(5); //Define viewRadius as a 5 degree cone of view from a fixed altitude
+			float viewRadius = Constants.UAVAltitude * (float)Math.Tan(Constants.UAVScanAngle);
 
 			if(Simulation.Team1.UAV.Position.DistanceTo(Simulation.Team2.Tank.Position) < viewRadius)
 			{
@@ -575,13 +575,13 @@ namespace NGSim
 				Simulation.Team2.UAV.DetectedTankThisTurn = true;
 				Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;
 			}
-			if (Simulation.Team1.Tank.Position.DistanceTo(Simulation.Team2.Tank.Position) < TankScanRange)
+			if (Simulation.Team1.Tank.Position.DistanceTo(Simulation.Team2.Tank.Position) < Constants.TankScanRange)
 			{
 				Simulation.Team1.UAV.DetectedTankThisTurn = true;
 				Simulation.Team1.UAV.LastKnownPosition = Simulation.Team2.Tank.Position;
 			}
 
-			if (Simulation.Team2.Tank.Position.DistanceTo(Simulation.Team1.Tank.Position) < TankScanRange)
+			if (Simulation.Team2.Tank.Position.DistanceTo(Simulation.Team1.Tank.Position) < Constants.TankScanRange)
 			{
 				Simulation.Team2.UAV.DetectedTankThisTurn = true;
 				Simulation.Team2.UAV.LastKnownPosition = Simulation.Team1.Tank.Position;

@@ -19,12 +19,13 @@ namespace NGSim.Graphics
 				vertices = new VertexBuffer(device, VertexPositionColor.VertexDeclaration, 52, BufferUsage.WriteOnly);
 				VertexPositionColor[] verts = new VertexPositionColor[52];
 				verts[0] = new VertexPositionColor(Vector3.Zero, VERT_COLOR);
+				var grange = Constants.UAVRenderHeight * (float)Math.Tan(Constants.UAVScanAngle);
 				for (int i = 0; i < 51; ++i)
 				{
 					double angle = i * Math.PI / 25f;
-					float x = (Constants.UAVScanRange / 10f) * (float)Math.Cos(angle);
-					float y = (Constants.UAVScanRange / 10f) * (float)Math.Sin(angle);
-					verts[i + 1] = new VertexPositionColor(new Vector3(x, -10.1f, y), VERT_COLOR);
+					float x = grange * (float)Math.Cos(angle);
+					float y = grange * (float)Math.Sin(angle);
+					verts[i + 1] = new VertexPositionColor(new Vector3(x, -Constants.UAVRenderHeight + 0.1f, y), VERT_COLOR);
 				}
 				vertices.SetData(verts);
 
@@ -49,12 +50,12 @@ namespace NGSim.Graphics
 
 		public void Render(GraphicsDevice device, Vector2 pos, Camera camera, int team, bool seen)
 		{
-			Matrix world = Matrix.CreateTranslation(pos.X, 10, pos.Y);
+			Matrix world = Matrix.CreateTranslation(pos.X, Constants.UAVRenderHeight, pos.Y);
 			effect.World = world;
 			effect.View = camera.ViewMatrix;
 			effect.Projection = camera.ProjectionMatrix;
 			if (seen)
-				effect.EmissiveColor = Color.Yellow.ToVector3(); // Vector3.Lerp(((team == 1) ? Color.Blue : Color.Red).ToVector3(), Color.Yellow.ToVector3(), 0.5f);
+				effect.EmissiveColor = Color.Yellow.ToVector3();
 			else
 				effect.EmissiveColor = ((team == 1) ? Color.Blue : Color.Red).ToVector3();
 			device.SetVertexBuffer(vertices);

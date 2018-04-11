@@ -2,9 +2,9 @@
 using Eto.Forms;
 using Eto.Drawing;
 using NLog;
-using NGAPI;
-using System.Windows.Input;
 using NGSim.Graphics;
+using System.IO;
+using System.Reflection;
 
 namespace NGSim
 {
@@ -126,10 +126,16 @@ namespace NGSim
 			// Create the bottom row controls (translate, rotate, zoom)
 			var ButtonSize = new Size(50, 50);
 
-			var RightButtonImage = new Icon("RightArrow.ico");
-			var LeftButtonImage = new Icon("LeftArrow.ico");
-			var DownButtonImage = new Icon("DownArrow.ico");
-			var UpButtonImage = new Icon("UpArrow.ico");
+			Assembly _assembly = Assembly.GetExecutingAssembly();
+			Stream RightArrowStream = _assembly.GetManifestResourceStream("NGSim.Graphics.RightArrow.ico");
+			Stream LeftArrowStream = _assembly.GetManifestResourceStream("NGSim.Graphics.LeftArrow.ico");
+			Stream DownArrowStream = _assembly.GetManifestResourceStream("NGSim.Graphics.DownArrow.ico");
+			Stream UpArrowStream = _assembly.GetManifestResourceStream("NGSim.Graphics.UpArrow.ico");
+
+			var RightButtonImage = new Icon(RightArrowStream);
+			var LeftButtonImage = new Icon(LeftArrowStream);
+			var DownButtonImage = new Icon(DownArrowStream);
+			var UpButtonImage = new Icon(UpArrowStream);
 
 			TranslateRightButton = new Button() { Size = ButtonSize, Image = RightButtonImage };
 			TranslateLeftButton = new Button() { Size = ButtonSize, Image = LeftButtonImage };

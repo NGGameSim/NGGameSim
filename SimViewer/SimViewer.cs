@@ -15,10 +15,6 @@ namespace NGSim
 		private Client _client;
 		private SimulationManager _simManager;
 
-		private CModel _uavModel;
-		private CModel _tankModel;
-		private WorldModel _world;
-
 		public SimViewer() :
 			base()
 		{
@@ -42,12 +38,9 @@ namespace NGSim
 			// Initialize the custom input manager
 			InputManager.Initialize();
 
-			// Create the world
-			_world = new WorldModel(GraphicsDevice, 50);
-
 			// Create the camera
-			CameraManager.Set(new ArcBallCamera(GraphicsDevice, distance: 20f, yaw: 0f, pitch: 45f), new ArcBallCameraBehavior());
-			(CameraManager.ActiveCamera as ArcBallCamera).MinDistance = 2f;
+			CameraManager.Set(new ArcBallCamera(GraphicsDevice, distance: 200f, yaw: 45f, pitch: 35f), new ArcBallCameraBehavior());
+			(CameraManager.ActiveCamera as ArcBallCamera).MinDistance = 50f;
 	  
 			// Setup the network stuff
 			_client = new Client();
@@ -62,8 +55,7 @@ namespace NGSim
 			base.LoadContent();
 
 			// Load the models
-			_uavModel = new CModel(GraphicsDevice, Content.Load<Model>("UAV"));
-			_tankModel = new CModel(GraphicsDevice, Content.Load<Model>("tank"));
+			
 		}
 
 		protected override void Update(GameTime gameTime)
@@ -82,7 +74,7 @@ namespace NGSim
 
 		protected override void Draw(GameTime gameTime)
 		{
-			GraphicsDevice.Clear(Color.Black);
+			GraphicsDevice.Clear(new Color(153, 217, 234));
 
 			Camera camera = CameraManager.ActiveCamera;
 

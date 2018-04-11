@@ -31,6 +31,12 @@ namespace NGAPI
 		///Gets the tank's heading in degrees.
 		public static float GetTankHeading() { return FriendlyTank.CurrentHeading; }
 
+		///Gets if the tank is currently turning
+		public static bool IsTankTurning() { return (FriendlyTank.CurrentHeading != FriendlyTank.TargetHeading); }
+
+		///Gets if the tank is currently accelerating
+		public static bool IsTankAccelerating() { return (FriendlyTank.CurrentSpeed != FriendlyTank.TargetSpeed); }
+
 		///Gets the number of remaining missiles.
 		public static int GetRemainingMissiles() { return FriendlyTank.MisslesLeft; }
 
@@ -42,6 +48,12 @@ namespace NGAPI
 
 		///Gets the UAV's heading in degrees.
 		public static float GetUAVHeading() { return FriendlyUAV.CurrentHeading; }
+
+		///Gets if the UAV is currently turning
+		public static bool IsUAVTurning() { return (FriendlyUAV.CurrentHeading != FriendlyUAV.TargetHeading); }
+
+		///Gets if the UAV is currently accelerating
+		public static bool IsUAVAccelerating() { return (FriendlyUAV.CurrentSpeed != FriendlyUAV.TargetSpeed); }
 
 		///Set the sped for the for UAV in meters per second. @param targetSpeed: Any speed from 7 to 26 meters per second
 		public static bool SetUAVSpeed(float targetSpeed)

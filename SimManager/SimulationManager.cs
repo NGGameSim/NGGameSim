@@ -12,6 +12,10 @@ namespace NGSim
 	// performing entity and game state logic updates, and dispatching state packets to all of the connected clients.
 	public class SimulationManager
 	{
+		private const float TURN_RATE = 6f;
+		private const float ACC_RATE = 1f;
+		private const float TWO_PI = (float)(Math.PI * 2);
+
 		internal Simulation Simulation { get; private set; }
 		public Algorithm Algo1;
 		public Algorithm Algo2;
@@ -198,18 +202,41 @@ namespace NGSim
 			int ylim = (int)(WorldSize.Y / 3);
 
 			//Generate random positions and place team 1
-			int randX = rand.Next(-xlim, xlim);
-			int randY = rand.Next(-ylim, ylim);
-			Simulation.Team1.Tank.Position = new Position(randX, randY);
-			Simulation.Team1.UAV.Position = new Position(randX, randY);
+			int randX1 = rand.Next(-xlim, xlim);
+			int randY1 = rand.Next(-ylim, ylim);
+			
 			logger.Info($"Team 1 Initial Position {Simulation.Team1.Tank.Position.X} {Simulation.Team1.Tank.Position.Y}");
 
 			//Do the same for team 2
-			randX = rand.Next(-xlim, xlim);
-			randY = rand.Next(-ylim, ylim);
-			Simulation.Team2.Tank.Position = new Position(randX, randY);
-			Simulation.Team2.UAV.Position = new Position(randX, randY);
+			int randX2 = rand.Next(-xlim, xlim);
+			int randY2 = rand.Next(-ylim, ylim);
+			
 			logger.Info($"Team 2 Initial Position {Simulation.Team2.Tank.Position.X} {Simulation.Team2.Tank.Position.Y}");
+
+			//Make sure they don't spawn right next to each other
+			Position Team1Pos = new Position(randX1, randY1);
+			Position Team2Pos = new Position(randX2, randY2);
+
+			while (Team1Pos.DistanceTo(Team2Pos) < 100)
+			{
+				randX1 = rand.Next(-xlim, xlim);
+				randY1 = rand.Next(-ylim, ylim);
+				randX2 = rand.Next(-xlim, xlim);
+				randY2 = rand.Next(-ylim, ylim);
+
+				Team1Pos = new Position(randX1, randY1);
+				Team2Pos = new Position(randX2, randY2);
+			}
+
+			//Set the positions of the entities
+			Simulation.Team1.Tank.Position = new Position(randX1, randY1);
+			Simulation.Team1.UAV.Position = new Position(randX1, randY1);
+			Simulation.Team2.Tank.Position = new Position(randX2, randY2);
+			Simulation.Team2.UAV.Position = new Position(randX2, randY2);
+
+			//Reset Team Missiles
+			Simulation.Team1.Tank.MisslesLeft = 15;
+			Simulation.Team2.Tank.MisslesLeft = 15;
 		}
 
 		public void UpdateGameState()
@@ -323,6 +350,7 @@ namespace NGSim
 			entityPacket.Write(Simulation.Team2.UAV.CurrentHeading);
 			entityPacket.Write((byte)Simulation.Team1.Tank.MisslesLeft);
 			entityPacket.Write((byte)Simulation.Team2.Tank.MisslesLeft);
+			entityPacket.Write((byte)gameResult);
 
 			// Missile update packet
 			var missilePacket = Server.Instance.CreateMessage(2);
@@ -361,30 +389,51 @@ namespace NGSim
 					{
 						// Team 1 tank is hit, Team two wins.
 						team1Hit = true;
-						Console.WriteLine("Tank was destroyed!!");
 					}
 					if (MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
 					{
 						// Team 2 tank is hit, Team one wins.
 						team2Hit = true;
-						Console.WriteLine("Tank was destroyed!!");
 					}
-
-					if(team2Hit || team1Hit == false) // If no team has won.
+					if (team2Hit || team1Hit == false) // If no team has won.
 						toRemove.Add(MissileInAir[i]); // Remove grounded missile.
-					else 
+					else
 					{
 						//Else remove both missile lists for a clean slate.
 						MissileInAir.Clear();
 						toRemove.Clear();
 					}
 				}
+
+				//Check for impacts mid flight
+				else
+				{
+					if ((MissileInAir[i].CurrentPostion.DistanceTo(Simulation.Team1.Tank.Position) < boomRange))
+					{
+						if((MissileInAir[i].Source.X == Simulation.Team2.Tank.Position.X) && (MissileInAir[i].Source.Y == Simulation.Team2.Tank.Position.Y))
+						{
+							team1Hit = true;
+							toRemove.Add(MissileInAir[i]);
+						}
+					}
+
+					if (MissileInAir[i].CurrentPostion.DistanceTo(Simulation.Team2.Tank.Position) < boomRange)
+					{
+						if ((MissileInAir[i].Source.X == Simulation.Team1.Tank.Position.X) && (MissileInAir[i].Source.Y == Simulation.Team1.Tank.Position.Y))
+						{
+							team2Hit = true;
+							toRemove.Add(MissileInAir[i]);
+						} 
+					}
+				}
+
 			}
 			//Remove missils listed as reached their target.
 			foreach (Missile missile in toRemove)
 				if(!MissileInAir.Remove(missile)) { logger.Debug("CRITICAL ERROR IN REMOVING MISSILES");  }
 			toRemove.Clear();
 
+			//Check for game ending scenarios
 			if(team1Hit && team2Hit)
 			{
 				gameResult = 3;
@@ -396,6 +445,10 @@ namespace NGSim
 			else if(team2Hit)
 			{
 				gameResult = 1;
+			}
+			else if(Simulation.Team1.Tank.Position.DistanceTo(Simulation.Team2.Tank.Position) < 15)
+			{
+				gameResult = 3;
 			}
 		}
 		private void updateMissiles()
@@ -457,7 +510,7 @@ namespace NGSim
 
 				double dx = missile2.Target.X - missile2.Source.X;
 				double dy = missile2.Target.Y - missile2.Source.Y;
-				missile2.CurrentHeading = (float)(Math.Atan2(dx, dy) * (180 / Math.PI));
+				missile2.CurrentHeading = (float)(Math.Atan2(dy, dx) * (180 / Math.PI));
 				if (missile2.CurrentHeading < 0) { missile2.CurrentHeading = missile2.CurrentHeading + 360; }
 
 				//TARGET TESTING
@@ -526,15 +579,15 @@ namespace NGSim
 		private void updateEntityPositions()
 		{
 			//Generate the changes in the X and Y position for all entities
-			float X1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team1.Tank.CurrentHeading);
-			float X1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team1.UAV.CurrentHeading);
-			float X2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team2.Tank.CurrentHeading);
-			float X2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team2.UAV.CurrentHeading);
+			float X1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team1.Tank.CurrentHeading * Math.PI/180);
+			float X1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team1.UAV.CurrentHeading * Math.PI / 180);
+			float X2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Cos(Simulation.Team2.Tank.CurrentHeading * Math.PI / 180);
+			float X2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Cos(Simulation.Team2.UAV.CurrentHeading * Math.PI / 180);
 
-			float Y1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team1.Tank.CurrentHeading);
-			float Y1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team1.UAV.CurrentHeading);
-			float Y2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team2.Tank.CurrentHeading);
-			float Y2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team2.UAV.CurrentHeading);
+			float Y1Tank = Simulation.Team1.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team1.Tank.CurrentHeading * Math.PI / 180);
+			float Y1UAV = Simulation.Team1.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team1.UAV.CurrentHeading * Math.PI / 180);
+			float Y2Tank = Simulation.Team2.Tank.CurrentSpeed * (float)Math.Sin(Simulation.Team2.Tank.CurrentHeading * Math.PI / 180);
+			float Y2UAV = Simulation.Team2.UAV.CurrentSpeed * (float)Math.Sin(Simulation.Team2.UAV.CurrentHeading * Math.PI / 180);
 
 			//Add the X and Y changes
 			Simulation.Team1.Tank.Position = new Position(Simulation.Team1.Tank.Position.X + X1Tank, Simulation.Team1.Tank.Position.Y + Y1Tank);
@@ -546,10 +599,11 @@ namespace NGSim
 			List<float> XMissiles = new List<float>();
 			List<float> YMissiles = new List<float>();
 
+			//Do the same for each missile
 			foreach (Missile missile in MissileInAir)
 			{
-				float XMissile = 30 * (float)Math.Cos(missile.CurrentHeading);
-				float YMissile = 30 * (float)Math.Sin(missile.CurrentHeading);
+				float XMissile = 30 * (float)Math.Cos(missile.CurrentHeading * Math.PI/180);
+				float YMissile = 30 * (float)Math.Sin(missile.CurrentHeading * Math.PI/180);
 				XMissiles.Add(XMissile);
 				YMissiles.Add(YMissile);
 			}
@@ -561,17 +615,108 @@ namespace NGSim
 			}
 		}
 
+		private float angleClamp(float angle)
+		{
+			return (angle + 360f) % 360f;
+		}
+
+		private void entityNeedsInterp(Entity e, out bool heading, out bool speed)
+		{
+			heading = (e.CurrentHeading != e.TargetHeading);
+			speed = (e.CurrentSpeed != e.TargetSpeed);
+		}
+
+		private float getAngleDiff(Entity e)
+		{
+			float nc = angleClamp(e.CurrentHeading);
+			float nt = angleClamp(e.TargetHeading);
+			float diff = (((nt - nc) + 180f) % 360f) - 180f;
+			if (diff < -180f)
+				diff += 360f;
+			else if (diff > 180f)
+				diff -= 360f;
+			return diff;
+		}
+
 		private void updateEntityVelocities()
 		{
-			// TODO: right now this just immediately updates the speeds and headings, interpolate in the future
-			Simulation.Team1.Tank.CurrentHeading = Simulation.Team1.Tank.TargetHeading;
-			Simulation.Team1.UAV.CurrentHeading = Simulation.Team1.UAV.TargetHeading;
-			Simulation.Team2.Tank.CurrentHeading = Simulation.Team2.Tank.TargetHeading;
-			Simulation.Team2.UAV.CurrentHeading = Simulation.Team2.UAV.TargetHeading;
-			Simulation.Team1.Tank.CurrentSpeed = Simulation.Team1.Tank.TargetSpeed;
-			Simulation.Team1.UAV.CurrentSpeed = Simulation.Team1.UAV.TargetSpeed;
-			Simulation.Team2.Tank.CurrentSpeed = Simulation.Team2.Tank.TargetSpeed;
-			Simulation.Team2.UAV.CurrentSpeed = Simulation.Team2.UAV.TargetSpeed;
+			// Get the needed changes
+			bool t1h, t1s;
+			entityNeedsInterp(Simulation.Team1.Tank, out t1h, out t1s);
+			bool t2h, t2s;
+			entityNeedsInterp(Simulation.Team2.Tank, out t2h, out t2s);
+			bool u1h, u1s;
+			entityNeedsInterp(Simulation.Team1.UAV, out u1h, out u1s);
+			bool u2h, u2s;
+			entityNeedsInterp(Simulation.Team2.UAV, out u2h, out u2s);
+
+			// Interpolate Team 1 Tank Heading
+			if (t1h)
+			{
+				float diff = getAngleDiff(Simulation.Team1.Tank);
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < TURN_RATE;
+				Simulation.Team1.Tank.CurrentHeading = angleClamp(Simulation.Team1.Tank.CurrentHeading + (substep ? diff : TURN_RATE * dir));
+			}
+			// Interpolate Team 1 UAV Heading
+			if (u1h)
+			{
+				float diff = getAngleDiff(Simulation.Team1.UAV);
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < TURN_RATE;
+				Simulation.Team1.UAV.CurrentHeading = angleClamp(Simulation.Team1.UAV.CurrentHeading + (substep ? diff : TURN_RATE * dir));
+			}
+
+			// Interpolate Team 2 Tank Heading
+			if (t2h)
+			{
+				float diff = getAngleDiff(Simulation.Team2.Tank);
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < TURN_RATE;
+				Simulation.Team2.Tank.CurrentHeading = angleClamp(Simulation.Team2.Tank.CurrentHeading + (substep ? diff : TURN_RATE * dir));
+			}
+			// Interpolate Team 2 UAV Heading
+			if (u2h)
+			{
+				float diff = getAngleDiff(Simulation.Team2.UAV);
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < TURN_RATE;
+				Simulation.Team2.UAV.CurrentHeading = angleClamp(Simulation.Team2.UAV.CurrentHeading + (substep ? diff : TURN_RATE * dir));
+			}
+
+			// Interpolate Team 1 Tank Speed
+			if (t1s)
+			{
+				float diff = Simulation.Team1.Tank.TargetSpeed - Simulation.Team1.Tank.CurrentSpeed;
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < ACC_RATE;
+				Simulation.Team1.Tank.CurrentSpeed = angleClamp(Simulation.Team1.Tank.CurrentSpeed + (substep ? diff : ACC_RATE * dir));
+			}
+			// Interpolate Team 1 UAV Speed
+			if (u1s)
+			{
+				float diff = Simulation.Team1.UAV.TargetSpeed - Simulation.Team1.UAV.CurrentSpeed;
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < ACC_RATE;
+				Simulation.Team1.UAV.CurrentSpeed = angleClamp(Simulation.Team1.UAV.CurrentSpeed + (substep ? diff : ACC_RATE * dir));
+			}
+
+			// Interpolate Team 2 Tank Speed
+			if (t2s)
+			{
+				float diff = Simulation.Team2.Tank.TargetSpeed - Simulation.Team2.Tank.CurrentSpeed;
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < ACC_RATE;
+				Simulation.Team2.Tank.CurrentSpeed = angleClamp(Simulation.Team2.Tank.CurrentSpeed + (substep ? diff : ACC_RATE * dir));
+			}
+			// Interpolate Team 2 UAV Speed
+			if (u2s)
+			{
+				float diff = Simulation.Team2.UAV.TargetSpeed - Simulation.Team2.UAV.CurrentSpeed;
+				int dir = Math.Sign(diff);
+				bool substep = Math.Abs(diff) < ACC_RATE;
+				Simulation.Team2.UAV.CurrentSpeed = angleClamp(Simulation.Team2.UAV.CurrentSpeed + (substep ? diff : ACC_RATE * dir));
+			}
 		}
 
 		private void UAVScan()

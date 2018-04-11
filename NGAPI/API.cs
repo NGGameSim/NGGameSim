@@ -111,7 +111,7 @@ namespace NGAPI
 		public static bool CanFire(Position Target)
 		{
 			if (FriendlyTank.MisslesLeft <= 0) { return false; }
-			else if (FriendlyTank.Position.DistanceTo(Target) > FiringRange) { return false; }
+			else if (FriendlyTank.Position.DistanceTo(Target) > Constants.TankFiringRange) { return false; }
 			else if (FriendlyTank.Cooldown != 0) { return false; }
 			else { return true; }
 		}

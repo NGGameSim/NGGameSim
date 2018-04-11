@@ -27,6 +27,7 @@ namespace NGSim
 		private CModel _tankModel;
 		private CModel _missModel;
 		private ConeModel _cone;
+		private RingModel _ring;
 
 		private readonly SpriteBatch _sb;
 		private readonly Texture2D _blankTex;
@@ -52,6 +53,7 @@ namespace NGSim
 			_tankModel = new CModel(device, content.Load<Model>("tank"));
 			_missModel = new CModel(device, content.Load<Model>("sphere_missile"));
 			_cone = new ConeModel(device);
+			_ring = new RingModel(device, Constants.TankFiringRange / 10, 1);
 
 			_font = content.Load<SpriteFont>("debugfont");
 			_lRect = new Rectangle(0, 0, 130, 70);
@@ -119,6 +121,9 @@ namespace NGSim
 
 			_cone.Render(_device, new Vector2(u1.X / 10, u1.Y / 10), camera, 1, Simulation.Team1.UAV.DetectedTankThisTurn);
 			_cone.Render(_device, new Vector2(u2.X / 10, u2.Y / 10), camera, 2, Simulation.Team2.UAV.DetectedTankThisTurn);
+
+			_ring.Render(_device, new Vector2(t1.X / 10, t1.Y / 10), camera, 1);
+			_ring.Render(_device, new Vector2(t2.X / 10, t2.Y / 10), camera, 2);
 
 			// Draw legend
 			_sb.Begin();

@@ -8,11 +8,12 @@ namespace NGAPI
 		internal const float UAVScanAngle = (float)(15 * Math.PI / 180);
 		// The height that the uav is rendered at in the visualizer
 		internal const float UAVRenderHeight = 20f;
+		// The firing range of the tank
+		internal const int TankFiringRange = 400;
 
 		internal const int MaxTurns = 10000;   //maximum number of turns in one game 
 		internal static readonly Position WorldSize = new Position(2000, 2000); // The size of the world, the valid place for entities to stay, centered on 0, 0
 		internal const int BoomRange = 22;  //meters, 22 meters is effective blast radius of 120mm cannon on M1 Abrams
-		internal const int FiringRange = 4000;  //meters, 4000 meters is firing range of M1 Abrams cannon
 		internal const float UAVAltitude = 1500;
 
 		internal const float MaxUAVSpeed = 26f;  // meters per second

@@ -242,15 +242,15 @@ namespace NGSim
 			myStopwatch.Start();
 			sendNetworkPackets();
 			myStopwatch.Stop();
-			Console.WriteLine(Server.Instance.TotalSentBytes);
+			//Console.WriteLine(Server.Instance.TotalSentBytes);
 			var bytesSent = Convert.ToDouble(Server.Instance.TotalSentBytes - sentBytesInitial);
 			var elapsedSeconds = myStopwatch.ElapsedMilliseconds / 1000.0;
-			Console.WriteLine(elapsedSeconds);
-			Console.WriteLine(bytesSent);
+			//Console.WriteLine(elapsedSeconds);
+			//Console.WriteLine(bytesSent);
 
 			var bytesPerSecond = bytesSent / elapsedSeconds;
 
-			Console.WriteLine(bytesPerSecond);
+			//Console.WriteLine(bytesPerSecond);
 
 			// Write relevant information to the TextAreas
 			writeNetworkInfo(bytesPerSecond);

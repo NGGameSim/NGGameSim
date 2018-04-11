@@ -7,12 +7,15 @@
   <References>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="WindowsBase" />
     <Reference Include="Eto.Forms.External" />
     <Reference Include="Lidgren.Network.External" />
     <Reference Include="MonoGame.Framework.External" />
     <Reference Include="SimCommon" />
     <Reference Include="NGAPI" />
     <Reference Include="NLog.External" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
   </References>
   <Files>
     <Compile Include="Graphics\ArcBallCamera.cs" />
@@ -30,6 +33,7 @@
     <Compile Include="SimulationManager.cs" />
     <Compile Include="SimViewer.cs" />
     <Compile Include="SimViewerWindow.cs" />
+    <Compile Include="StateInfoTextArea.cs" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

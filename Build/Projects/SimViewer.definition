@@ -22,6 +22,8 @@
     <Compile Include="Graphics\CameraBehavior.cs" />
     <Compile Include="Graphics\CameraManager.cs" />
     <Compile Include="Graphics\CModel.cs" />
+    <Compile Include="Graphics\ConeModel.cs" />
+    <Compile Include="Graphics\RingModel.cs" />
     <Compile Include="Graphics\WorldModel.cs" />
     <Compile Include="Input\InputEvent.cs" />
     <Compile Include="Input\InputManager.cs" />

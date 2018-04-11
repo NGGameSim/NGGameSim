@@ -30,9 +30,9 @@ namespace NGSim.Graphics
 			if (InputManager.IsKeyDown(Keys.A))
 				cam.Yaw -= (float)gameTime.ElapsedGameTime.TotalSeconds * 30f;
 			if (InputManager.IsKeyDown(Keys.Q))
-				cam.Distance += (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
+				cam.Distance += (float)gameTime.ElapsedGameTime.TotalSeconds * 25f;
 			if (InputManager.IsKeyDown(Keys.E))
-				cam.Distance -= (float)gameTime.ElapsedGameTime.TotalSeconds * 3f;
+				cam.Distance -= (float)gameTime.ElapsedGameTime.TotalSeconds * 25f;
 			cam.Distance += InputManager.GetScrollDelta() * 0.005f;
 		}
 	}

@@ -58,7 +58,7 @@ namespace NGAPI
 		///Set the sped for the for UAV in meters per second. @param targetSpeed: Any speed from 7 to 26 meters per second
 		public static bool SetUAVSpeed(float targetSpeed)
 		{
-			if (targetSpeed < minUAVSpeed || targetSpeed > maxUAVSpeed)
+			if (targetSpeed < MinUAVSpeed || targetSpeed > MaxUAVSpeed)
 				return false;
 			FriendlyUAV.TargetSpeed = targetSpeed;
 			return true;
@@ -75,7 +75,7 @@ namespace NGAPI
 		///Sets the tank's speed in meters per second. @param targetSpeed: Any speed from 0 to 13 meters per second
 		public static bool SetTankSpeed(float targetSpeed)
 		{
-			if (targetSpeed < 0.0f || targetSpeed > maxTankSpeed)
+			if (targetSpeed < 0.0f || targetSpeed > MaxTankSpeed)
 				return false;
 			FriendlyTank.TargetSpeed = targetSpeed;
 			return true;
@@ -111,7 +111,7 @@ namespace NGAPI
 		public static bool CanFire(Position Target)
 		{
 			if (FriendlyTank.MisslesLeft <= 0) { return false; }
-			else if (FriendlyTank.Position.DistanceTo(Target) > firingRange) { return false; }
+			else if (FriendlyTank.Position.DistanceTo(Target) > Constants.TankFiringRange) { return false; }
 			else if (FriendlyTank.Cooldown != 0) { return false; }
 			else { return true; }
 		}

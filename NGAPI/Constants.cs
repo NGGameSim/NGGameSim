@@ -1,33 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NGAPI
 {
 	internal static class Constants
 	{
-		internal const int maxTurns = 10000;   //maximum number of turns in one game 
+		// Scan angle of the UAVs in radians
+		internal const float UAVScanAngle = (float)(15 * Math.PI / 180);
+		// The height that the uav is rendered at in the visualizer
+		internal const float UAVRenderHeight = 20f;
+		// The firing range of the tank
+		internal const int TankFiringRange = 400;
+
+		internal const int MaxTurns = 10000;   //maximum number of turns in one game 
 		internal static readonly Position WorldSize = new Position(2000, 2000); // The size of the world, the valid place for entities to stay, centered on 0, 0
-		internal const int boomRange = 100;  ///meters, 22 meters is effective blast radius of 120mm cannon on M1 Abrams
-		internal const int firingRange = 4000;  ///meters, 4000 meters is firing range of M1 Abrams cannon
+		internal const int BoomRange = 22;  //meters, 22 meters is effective blast radius of 120mm cannon on M1 Abrams
 		internal const float UAVAltitude = 1500;
 
-		internal const float maxUAVSpeed = 26f;  /// meters per second
-		internal const float minUAVSpeed = 7f;  /// meters per second
-		internal const float maxTankSpeed = 13f;  /// meters per second
+		internal const float MaxUAVSpeed = 26f;  // meters per second
+		internal const float MinUAVSpeed = 7f;  // meters per second
+		internal const float MaxTankSpeed = 13f;  // meters per second
 
 		//These are not used anywhere in the code, but should be in the future
 		internal const int MissilesTankCanFireInOneTurn = 1;
 		internal const int MissileAmmoCapacity = 1;
 		
-		internal const float maxUAVAcceleration = 1f;  /// meters per second per second
-		internal const float maxTankAcceleration = 1f; /// meters per second per second
-		internal const float maxUAVTurningSpeed = 1f; ///angles per second
-		internal const float maxTankTurningSpeed = 1f; ///angles per second
-		internal const float UAVScanRange = 100f;  ///meters
+		internal const float MaxUAVAcceleration = 1f;  // meters per second per second
+		internal const float MaxTankAcceleration = 1f; // meters per second per second
+		internal const float MaxUAVTurningSpeed = 1f; //angles per second
+		internal const float MaxTankTurningSpeed = 1f; //angles per second
+		internal const float UAVScanRange = 100f;  //meters
 		internal const float TankScanRange = 10f;
-		internal const float missileSpeed = 1f; ///meters per second
+		internal const float MissileSpeed = 1f; // meters per second
 	}
 }

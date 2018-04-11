@@ -38,6 +38,10 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Graphics\DownArrow.ico" />
+    <EmbeddedResource Include="Graphics\LeftArrow.ico" />
+    <EmbeddedResource Include="Graphics\RightArrow.ico" />
+    <EmbeddedResource Include="Graphics\UpArrow.ico" />
     <None Include="MonoGame.Framework.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

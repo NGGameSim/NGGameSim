@@ -20,6 +20,11 @@ namespace NGSim
 			get { return (uint)_server.Statistics.SentBytes; }
 		}
 
+		public bool isConnected
+		{
+			get { if(_server.ConnectionsCount >= 1) { return true; } else { return false; } }
+		}
+
 		public Server()
 		{
 			if (Instance != null)

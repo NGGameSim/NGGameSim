@@ -35,6 +35,7 @@ namespace NGSim
 		private readonly Rectangle _lRect;
 
 		private Vector2 origin = new Vector2(0, 0);
+		int gameResult;
 
 
 		public SimulationManager(GraphicsDevice device, ContentManager content)
@@ -74,6 +75,7 @@ namespace NGSim
 			Simulation.Team2.UAV.CurrentHeading = msg.ReadSingle();
 			Simulation.Team1.Tank.MisslesLeft = msg.ReadByte();
 			Simulation.Team2.Tank.MisslesLeft = msg.ReadByte();
+			gameResult = msg.ReadByte();
 		}
 
 		// Reads information for a missile update packet (opcode 2)
@@ -119,6 +121,17 @@ namespace NGSim
 				_missModel.Render(camera, new Vector3(mposList[i].X / 10, 1, mposList[i].Y / 10), mheadingList[i], Color.Black);
 			}
 
+			//Derender dead tanks
+			if(gameResult == 1) { _tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t1h, Color.Transparent); }
+			if(gameResult == 2) { _tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Transparent); }
+			if (gameResult == 3)
+			{
+				_tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Transparent);
+				_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t1h, Color.Transparent);
+			}
+			
+		
+
 			_cone.Render(_device, new Vector2(u1.X / 10, u1.Y / 10), camera, 1, Simulation.Team1.UAV.DetectedTankThisTurn);
 			_cone.Render(_device, new Vector2(u2.X / 10, u2.Y / 10), camera, 2, Simulation.Team2.UAV.DetectedTankThisTurn);
 
@@ -133,6 +146,16 @@ namespace NGSim
 			_sb.DrawString(_font, "Red  = Team 2 Tank", new Vector2(5, 31), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Pink = Team 2 UAV", new Vector2(5, 44), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
 			_sb.DrawString(_font, "Black = Missiles", new Vector2(5, 57), Color.Black, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
+			
+			//Draw a message to annouonce the result
+			if(gameResult != 0)
+			{
+				if(gameResult == 3)
+				{
+					_sb.DrawString(_font, $"Both tanks destroyed. It's a draw!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+				}
+				_sb.DrawString(_font, $"Team {gameResult} Wins!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+			}
 			_sb.End();
 		}
 

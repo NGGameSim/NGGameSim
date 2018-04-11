@@ -1,8 +1,9 @@
 using NGAPI;
 using System.Collections.Generic;
 using System;
-using NGAPI;
 using NLog;
+using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace NGSim
 {
@@ -20,8 +21,10 @@ namespace NGSim
 
 		//when gameRunningMode = 0, 1 game is ran and game state info is printed,
 		//when it is 1, games are continuously ran and the result is displayed
-		//when it is 2, 500 games are ran the winning percentage is displayed
+		//when it is 2, N games are ran the winning percentage is displayed
 		public int gameRunningMode;
+		public int NGames;
+		private int CurrentGameNumber;
 		private int gameResult; //0 means game is running, 1 means Team1 won, 2  means Team2 won, 3 means a draw
 		private int numMoves;
 		private bool switchedGameMode = false;  //prevents race condition when switching the mode
@@ -36,6 +39,12 @@ namespace NGSim
 
 		public Boolean running = false;
 
+		private int numberOfVictoriesTeam1;
+		private int numberOfVictoriesTeam2;
+		private int numberOfDraws;
+
+		private Stopwatch myStopwatch = new Stopwatch();
+
 		public SimulationManager()
 		{
 			Simulation = new Simulation();
@@ -46,6 +55,7 @@ namespace NGSim
 		{
 			if(switchedGameMode)
 			{
+				Console.WriteLine("Game Mode Reset");
 				gameResult = 0;
 				numMoves = 0;
 				SetInitialRandomPositions();
@@ -95,7 +105,8 @@ namespace NGSim
 			}
 			else if (gameRunningMode == 2)
 			{
-				Run500Games();
+				//Run500Games();
+				RunNGames();
 			}
 		}
 
@@ -106,13 +117,18 @@ namespace NGSim
 			Console.WriteLine("Game set to run in mode {0}", gameRunningMode);
 		}
 
+		public void SetNGames(int games)
+		{
+			NGames = games;
+		}
+
 		public void Run500Games()
 		{
-			int numberOfVictoriesTeam1 = 0;
-			int numberOfVictoriesTeam2 = 0;
-			int numberOfDraws = 0;
+			numberOfVictoriesTeam1 = 0;
+			numberOfVictoriesTeam2 = 0;
+			numberOfDraws = 0;
 
-			for(int i=0; i<500;i++)
+			for(CurrentGameNumber = 0; CurrentGameNumber<500;CurrentGameNumber++)
 			{
 				RunOneGame();
 				if(gameResult == 1)
@@ -132,6 +148,36 @@ namespace NGSim
 			Console.WriteLine("Of the 500 games Team 1 won {0}%, team 2 won {1}%, and {2}% are draws", 100*((float)numberOfVictoriesTeam1)/500, 100 * ((float)numberOfVictoriesTeam2) / 500, 100 * ((float)numberOfDraws) / 500);
 		}
 
+		public void RunNGames()
+		{
+			numberOfVictoriesTeam1 = 0;
+			numberOfVictoriesTeam2 = 0;
+			numberOfDraws = 0;
+
+			for (CurrentGameNumber = 0; CurrentGameNumber < 500; CurrentGameNumber++)
+			{
+				RunOneGame();
+				if (gameResult == 1)
+				{
+					Console.WriteLine("Team 1 Victory");
+					numberOfVictoriesTeam1++;
+				}
+				else if (gameResult == 2)
+				{
+					Console.WriteLine("Team 2 Victory");
+					numberOfVictoriesTeam2++;
+				}
+				else
+				{
+					Console.WriteLine("Draw");
+					numberOfDraws++;
+				}
+			}
+
+			Console.WriteLine("Of the {0} games Team 1 won {1}%, team 2 won {2}%, and {3}% are draws", NGames, 100 * ((float)numberOfVictoriesTeam1) / NGames, 100 * ((float)numberOfVictoriesTeam2) / NGames, 100 * ((float)numberOfDraws) / NGames);
+			SetGameRunningMode(0);
+		}
+
 		public void RunOneGame()
 		{
 			gameResult = 0;
@@ -144,6 +190,8 @@ namespace NGSim
 				UpdateGameState();
 				numMoves++;
 			}
+
+			SimManagerWindow.MyStateInfoTextArea.GameReset();
 		}
 
 		public void SetInitialRandomPositions()
@@ -153,18 +201,37 @@ namespace NGSim
 			int ylim = (int)(Constants.WorldSize.Y / 3);
 
 			//Generate random positions and place team 1
-			int randX = rand.Next(-xlim, xlim);
-			int randY = rand.Next(-ylim, ylim);
-			Simulation.Team1.Tank.Position = new Position(randX, randY);
-			Simulation.Team1.UAV.Position = new Position(randX, randY);
+			int randX1 = rand.Next(-xlim, xlim);
+			int randY1 = rand.Next(-ylim, ylim);
+			
 			logger.Info($"Team 1 Initial Position {Simulation.Team1.Tank.Position.X} {Simulation.Team1.Tank.Position.Y}");
 
 			//Do the same for team 2
-			randX = rand.Next(-xlim, xlim);
-			randY = rand.Next(-ylim, ylim);
-			Simulation.Team2.Tank.Position = new Position(randX, randY);
-			Simulation.Team2.UAV.Position = new Position(randX, randY);
+			int randX2 = rand.Next(-xlim, xlim);
+			int randY2 = rand.Next(-ylim, ylim);
+			
 			logger.Info($"Team 2 Initial Position {Simulation.Team2.Tank.Position.X} {Simulation.Team2.Tank.Position.Y}");
+
+			//Make sure they don't spawn right next to each other
+			Position Team1Pos = new Position(randX1, randY1);
+			Position Team2Pos = new Position(randX2, randY2);
+
+			while (Team1Pos.DistanceTo(Team2Pos) < 100)
+			{
+				randX1 = rand.Next(-xlim, xlim);
+				randY1 = rand.Next(-ylim, ylim);
+				randX2 = rand.Next(-xlim, xlim);
+				randY2 = rand.Next(-ylim, ylim);
+
+				Team1Pos = new Position(randX1, randY1);
+				Team2Pos = new Position(randX2, randY2);
+			}
+
+			//Set the positions of the entities
+			Simulation.Team1.Tank.Position = new Position(randX1, randY1);
+			Simulation.Team1.UAV.Position = new Position(randX1, randY1);
+			Simulation.Team2.Tank.Position = new Position(randX2, randY2);
+			Simulation.Team2.UAV.Position = new Position(randX2, randY2);
 
 			//Reset Team Missiles
 			Simulation.Team1.Tank.MisslesLeft = 15;
@@ -195,8 +262,73 @@ namespace NGSim
 			checkMissileImpacts();
 			// Run the user algorithms
 			runUserAlgorithms();
-			// Send network update packets
+
+			// Send network update packets with timing
+			var sentBytesInitial = Server.Instance.TotalSentBytes;
+			myStopwatch.Start();
 			sendNetworkPackets();
+			myStopwatch.Stop();
+			//Console.WriteLine(Server.Instance.TotalSentBytes);
+			var bytesSent = Convert.ToDouble(Server.Instance.TotalSentBytes - sentBytesInitial);
+			var elapsedSeconds = myStopwatch.ElapsedMilliseconds / 1000.0;
+			//Console.WriteLine(elapsedSeconds);
+			//Console.WriteLine(bytesSent);
+
+			var bytesPerSecond = bytesSent / elapsedSeconds;
+
+			//Console.WriteLine(bytesPerSecond);
+
+			// Write relevant information to the TextAreas
+			writeNetworkInfo(bytesPerSecond);
+			writeStateInfo();
+			
+		}
+
+		private void writeNetworkInfo(double bytesPerSec)
+		{
+			System.Windows.Application.Current.Dispatcher.Invoke(() =>
+			{
+				SimManagerWindow.MyNetworkInfoTextArea.BitRate = bytesPerSec.ToString();
+				SimManagerWindow.MyNetworkInfoTextArea.ConnectionStatus = Server.Instance.isConnected;
+				SimManagerWindow.MyNetworkInfoTextArea.View = "Normal";
+				//SimManagerWindow.MyNetworkInfoTextArea.Warnings
+			});
+		}
+
+		private void writeStateInfo()
+		{
+			System.Windows.Application.Current.Dispatcher.Invoke(() =>
+			{
+				SimManagerWindow.MyStateInfoTextArea.RedTankXY = Simulation.Team1.Tank.Position;
+				SimManagerWindow.MyStateInfoTextArea.RedUAVXY = Simulation.Team1.UAV.Position;
+				SimManagerWindow.MyStateInfoTextArea.RedMissilesRemaining = Simulation.Team1.Tank.MisslesLeft;
+				SimManagerWindow.MyStateInfoTextArea.LastKnownBlueTankXY = Simulation.Team1.UAV.LastKnownPosition;
+
+				SimManagerWindow.MyStateInfoTextArea.BlueTankXY = Simulation.Team2.Tank.Position;
+				SimManagerWindow.MyStateInfoTextArea.BlueUAVXY = Simulation.Team2.UAV.Position;
+				SimManagerWindow.MyStateInfoTextArea.BlueMissilesRemaining = Simulation.Team2.Tank.MisslesLeft;
+				SimManagerWindow.MyStateInfoTextArea.LastKnownRedTankXY = Simulation.Team2.UAV.LastKnownPosition;
+
+				SimManagerWindow.MyStateInfoTextArea.TurnsElapsed = numMoves;
+				if (CurrentGameNumber != 0)
+				{
+					SimManagerWindow.MyStateInfoTextArea.WinPercent = numberOfVictoriesTeam1 / (CurrentGameNumber + 1);
+				}
+				else
+				{
+					SimManagerWindow.MyStateInfoTextArea.WinPercent = 0;
+				}
+				SimManagerWindow.MyStateInfoTextArea.GamesRun = CurrentGameNumber + 1;
+
+				if (Simulation.Team1.Missiles.Count > 0)
+				{
+					SimManagerWindow.MyStateInfoTextArea.RedMissileXY = Simulation.Team1.Missiles[0].CurrentPostion;
+				}
+				if (Simulation.Team2.Missiles.Count > 0)
+				{
+					SimManagerWindow.MyStateInfoTextArea.BlueMissileXY = Simulation.Team2.Missiles[0].CurrentPostion;
+				}
+			});
 		}
 
 		private void sendNetworkPackets()
@@ -217,6 +349,7 @@ namespace NGSim
 			entityPacket.Write(Simulation.Team2.UAV.CurrentHeading);
 			entityPacket.Write((byte)Simulation.Team1.Tank.MisslesLeft);
 			entityPacket.Write((byte)Simulation.Team2.Tank.MisslesLeft);
+			entityPacket.Write((byte)gameResult);
 
 			// Missile update packet
 			var missilePacket = Server.Instance.CreateMessage(2);
@@ -255,30 +388,51 @@ namespace NGSim
 					{
 						// Team 1 tank is hit, Team two wins.
 						team1Hit = true;
-						Console.WriteLine("Tank was destroyed!!");
 					}
 					if (MissileInAir[i].Target.DistanceTo(Simulation.Team2.Tank.Position) < Constants.BoomRange)
 					{
 						// Team 2 tank is hit, Team one wins.
 						team2Hit = true;
-						Console.WriteLine("Tank was destroyed!!");
 					}
-
-					if(team2Hit || team1Hit == false) // If no team has won.
+					if (team2Hit || team1Hit == false) // If no team has won.
 						toRemove.Add(MissileInAir[i]); // Remove grounded missile.
-					else 
+					else
 					{
 						//Else remove both missile lists for a clean slate.
 						MissileInAir.Clear();
 						toRemove.Clear();
 					}
 				}
+
+				//Check for impacts mid flight
+				else
+				{
+					if ((MissileInAir[i].CurrentPostion.DistanceTo(Simulation.Team1.Tank.Position) < Constants.BoomRange))
+					{
+						if((MissileInAir[i].Source.X == Simulation.Team2.Tank.Position.X) && (MissileInAir[i].Source.Y == Simulation.Team2.Tank.Position.Y))
+						{
+							team1Hit = true;
+							toRemove.Add(MissileInAir[i]);
+						}
+					}
+
+					if (MissileInAir[i].CurrentPostion.DistanceTo(Simulation.Team2.Tank.Position) < Constants.BoomRange)
+					{
+						if ((MissileInAir[i].Source.X == Simulation.Team1.Tank.Position.X) && (MissileInAir[i].Source.Y == Simulation.Team1.Tank.Position.Y))
+						{
+							team2Hit = true;
+							toRemove.Add(MissileInAir[i]);
+						} 
+					}
+				}
+
 			}
 			//Remove missils listed as reached their target.
 			foreach (Missile missile in toRemove)
 				if(!MissileInAir.Remove(missile)) { logger.Debug("CRITICAL ERROR IN REMOVING MISSILES");  }
 			toRemove.Clear();
 
+			//Check for game ending scenarios
 			if(team1Hit && team2Hit)
 			{
 				gameResult = 3;
@@ -290,6 +444,10 @@ namespace NGSim
 			else if(team2Hit)
 			{
 				gameResult = 1;
+			}
+			else if(Simulation.Team1.Tank.Position.DistanceTo(Simulation.Team2.Tank.Position) < 15)
+			{
+				gameResult = 3;
 			}
 		}
 		private void updateMissiles()
@@ -451,9 +609,9 @@ namespace NGSim
 
 			for (int i = 0; i < MissileInAir.Count; i++)
 			{
-				MissileInAir[i].CurrentPostion = new Position(MissileInAir[i].CurrentPostion.X + XMissiles[i], MissileInAir[i].CurrentPostion.Y + YMissiles[i]);
+                //MissileInAir.ForEach((missile) => { missile.CurrentPostion = new Position(missile.CurrentPostion.X + XMissiles[i], missile.CurrentPostion.Y + YMissiles[i]); });
+                MissileInAir[i].CurrentPostion = new Position(MissileInAir[i].CurrentPostion.X + XMissiles[i], MissileInAir[i].CurrentPostion.Y + YMissiles[i]);
 			}
-
 		}
 
 		private float angleClamp(float angle)

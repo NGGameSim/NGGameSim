@@ -14,9 +14,18 @@ packages/**
 *.userprefs
 
 Documentation/html
+<<<<<<< HEAD
 Documentation/latex
 Documentation/\.DS_Store
 
 \.DS_Store
 
 *.plist
+=======
+Documentation/latex
+Documentation/\.DS_Store
+
+\.DS_Store
+
+*.plist
+>>>>>>> b3986043dcf0003f58a2ec00eb9d666e50c910bb

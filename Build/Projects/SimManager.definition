@@ -10,7 +10,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="Eto.Forms.External" />
     <Reference Include="Lidgren.Network.External" />
-    <Reference Include="SimCommon" />
     <Reference Include="NGAPI" />
     <Reference Include="NLog.External" />
     <Reference Include="PresentationCore" />

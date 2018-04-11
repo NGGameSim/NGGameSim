@@ -17,7 +17,7 @@ namespace NGSim
 			float UAVHeading = API.GetUAVHeading();
 			float UAVSpeed = API.GetUAVSpeed();
 
-            Position Origin = new Position(0, 0);
+			Position Origin = new Position(0, 0);
 
 			if (lastChange-- == 0)
 			{
@@ -25,42 +25,61 @@ namespace NGSim
 				UAVHeading = API.GetRandomInteger(360);
 				TankSpeed = API.GetRandomInteger(14);
 				UAVSpeed = 7 + API.GetRandomInteger(20);
-				API.SetTankHeading(TankHeading);
+
+				if (!API.IsTankTurning())
+					API.SetTankHeading(TankHeading);
 				API.SetTankSpeed(TankSpeed);
-				API.SetUAVHeading(UAVHeading);
+				if (!API.IsUAVTurning())
+					API.SetUAVHeading(UAVHeading);
 				API.SetUAVSpeed(UAVSpeed);
 				lastChange = 30;
 			}
 
 			//Check if tank is heading out of bounds
-			Position tankDirection = new Position((float)Math.Cos(TankHeading), (float)Math.Sin(TankHeading));
-			Position headingToPositionTank = TankPosition + TankSpeed * tankDirection;
-			while (headingToPositionTank.X >= 500 || headingToPositionTank.X <= -500 || headingToPositionTank.Y >= 500 || headingToPositionTank.Y <= -500)
+			float ToCenterTank = 180 + (float)Math.Atan2(TankPosition.Y, TankPosition.X) * 180 / (float)Math.PI;
+			float ToCenterUAV = 180 + (float)Math.Atan2(UAVPosition.Y, UAVPosition.X) * 180 / (float)Math.PI;
+
+			if ((TankHeading < 90 || TankHeading > 270) && TankPosition.X > 400)
 			{
-				TankHeading = API.GetRandomInteger(360);
-				API.SetTankHeading(TankHeading);
-				tankDirection = new Position((float)Math.Cos(TankHeading), (float)Math.Sin(TankHeading));
-				headingToPositionTank = TankPosition + TankSpeed * tankDirection;
+				API.SetTankHeading(ToCenterTank);
 			}
 
-			//Check if UAV is heading out of bounds
-			Position UAVDirection = new Position((float)Math.Cos(UAVHeading), (float)Math.Sin(UAVHeading));
-			Position headingToPositionUAV = UAVPosition + UAVSpeed * UAVDirection;
-			while (headingToPositionUAV.X >= 500 || headingToPositionUAV.X <= -500 || headingToPositionUAV.Y >= 500 || headingToPositionUAV.Y <= -500)
+			else if ((TankHeading > 90 && TankHeading < 270) && TankPosition.X < -400)
 			{
-				UAVHeading = API.GetRandomInteger(360);
-				API.SetUAVHeading(UAVHeading);
-				UAVDirection = new Position((float)Math.Cos(UAVHeading), (float)Math.Sin(UAVHeading));
-				headingToPositionUAV = UAVPosition + UAVSpeed * UAVDirection;
+				API.SetTankHeading(ToCenterTank);
 			}
 
-            /*if (API.DetectedThisTurn())
+			else if (TankHeading < 180 && TankPosition.Y > 400)
 			{
-				API.Fire(API.GetLastKnownPosition());
-			}*/
+				API.SetTankHeading(ToCenterTank);
+			}
 
-            API.Fire(Origin);
-        }
-    }
-	
+			else if (TankHeading > 180 && TankPosition.Y < -400)
+			{
+				API.SetTankHeading(ToCenterTank);
+			}
+
+			if ((UAVHeading < 90 || UAVHeading > 270) && UAVPosition.X > 400)
+			{
+				API.SetUAVHeading(ToCenterUAV);
+			}
+
+			else if ((UAVHeading > 90 && UAVHeading < 270) && UAVPosition.X < -400)
+			{
+				API.SetUAVHeading(ToCenterUAV);
+			}
+
+			else if (UAVHeading < 180 && UAVPosition.Y > 400)
+			{
+				API.SetUAVHeading(ToCenterUAV);
+			}
+
+			else if (UAVHeading > 180 && UAVPosition.Y < -400)
+			{
+				API.SetUAVHeading(ToCenterUAV);
+			}
+
+			API.Fire(Origin);
+		}
+	}
 }

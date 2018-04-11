@@ -140,6 +140,8 @@ namespace NGSim
 			PlayPauseButton = new Button { Text = "PLAY/PAUSE", Height = 30 };
 			GodModeButton = new Button { Text = "GODMODE", Height = 30 };
 
+			PlayPauseButton.Click += PlayPause_Click;
+
 			var rightLayout = new TableLayout
 			{
 				Spacing = new Size(5, 5),
@@ -212,6 +214,11 @@ namespace NGSim
 					RunNGames(Int32.Parse(NGameTextBox.Text));
 				}
 			}
+		}
+
+		private void PlayPause_Click(object sender, EventArgs e)
+		{
+			UpdateManager.SimManager.PausePlay();
 		}
 
 		// Function to log information about the game state

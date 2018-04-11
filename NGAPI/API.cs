@@ -31,6 +31,12 @@ namespace NGAPI
 		///Gets the tank's heading in degrees.
 		public static float GetTankHeading() { return FriendlyTank.CurrentHeading; }
 
+		///Gets if the tank is currently turning
+		public static bool IsTankTurning() { return (FriendlyTank.CurrentHeading != FriendlyTank.TargetHeading); }
+
+		///Gets if the tank is currently accelerating
+		public static bool IsTankAccelerating() { return (FriendlyTank.CurrentSpeed != FriendlyTank.TargetSpeed); }
+
 		///Gets the number of remaining missiles.
 		public static int GetRemainingMissiles() { return FriendlyTank.MisslesLeft; }
 
@@ -43,10 +49,16 @@ namespace NGAPI
 		///Gets the UAV's heading in degrees.
 		public static float GetUAVHeading() { return FriendlyUAV.CurrentHeading; }
 
+		///Gets if the UAV is currently turning
+		public static bool IsUAVTurning() { return (FriendlyUAV.CurrentHeading != FriendlyUAV.TargetHeading); }
+
+		///Gets if the UAV is currently accelerating
+		public static bool IsUAVAccelerating() { return (FriendlyUAV.CurrentSpeed != FriendlyUAV.TargetSpeed); }
+
 		///Set the sped for the for UAV in meters per second. @param targetSpeed: Any speed from 7 to 26 meters per second
 		public static bool SetUAVSpeed(float targetSpeed)
 		{
-			if (targetSpeed < minUAVSpeed || targetSpeed > maxUAVSpeed)
+			if (targetSpeed < MinUAVSpeed || targetSpeed > MaxUAVSpeed)
 				return false;
 			FriendlyUAV.TargetSpeed = targetSpeed;
 			return true;
@@ -63,7 +75,7 @@ namespace NGAPI
 		///Sets the tank's speed in meters per second. @param targetSpeed: Any speed from 0 to 13 meters per second
 		public static bool SetTankSpeed(float targetSpeed)
 		{
-			if (targetSpeed < 0.0f || targetSpeed > maxTankSpeed)
+			if (targetSpeed < 0.0f || targetSpeed > MaxTankSpeed)
 				return false;
 			FriendlyTank.TargetSpeed = targetSpeed;
 			return true;
@@ -99,7 +111,7 @@ namespace NGAPI
 		public static bool CanFire(Position Target)
 		{
 			if (FriendlyTank.MisslesLeft <= 0) { return false; }
-			else if (FriendlyTank.Position.DistanceTo(Target) > firingRange) { return false; }
+			else if (FriendlyTank.Position.DistanceTo(Target) > Constants.TankFiringRange) { return false; }
 			else if (FriendlyTank.Cooldown != 0) { return false; }
 			else { return true; }
 		}

@@ -6,6 +6,7 @@ using NGSim.Graphics;
 using System.IO;
 using System.Reflection;
 using Microsoft.Xna.Framework;
+using XnaMatrix = Microsoft.Xna.Framework.Matrix;
 
 namespace NGSim
 {
@@ -327,16 +328,28 @@ namespace NGSim
 
 		private void TranslateLeftButton_Click(object sender, EventArgs e)
 		{
+			//TODO: rotation matrix
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
-			Vector3 dfvect = new Vector3(-1, 0, 0);
-			cam.Target += dfvect;
+
+			XnaMatrix rotationmatrix = XnaMatrix.CreateRotationY(MathHelper.ToRadians(cam.Yaw));
+
+			Vector3 dfvect = new Vector3(-1, 0, 0); //Shift the camera Left
+			Vector3 dfTransVect = Vector3.Transform(dfvect, rotationmatrix);
+			
+			cam.Target += dfTransVect;
 		}
 
 		private void TranslateRightButton_Click(object sender, EventArgs e)
 		{
+			//TODO: rotation matrix
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
-			Vector3 dfvect = new Vector3(1, 0, 0);
-			cam.Target += dfvect;
+
+			XnaMatrix rotationmatrix = XnaMatrix.CreateRotationY(MathHelper.ToRadians(cam.Yaw));
+
+			Vector3 dfvect = new Vector3(1, 0, 0); //Shift the camera Right
+			Vector3 dfTransVect = Vector3.Transform(dfvect, rotationmatrix);
+
+			cam.Target += dfTransVect;
 		}
 
 		private void ResetButton_Click(object sender, EventArgs e)

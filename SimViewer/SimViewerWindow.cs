@@ -5,6 +5,7 @@ using NLog;
 using NGSim.Graphics;
 using System.IO;
 using System.Reflection;
+using Microsoft.Xna.Framework;
 
 namespace NGSim
 {
@@ -312,26 +313,30 @@ namespace NGSim
 
 		private void TranslateDownButton_Click(object sender, EventArgs e)
 		{
-			// Target y -= 5
-			throw new NotImplementedException();
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			Vector3 dfvect = new Vector3(0, -1, 0);
+			cam.Target += dfvect;
 		}
 
 		private void TranslateUpButton_Click(object sender, EventArgs e)
 		{
-			// Target y += 5
-			throw new NotImplementedException();
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			Vector3 dfvect = new Vector3(0, 1, 0);
+			cam.Target += dfvect;
 		}
 
 		private void TranslateLeftButton_Click(object sender, EventArgs e)
 		{
-			// Target x -= 5
-			throw new NotImplementedException();
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			Vector3 dfvect = new Vector3(-1, 0, 0);
+			cam.Target += dfvect;
 		}
 
 		private void TranslateRightButton_Click(object sender, EventArgs e)
 		{
-			// Target x += 5
-			throw new NotImplementedException();
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			Vector3 dfvect = new Vector3(1, 0, 0);
+			cam.Target += dfvect;
 		}
 
 		private void ResetButton_Click(object sender, EventArgs e)

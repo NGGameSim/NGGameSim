@@ -39,17 +39,19 @@ namespace NGSim.Graphics
 	}
 
 
-	public class EntityFollowBehavior : CameraBehavior
+	public class EntityFollowBehavior : ArcBallCameraBehavior
 	{
 		public Entity Entity;
 
 		public override void Update(GameTime gameTime, Camera camera)
 		{
+			base.Update(gameTime, camera);
+
 			ArcBallCamera cam = camera as ArcBallCamera;
 			if (cam == null)
 				return;
 
-			cam.Target = (Entity != null) ? new Vector3(Entity.Position.X, 0, Entity.Position.Y) : Vector3.Zero;
+			cam.Target = (Entity != null) ? new Vector3(Entity.Position.X / 10, 0, Entity.Position.Y / 10) : Vector3.Zero;
 		}
 	}
 }

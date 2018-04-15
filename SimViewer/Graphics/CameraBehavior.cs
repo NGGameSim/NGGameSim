@@ -21,13 +21,13 @@ namespace NGSim.Graphics
 			if (cam == null)
 				return;
 
-			if (InputManager.IsKeyDown(Keys.W))
+			if (InputManager.IsKeyDown(Keys.W) || InputManager.IsKeyDown(Keys.Up))
 				cam.Pitch += (float)gameTime.ElapsedGameTime.TotalSeconds * 20f;
-			if (InputManager.IsKeyDown(Keys.S))
+			if (InputManager.IsKeyDown(Keys.S) || InputManager.IsKeyDown(Keys.Down))
 				cam.Pitch -= (float)gameTime.ElapsedGameTime.TotalSeconds * 20f;
-			if (InputManager.IsKeyDown(Keys.D))
+			if (InputManager.IsKeyDown(Keys.D) || InputManager.IsKeyDown(Keys.Right))
 				cam.Yaw += (float)gameTime.ElapsedGameTime.TotalSeconds * 30f;
-			if (InputManager.IsKeyDown(Keys.A))
+			if (InputManager.IsKeyDown(Keys.A) || InputManager.IsKeyDown(Keys.Left))
 				cam.Yaw -= (float)gameTime.ElapsedGameTime.TotalSeconds * 30f;
 			if (InputManager.IsKeyDown(Keys.Q))
 				cam.Distance += (float)gameTime.ElapsedGameTime.TotalSeconds * 25f;

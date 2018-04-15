@@ -42,6 +42,7 @@ namespace NGSim.Graphics
 	public class EntityFollowBehavior : ArcBallCameraBehavior
 	{
 		public Entity Entity;
+		public string Choice; //Might not need if I can get Entity to work
 
 		public override void Update(GameTime gameTime, Camera camera)
 		{

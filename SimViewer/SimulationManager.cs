@@ -37,8 +37,8 @@ namespace NGSim
 		private Vector2 origin = new Vector2(0, 0);
 		int gameResult;
 
-		ArcBallCamera _camera;
-		EntityFollowBehavior _follow;
+		ArcBallCamera _entityCamera;
+		EntityFollowBehavior _entityFollow;
 
 		public SimulationManager(GraphicsDevice device, ContentManager content)
 		{
@@ -63,9 +63,9 @@ namespace NGSim
 
 			Simulation = new Simulation();
 
-			_camera = new ArcBallCamera(device, distance: 20f, yaw: 45f, pitch: 35f);
-			_follow = new EntityFollowBehavior();
-			CameraManager.Set(_camera, _follow);
+			_entityCamera = new ArcBallCamera(device, distance: 20f, yaw: 45f, pitch: 35f);
+			_entityFollow = new EntityFollowBehavior();
+			//CameraManager.Set(_camera, _follow);
 		}
 
 		// Reads information for an entity update packet (opcode 1)
@@ -103,7 +103,16 @@ namespace NGSim
 
 		public void Render()
 		{
-			_follow.Entity = Simulation.Team1.Tank;
+			if(CameraManager.ActiveBehavior is EntityFollowBehavior)
+			{
+				EntityFollowBehavior beh = CameraManager.ActiveBehavior as EntityFollowBehavior;
+				if (beh.Choice == "Team1.Tank") { _entityFollow.Entity = Simulation.Team1.Tank; }
+				else if (beh.Choice == "Team1.UAV") { _entityFollow.Entity = Simulation.Team1.UAV; }
+				else if (beh.Choice == "Team2.Tank") { _entityFollow.Entity = Simulation.Team2.Tank; }
+				else if (beh.Choice == "Team2.UAV") { _entityFollow.Entity = Simulation.Team2.UAV; }
+				else { throw new NotSupportedException(); }
+				CameraManager.Set(_entityCamera, _entityFollow);
+			}
 
 			// Draw the world
 			Camera camera = CameraManager.ActiveCamera;

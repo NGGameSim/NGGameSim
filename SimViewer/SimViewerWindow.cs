@@ -2,6 +2,7 @@
 using Eto.Forms;
 using Eto.Drawing;
 using NLog;
+using NGAPI;
 using NGSim.Graphics;
 using System.IO;
 using System.Reflection;
@@ -328,7 +329,6 @@ namespace NGSim
 
 		private void TranslateLeftButton_Click(object sender, EventArgs e)
 		{
-			//TODO: rotation matrix
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 
 			XnaMatrix rotationmatrix = XnaMatrix.CreateRotationY(MathHelper.ToRadians(cam.Yaw));
@@ -341,7 +341,6 @@ namespace NGSim
 
 		private void TranslateRightButton_Click(object sender, EventArgs e)
 		{
-			//TODO: rotation matrix
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 
 			XnaMatrix rotationmatrix = XnaMatrix.CreateRotationY(MathHelper.ToRadians(cam.Yaw));
@@ -357,6 +356,7 @@ namespace NGSim
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 			cam.Pitch = 45f;
 			cam.Yaw = 0f;
+			cam.Distance = 200f;
 			cam.Target = new Vector3(0, 0, 0);
 		}
 
@@ -364,35 +364,46 @@ namespace NGSim
 		{
 			// Enable translate buttons
 			// Set target to current posititon (stop following entity
-			throw new NotImplementedException();
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			cam.Pitch = 45f;
+			cam.Yaw = 0f;
+			cam.Distance = 200f;
+
 		}
 
 		private void RedTankButton_Click(object sender, EventArgs e)
 		{
 			// Disable translate buttons
 			// Set target to red tank
-			throw new NotImplementedException();
+			//ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			EntityFollowBehavior beh = new EntityFollowBehavior();
+			beh.Choice = "Team1.Tank";
+			//CameraManager.Set(cam, beh);
+			//CameraManager.Set(_camera, _follow);
 		}
 
 		private void RedUAVButton_Click(object sender, EventArgs e)
 		{
 			// Disable translate buttons
 			// Set target to red uav
-			throw new NotImplementedException();
+			EntityFollowBehavior beh = new EntityFollowBehavior();
+			beh.Choice = "Team1.UAV";
 		}
 
 		private void BlueTankButton_Click(object sender, EventArgs e)
 		{
 			// Disable translate buttons
 			// Set target to blue tank
-			throw new NotImplementedException();
+			EntityFollowBehavior beh = new EntityFollowBehavior();
+			beh.Choice = "Team2.Tank";
 		}
 
 		private void BlueUAVButton_Click(object sender, EventArgs e)
 		{
 			// Disable translate buttons
 			// Set target to blue uav
-			throw new NotImplementedException();
+			EntityFollowBehavior beh = new EntityFollowBehavior();
+			beh.Choice = "Team2.UAV";
 		}
 
 		private void DecreaseZoomButton__Click(object sender, EventArgs e)
@@ -402,6 +413,7 @@ namespace NGSim
 				ZoomSlider_.Value -= 1;
 			}
 			// Update camera distance
+			//Normalize distance for 0 - 100, then adjust distance accordingly
 		}
 
 		private void IncreaseZoomButton__Click(object sender, EventArgs e)
@@ -411,6 +423,7 @@ namespace NGSim
 				ZoomSlider_.Value += 1;
 			}
 			// Update camera distance
+			//Normalize distance for 0 - 100
 		}
 
 		private void ZoomSliderValueChanged(object sender, EventArgs e)

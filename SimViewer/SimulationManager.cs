@@ -37,6 +37,8 @@ namespace NGSim
 		private Vector2 origin = new Vector2(0, 0);
 		int gameResult;
 
+		ArcBallCamera _camera;
+		EntityFollowBehavior _follow;
 
 		public SimulationManager(GraphicsDevice device, ContentManager content)
 		{
@@ -60,6 +62,10 @@ namespace NGSim
 			_lRect = new Rectangle(0, 0, 130, 70);
 
 			Simulation = new Simulation();
+
+			_camera = new ArcBallCamera(device, distance: 20f, yaw: 45f, pitch: 35f);
+			_follow = new EntityFollowBehavior();
+			CameraManager.Set(_camera, _follow);
 		}
 
 		// Reads information for an entity update packet (opcode 1)
@@ -97,6 +103,8 @@ namespace NGSim
 
 		public void Render()
 		{
+			_follow.Entity = Simulation.Team1.Tank;
+
 			// Draw the world
 			Camera camera = CameraManager.ActiveCamera;
 			_world.Draw(_device, camera);

@@ -337,15 +337,6 @@ namespace NGSim
 					SimManagerWindow.MyStateInfoTextArea.WinPercent = 0;
 				}
 				SimManagerWindow.MyStateInfoTextArea.GamesRun = CurrentGameNumber + 1;
-
-				if (Simulation.Team1.Missiles.Count > 0)
-				{
-					SimManagerWindow.MyStateInfoTextArea.RedMissileXY = Simulation.Team1.Missiles[0].CurrentPostion;
-				}
-				if (Simulation.Team2.Missiles.Count > 0)
-				{
-					SimManagerWindow.MyStateInfoTextArea.BlueMissileXY = Simulation.Team2.Missiles[0].CurrentPostion;
-				}
 			});
 		}
 

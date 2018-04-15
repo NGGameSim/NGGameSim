@@ -37,7 +37,6 @@ namespace NGSim
 		private Vector2 origin = new Vector2(0, 0);
 		int gameResult;
 
-		ArcBallCamera _entityCamera;
 		EntityFollowBehavior _entityFollow;
 
 		public SimulationManager(GraphicsDevice device, ContentManager content)
@@ -63,9 +62,7 @@ namespace NGSim
 
 			Simulation = new Simulation();
 
-			_entityCamera = new ArcBallCamera(device, distance: 20f, yaw: 45f, pitch: 35f);
 			_entityFollow = new EntityFollowBehavior();
-			//CameraManager.Set(_camera, _follow);
 		}
 
 		// Reads information for an entity update packet (opcode 1)
@@ -103,10 +100,12 @@ namespace NGSim
 
 		public void Render()
 		{
+			//Checks to see if Active Camera is going to follow an entity.
 			if(CameraManager.ActiveBehavior is EntityFollowBehavior)
 			{
-				_entityCamera.Distance = 20f;
+				ArcBallCamera _entityCamera = CameraManager.ActiveCamera as ArcBallCamera;
 				EntityFollowBehavior EntityBeh = CameraManager.ActiveBehavior as EntityFollowBehavior;
+				_entityCamera.Distance = 20f; //Zoom into the entity.
 				if (EntityBeh.Choice == "Team1.Tank") { _entityFollow.Entity = Simulation.Team1.Tank; }
 				else if (EntityBeh.Choice == "Team1.UAV") { _entityFollow.Entity = Simulation.Team1.UAV; }
 				else if (EntityBeh.Choice == "Team2.Tank") { _entityFollow.Entity = Simulation.Team2.Tank; }
@@ -114,7 +113,6 @@ namespace NGSim
 				//else { throw new NotSupportedException(); }
 				CameraManager.Set(_entityCamera, _entityFollow);
 			}
-			//else { CameraManager.Set()}
 
 			// Draw the world
 			Camera camera = CameraManager.ActiveCamera;

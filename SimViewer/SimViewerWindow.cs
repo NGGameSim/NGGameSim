@@ -353,6 +353,7 @@ namespace NGSim
 
 		private void ResetButton_Click(object sender, EventArgs e)
 		{
+			//Zoom out and reset
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 			ArcBallCameraBehavior beh = new ArcBallCameraBehavior();
 			cam.Pitch = 45f;
@@ -365,7 +366,8 @@ namespace NGSim
 		private void FreeCameraButton_Click(object sender, EventArgs e)
 		{
 			// Enable translate buttons
-			// Set target to current posititon (stop following entity
+			// Set target to current posititon (stop following entity)
+			//Zoom out and reset
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 			ArcBallCameraBehavior beh = new ArcBallCameraBehavior();
 			cam.Pitch = 45f;

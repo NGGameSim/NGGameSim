@@ -361,37 +361,48 @@ namespace NGSim
 
 		private void FreeCameraButton_Click(object sender, EventArgs e)
 		{
-			// Enable translate buttons
-			// Set target to current posititon (stop following entity
-			throw new NotImplementedException();
+			EnableTranslate();
+			// Set target to current posititon (stop following entity)
 		}
 
 		private void RedTankButton_Click(object sender, EventArgs e)
 		{
-			// Disable translate buttons
+			DisableTranslate();
 			// Set target to red tank
-			throw new NotImplementedException();
 		}
 
 		private void RedUAVButton_Click(object sender, EventArgs e)
 		{
-			// Disable translate buttons
+			DisableTranslate();
 			// Set target to red uav
-			throw new NotImplementedException();
 		}
 
 		private void BlueTankButton_Click(object sender, EventArgs e)
 		{
-			// Disable translate buttons
+			DisableTranslate();
 			// Set target to blue tank
-			throw new NotImplementedException();
 		}
 
 		private void BlueUAVButton_Click(object sender, EventArgs e)
 		{
-			// Disable translate buttons
+			DisableTranslate();
 			// Set target to blue uav
-			throw new NotImplementedException();
+		}
+
+		private void EnableTranslate()
+		{
+			TranslateDownButton.Enabled = true;
+			TranslateUpButton.Enabled = true;
+			TranslateLeftButton.Enabled = true;
+			TranslateRightButton.Enabled = true;
+		}
+
+		private void DisableTranslate()
+		{
+			TranslateDownButton.Enabled = false;
+			TranslateUpButton.Enabled = false;
+			TranslateLeftButton.Enabled = false;
+			TranslateRightButton.Enabled = false;
 		}
 
 		private void DecreaseZoomButton__Click(object sender, EventArgs e)

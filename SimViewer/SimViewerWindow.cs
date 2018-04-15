@@ -241,7 +241,7 @@ namespace NGSim
 			ZoomSlider_ = new Slider();
 			ZoomSlider_.Orientation = Orientation.Vertical;
 			ZoomSlider_.Height = 100;
-			ZoomSlider_.Value = 100;
+			ZoomSlider_.Value = 0;
 			ZoomSlider_.ValueChanged += ZoomSliderValueChanged;
 			ZoomSlider = new TableCell(ZoomSlider_, false);
 
@@ -412,7 +412,7 @@ namespace NGSim
 			{
 				ZoomSlider_.Value -= 1;
 			}
-			// Update camera distance
+			UpdateZoom();
 		}
 
 		private void IncreaseZoomButton__Click(object sender, EventArgs e)
@@ -421,13 +421,13 @@ namespace NGSim
 			{
 				ZoomSlider_.Value += 1;
 			}
-			// Update camera distance
+			UpdateZoom();
 		}
 
 		private void ZoomSliderValueChanged(object sender, EventArgs e)
 		{
 			ZoomTextBox_.Text = ZoomSlider_.Value.ToString();
-			// Update camera distance
+			UpdateZoom();
 		}
 
 		private void ZoomTextBoxValueChanged(object sender, EventArgs e)
@@ -435,9 +435,23 @@ namespace NGSim
 			var parseResult = 0;
 			if (Int32.TryParse(ZoomTextBox_.Text, out parseResult))
 			{
-				ZoomSlider_.Value = parseResult;
+				if (parseResult <= 100 && parseResult >= 0)
+				{
+					ZoomSlider_.Value = parseResult;
+				} else
+				{
+					if (parseResult > 100) { ZoomTextBox_.Text = "100"; }
+					if (parseResult < 0) { ZoomTextBox_.Text = "0"; }
+				}
 			}
-			// Update camera distance
+			ZoomTextBox_.Selection = new Range<Int32>(3,4);
+			UpdateZoom();
+		}
+
+		private void UpdateZoom()
+		{
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			cam.Distance = ZoomSlider_.Value*(-1.5f) + 200 ;
 		}
 
 		// Right Group

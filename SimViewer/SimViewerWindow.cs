@@ -357,6 +357,7 @@ namespace NGSim
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 			cam.Pitch = 45f;
 			cam.Yaw = 0f;
+			cam.Target = new Vector3(0, 0, 0);
 		}
 
 		private void FreeCameraButton_Click(object sender, EventArgs e)

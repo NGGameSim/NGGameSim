@@ -105,14 +105,16 @@ namespace NGSim
 		{
 			if(CameraManager.ActiveBehavior is EntityFollowBehavior)
 			{
-				EntityFollowBehavior beh = CameraManager.ActiveBehavior as EntityFollowBehavior;
-				if (beh.Choice == "Team1.Tank") { _entityFollow.Entity = Simulation.Team1.Tank; }
-				else if (beh.Choice == "Team1.UAV") { _entityFollow.Entity = Simulation.Team1.UAV; }
-				else if (beh.Choice == "Team2.Tank") { _entityFollow.Entity = Simulation.Team2.Tank; }
-				else if (beh.Choice == "Team2.UAV") { _entityFollow.Entity = Simulation.Team2.UAV; }
-				else { throw new NotSupportedException(); }
+				_entityCamera.Distance = 20f;
+				EntityFollowBehavior EntityBeh = CameraManager.ActiveBehavior as EntityFollowBehavior;
+				if (EntityBeh.Choice == "Team1.Tank") { _entityFollow.Entity = Simulation.Team1.Tank; }
+				else if (EntityBeh.Choice == "Team1.UAV") { _entityFollow.Entity = Simulation.Team1.UAV; }
+				else if (EntityBeh.Choice == "Team2.Tank") { _entityFollow.Entity = Simulation.Team2.Tank; }
+				else if (EntityBeh.Choice == "Team2.UAV") { _entityFollow.Entity = Simulation.Team2.UAV; }
+				//else { throw new NotSupportedException(); }
 				CameraManager.Set(_entityCamera, _entityFollow);
 			}
+			//else { CameraManager.Set()}
 
 			// Draw the world
 			Camera camera = CameraManager.ActiveCamera;

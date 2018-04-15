@@ -354,10 +354,12 @@ namespace NGSim
 		private void ResetButton_Click(object sender, EventArgs e)
 		{
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			ArcBallCameraBehavior beh = new ArcBallCameraBehavior();
 			cam.Pitch = 45f;
 			cam.Yaw = 0f;
 			cam.Distance = 200f;
 			cam.Target = new Vector3(0, 0, 0);
+			CameraManager.ActiveBehavior = new ArcBallCameraBehavior();
 		}
 
 		private void FreeCameraButton_Click(object sender, EventArgs e)
@@ -365,9 +367,12 @@ namespace NGSim
 			// Enable translate buttons
 			// Set target to current posititon (stop following entity
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			ArcBallCameraBehavior beh = new ArcBallCameraBehavior();
 			cam.Pitch = 45f;
 			cam.Yaw = 0f;
 			cam.Distance = 200f;
+			cam.Target = new Vector3(0, 0, 0);
+			CameraManager.ActiveBehavior = new ArcBallCameraBehavior();
 
 		}
 
@@ -375,35 +380,38 @@ namespace NGSim
 		{
 			// Disable translate buttons
 			// Set target to red tank
-			//ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
-			EntityFollowBehavior beh = new EntityFollowBehavior();
-			beh.Choice = "Team1.Tank";
-			//CameraManager.Set(cam, beh);
-			//CameraManager.Set(_camera, _follow);
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team1.Tank";
+			CameraManager.ActiveBehavior = entityBeh;
 		}
 
 		private void RedUAVButton_Click(object sender, EventArgs e)
 		{
 			// Disable translate buttons
 			// Set target to red uav
-			EntityFollowBehavior beh = new EntityFollowBehavior();
-			beh.Choice = "Team1.UAV";
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team1.UAV";
+			CameraManager.ActiveBehavior = entityBeh;
 		}
 
 		private void BlueTankButton_Click(object sender, EventArgs e)
 		{
 			// Disable translate buttons
 			// Set target to blue tank
-			EntityFollowBehavior beh = new EntityFollowBehavior();
-			beh.Choice = "Team2.Tank";
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team2.Tank";
+			CameraManager.ActiveBehavior = entityBeh;
+
 		}
 
 		private void BlueUAVButton_Click(object sender, EventArgs e)
 		{
 			// Disable translate buttons
 			// Set target to blue uav
-			EntityFollowBehavior beh = new EntityFollowBehavior();
-			beh.Choice = "Team2.UAV";
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team2.UAV";
+			CameraManager.ActiveBehavior = entityBeh;
+
 		}
 
 		private void DecreaseZoomButton__Click(object sender, EventArgs e)

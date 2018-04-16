@@ -70,11 +70,11 @@ namespace NGSim
 			// Create Buttons to add to cells
 			var BlueUAVButton_ = new Button { Text = "BLUE UAV" };
 			BlueUAVButton_.Click += BlueUAVButton_Click;
-			var BlueTankButton_ = new Button { Text = "BLUE Tank" };
+			var BlueTankButton_ = new Button { Text = "BLUE TANK" };
 			BlueTankButton_.Click += BlueTankButton_Click;
-			var RedUAVButton_ = new Button { Text = "Red UAV" };
+			var RedUAVButton_ = new Button { Text = "RRED UAV" };
 			RedUAVButton_.Click += RedUAVButton_Click;
-			var RedTankButton_ = new Button { Text = "Red Tank" };
+			var RedTankButton_ = new Button { Text = "RED TANK" };
 			RedTankButton_.Click += RedTankButton_Click;
 			var FreeCameraButton_ = new Button { Text = "FREE CAMERA" };
 			FreeCameraButton_.Click += FreeCameraButton_Click;

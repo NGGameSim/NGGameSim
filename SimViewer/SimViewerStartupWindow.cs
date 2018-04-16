@@ -55,6 +55,9 @@ namespace NGSim
 		private void JoinSimButton_Click(object sender, EventArgs e)
 		{
 			this.Close();
+			// TODO
+			// Ask the server for a game mode based on ID
+			// Start the mainWindow with the correct view mode 
 			SimViewerWindow mainWindow = new SimViewerWindow();
 			mainWindow.Show();
 		}

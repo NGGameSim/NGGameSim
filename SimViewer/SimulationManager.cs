@@ -105,11 +105,29 @@ namespace NGSim
 			{
 				ArcBallCamera _entityCamera = CameraManager.ActiveCamera as ArcBallCamera;
 				EntityFollowBehavior EntityBeh = CameraManager.ActiveBehavior as EntityFollowBehavior;
-				_entityCamera.Distance = 20f; //Zoom into the entity.
-				if (EntityBeh.Choice == "Team1.Tank") { _entityFollow.Entity = Simulation.Team1.Tank; }
-				else if (EntityBeh.Choice == "Team1.UAV") { _entityFollow.Entity = Simulation.Team1.UAV; }
-				else if (EntityBeh.Choice == "Team2.Tank") { _entityFollow.Entity = Simulation.Team2.Tank; }
-				else if (EntityBeh.Choice == "Team2.UAV") { _entityFollow.Entity = Simulation.Team2.UAV; }
+				//_entityCamera.Distance = 20f; //Zoom into the entity.
+				if (EntityBeh.Choice == "Team1.Tank")
+				{
+					_entityFollow.Entity = Simulation.Team2.Tank;
+					_entityCamera.Distance = 20f;
+				}
+				else if (EntityBeh.Choice == "Team1.UAV")
+				{
+					_entityFollow.Entity = Simulation.Team2.UAV;
+					_entityCamera.Distance = 80f;
+					_entityCamera.Pitch = 45f;
+				}
+				else if (EntityBeh.Choice == "Team2.Tank")
+				{
+					_entityFollow.Entity = Simulation.Team1.Tank;
+					_entityCamera.Distance = 20f;
+				}
+				else if (EntityBeh.Choice == "Team2.UAV")
+				{
+					_entityFollow.Entity = Simulation.Team1.UAV;
+					_entityCamera.Distance = 80f;
+					_entityCamera.Pitch = 45f;
+				}
 				//else { throw new NotSupportedException(); }
 				CameraManager.Set(_entityCamera, _entityFollow);
 			}
@@ -171,7 +189,17 @@ namespace NGSim
 				{
 					_sb.DrawString(_font, $"Both tanks destroyed. It's a draw!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 				}
-				_sb.DrawString(_font, $"Team {gameResult} Wins!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+				else
+				{
+					if(gameResult == 1)
+					{
+						_sb.DrawString(_font, $"Blue Team Wins!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+					}
+					else if(gameResult == 2)
+					{
+						_sb.DrawString(_font, $"Red Team Wins!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+					}
+				}
 			}
 			_sb.End();
 		}

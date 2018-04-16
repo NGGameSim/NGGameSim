@@ -69,9 +69,9 @@ namespace NGSim
 			var group = new GroupBox();
 
 			// Create Buttons to add to cells
-			var BlueUAVButton_ = new Button { Text = "BLUE UAV" };
+			var BlueUAVButton_ = new Button { Text = "Blue UAV" };
 			BlueUAVButton_.Click += BlueUAVButton_Click;
-			var BlueTankButton_ = new Button { Text = "BLUE Tank" };
+			var BlueTankButton_ = new Button { Text = "Blue Tank" };
 			BlueTankButton_.Click += BlueTankButton_Click;
 			var RedUAVButton_ = new Button { Text = "Red UAV" };
 			RedUAVButton_.Click += RedUAVButton_Click;

@@ -37,6 +37,7 @@ namespace NGSim
 		private Vector2 origin = new Vector2(0, 0);
 		int gameResult;
 
+		internal bool clientJoined = false;
 
 		public SimulationManager(GraphicsDevice device, ContentManager content)
 		{
@@ -69,13 +70,26 @@ namespace NGSim
 			Simulation.Team1.Tank.CurrentHeading = msg.ReadSingle();
 			Simulation.Team1.UAV.Position = new Position(msg.ReadSingle(), msg.ReadSingle());
 			Simulation.Team1.UAV.CurrentHeading = msg.ReadSingle();
+
 			Simulation.Team2.Tank.Position = new Position(msg.ReadSingle(), msg.ReadSingle());
 			Simulation.Team2.Tank.CurrentHeading = msg.ReadSingle();
 			Simulation.Team2.UAV.Position = new Position(msg.ReadSingle(), msg.ReadSingle());
 			Simulation.Team2.UAV.CurrentHeading = msg.ReadSingle();
+
 			Simulation.Team1.Tank.MisslesLeft = msg.ReadByte();
 			Simulation.Team2.Tank.MisslesLeft = msg.ReadByte();
+
 			gameResult = msg.ReadByte();
+
+			if (clientJoined)
+			{
+				System.Windows.Application.Current.Dispatcher.Invoke(() =>
+				{
+					SimViewerWindow.MyStateInfoTextArea.MyTankXY = Simulation.Team1.Tank.Position;
+					SimViewerWindow.MyStateInfoTextArea.MyUAVXY = Simulation.Team1.UAV.Position;
+					SimViewerWindow.MyStateInfoTextArea.MyMissilesRemaining = Simulation.Team1.Tank.MisslesLeft;
+				});
+			}
 		}
 
 		// Reads information for a missile update packet (opcode 2)

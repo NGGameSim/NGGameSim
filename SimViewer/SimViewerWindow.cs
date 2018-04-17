@@ -41,7 +41,7 @@ namespace NGSim
 		private TextBox ZoomTextBox_;
 		private TableCell ZoomTextBox;
 
-		private StateInfoTextArea MyStateInfoTextArea;
+		public static StateInfoTextArea MyStateInfoTextArea;
 
 		// Main Window contains 
 		public SimViewerWindow()

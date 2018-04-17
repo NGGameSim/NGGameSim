@@ -60,6 +60,7 @@ namespace NGSim
 			// Start the mainWindow with the correct view mode 
 			SimViewerWindow mainWindow = new SimViewerWindow();
 			mainWindow.Show();
+			SimulationManager.Instance.clientJoined = true;
 		}
 	}
 

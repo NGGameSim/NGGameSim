@@ -15,8 +15,12 @@ namespace NGSim
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		// Controls
-		private TextBox IDTextBox;
+		public static TextBox IPTextBox;
+		public static TextBox IDTextBox;
 		private Button JoinSimButton;
+
+		// Events
+		public event EventHandler JoinAttempt;
 
 		// Main Window contains 
 		public SimViewerStartupWindow()
@@ -39,28 +43,37 @@ namespace NGSim
 		{
 			var group = new GroupBox();
 
+			IPTextBox = new TextBox { Text = "ENTER YOUR IP" };
 			IDTextBox = new TextBox { Text = "ENTER YOUR ID" };
 			JoinSimButton = new Button { Text = "JOIN" };
 
 			JoinSimButton.Click += JoinSimButton_Click;
 
 			// Add the controls to the layout
-			var layout = new TableRow(IDTextBox, JoinSimButton);
+			var layout = new TableRow(IPTextBox, IDTextBox, JoinSimButton);
 
 			// Add the layout to the returned group
 			group.Content = layout;
 			return group;
 		}
 
+		public virtual void OnJoinAttempt(EventArgs e)
+		{
+			if (JoinAttempt != null)
+			{
+				JoinAttempt(this, e);
+			}
+		}
+
 		private void JoinSimButton_Click(object sender, EventArgs e)
 		{
-			this.Close();
 			// TODO
 			// Ask the server for a game mode based on ID
 			// Start the mainWindow with the correct view mode 
-			SimViewerWindow mainWindow = new SimViewerWindow();
-			mainWindow.Show();
-			SimulationManager.Instance.clientJoined = true;
+
+			// Trigger event to tell main to run game
+			OnJoinAttempt(new EventArgs());
+			
 		}
 	}
 

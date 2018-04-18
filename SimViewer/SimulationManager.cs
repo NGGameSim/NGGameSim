@@ -81,15 +81,15 @@ namespace NGSim
 
 			gameResult = msg.ReadByte();
 
-			if (clientJoined)
-			{
+			//if (clientJoined)
+			//{
 				System.Windows.Application.Current.Dispatcher.Invoke(() =>
 				{
 					SimViewerWindow.MyStateInfoTextArea.MyTankXY = Simulation.Team1.Tank.Position;
 					SimViewerWindow.MyStateInfoTextArea.MyUAVXY = Simulation.Team1.UAV.Position;
 					SimViewerWindow.MyStateInfoTextArea.MyMissilesRemaining = Simulation.Team1.Tank.MisslesLeft;
 				});
-			}
+			//}
 		}
 
 		// Reads information for a missile update packet (opcode 2)

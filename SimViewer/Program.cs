@@ -29,10 +29,21 @@ namespace NGSim
 			Application app = new Application();
 
 			SimViewerStartupWindow startupWindow = new SimViewerStartupWindow();
-			startupWindow.Show();
-
-			using (SimViewer game = new SimViewer())
+			startupWindow.JoinAttempt += (sender, e) =>
+			{
+				SimViewer game = new SimViewer();
+				game.JoinSuccess += (sender_, e_) =>
+				{
+					//startupWindow.Close();
+					// Create the main window
+					SimViewerWindow mainWindow = new SimViewerWindow();
+					mainWindow.Show();
+				};
 				game.Run();
+			};
+
+			app.Run(startupWindow);
+
 		}
 	}
 }

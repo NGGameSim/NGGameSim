@@ -26,6 +26,11 @@ namespace NGSim.Network
 			_client.Connect("127.0.0.1", 8100);
 		}
 
+		public void Connect(String IP)
+		{
+			_client.Connect(IP, 8100);
+		}
+
 		public void Disconnect()
 		{
 			_client.Disconnect("Client Disconnecting...");

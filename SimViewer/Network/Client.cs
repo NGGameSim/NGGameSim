@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Lidgren.Network;
+using System.Windows.Forms;
 
 namespace NGSim.Network
 {
@@ -23,12 +24,38 @@ namespace NGSim.Network
 
 		public void Connect()
 		{
-			_client.Connect("127.0.0.1", 8100);
+			try
+			{
+				_client.Connect("127.0.0.1", 8100);
+			}
+			catch
+			{
+				MessageBox.Show("Error: Could Not Resolve Host", "Host Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 
 		public void Connect(String IP)
 		{
-			_client.Connect(IP, 8100);
+			try
+			{
+				_client.Connect(IP, 8100);
+			}
+			catch
+			{
+				MessageBox.Show("Error: Could Not Resolve Host", "Host Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		public bool isConnected()
+		{
+			if(_client.ConnectionStatus == NetConnectionStatus.Connected)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		public void Disconnect()

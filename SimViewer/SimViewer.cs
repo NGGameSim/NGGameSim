@@ -46,12 +46,10 @@ namespace NGSim
 
 			// Setup the network stuff
 			_client = new Client();
-			_client.Connect();
 
 			// Create the simulation
 			_simManager = new SimulationManager(GraphicsDevice, Content);
-
-			OnJoinSuccess(new EventArgs());
+			
 		}
 
 		public virtual void OnJoinSuccess(EventArgs e)
@@ -59,6 +57,27 @@ namespace NGSim
 			if (JoinSuccess != null)
 			{
 				JoinSuccess(this, e);
+			}
+		}
+
+		public void connectClient()
+		{
+			Console.WriteLine("Attempting to join the server...");
+			// if IP present, use it to connect
+			// otherwise use the default connection
+			if (SimViewerStartupWindow.IPTextBox.Text != "ENTER YOUR IP")
+			{
+				Console.WriteLine("Using IP: " + SimViewerStartupWindow.IPTextBox.Text);
+				_client.Connect(SimViewerStartupWindow.IPTextBox.Text);
+			}
+			else
+			{
+				_client.Connect();
+			}
+
+			if (_client.isConnected())
+			{
+				OnJoinSuccess(new EventArgs());
 			}
 		}
 

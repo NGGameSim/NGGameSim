@@ -2,6 +2,7 @@
 using Eto.Forms;
 using Eto.Drawing;
 using NLog;
+using NGAPI;
 using NGSim.Graphics;
 using System.IO;
 using System.Reflection;
@@ -72,7 +73,7 @@ namespace NGSim
 			BlueUAVButton_.Click += BlueUAVButton_Click;
 			var BlueTankButton_ = new Button { Text = "BLUE TANK" };
 			BlueTankButton_.Click += BlueTankButton_Click;
-			var RedUAVButton_ = new Button { Text = "RRED UAV" };
+			var RedUAVButton_ = new Button { Text = "RED UAV" };
 			RedUAVButton_.Click += RedUAVButton_Click;
 			var RedTankButton_ = new Button { Text = "RED TANK" };
 			RedTankButton_.Click += RedTankButton_Click;
@@ -328,7 +329,6 @@ namespace NGSim
 
 		private void TranslateLeftButton_Click(object sender, EventArgs e)
 		{
-			//TODO: rotation matrix
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 
 			XnaMatrix rotationmatrix = XnaMatrix.CreateRotationY(MathHelper.ToRadians(cam.Yaw));
@@ -341,7 +341,6 @@ namespace NGSim
 
 		private void TranslateRightButton_Click(object sender, EventArgs e)
 		{
-			//TODO: rotation matrix
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 
 			XnaMatrix rotationmatrix = XnaMatrix.CreateRotationY(MathHelper.ToRadians(cam.Yaw));
@@ -354,40 +353,64 @@ namespace NGSim
 
 		private void ResetButton_Click(object sender, EventArgs e)
 		{
+			//Zoom out and reset
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			ArcBallCameraBehavior beh = new ArcBallCameraBehavior();
 			cam.Pitch = 45f;
 			cam.Yaw = 0f;
+			cam.Distance = 200f;
 			cam.Target = new Vector3(0, 0, 0);
+			CameraManager.ActiveBehavior = new ArcBallCameraBehavior();
 		}
 
 		private void FreeCameraButton_Click(object sender, EventArgs e)
 		{
 			EnableTranslate();
 			// Set target to current posititon (stop following entity)
+			//Zoom out and reset
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			ArcBallCameraBehavior beh = new ArcBallCameraBehavior();
+			cam.Pitch = 45f;
+			cam.Yaw = 0f;
+			cam.Distance = 200f;
+			cam.Target = new Vector3(0, 0, 0);
+			CameraManager.ActiveBehavior = new ArcBallCameraBehavior();
 		}
 
 		private void RedTankButton_Click(object sender, EventArgs e)
 		{
 			DisableTranslate();
 			// Set target to red tank
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team1.Tank";
+			CameraManager.ActiveBehavior = entityBeh;
 		}
 
 		private void RedUAVButton_Click(object sender, EventArgs e)
 		{
 			DisableTranslate();
 			// Set target to red uav
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team1.UAV";
+			CameraManager.ActiveBehavior = entityBeh;
 		}
 
 		private void BlueTankButton_Click(object sender, EventArgs e)
 		{
 			DisableTranslate();
 			// Set target to blue tank
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team2.Tank";
+			CameraManager.ActiveBehavior = entityBeh;
 		}
 
 		private void BlueUAVButton_Click(object sender, EventArgs e)
 		{
 			DisableTranslate();
 			// Set target to blue uav
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team2.UAV";
+			CameraManager.ActiveBehavior = entityBeh;
 		}
 
 		private void EnableTranslate()
@@ -412,6 +435,7 @@ namespace NGSim
 			{
 				ZoomSlider_.Value -= 1;
 			}
+			// Update camera distance
 			UpdateZoom();
 		}
 
@@ -421,6 +445,7 @@ namespace NGSim
 			{
 				ZoomSlider_.Value += 1;
 			}
+			// Update camera distance
 			UpdateZoom();
 		}
 
@@ -481,7 +506,5 @@ namespace NGSim
 			group.Content = layout;
 			return group;
 		}
-
 	}
-
 }

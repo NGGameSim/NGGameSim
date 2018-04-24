@@ -75,10 +75,7 @@ namespace NGSim
 				_client.Connect();
 			}
 
-			if (_client.isConnected())
-			{
-				OnJoinSuccess(new EventArgs());
-			}
+			OnJoinSuccess(new EventArgs()); 
 		}
 
 		protected override void LoadContent()

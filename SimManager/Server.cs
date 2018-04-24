@@ -47,7 +47,6 @@ namespace NGSim
 			Instance = this;
 
 			_config.Port = 8100;
-			_config.LocalAddress = new System.Net.IPAddress(new byte[] { 127, 0, 0, 1 });
 			_config.MaximumConnections = 5;
 		}
 

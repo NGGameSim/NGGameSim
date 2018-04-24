@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using NGAPI;
 using NGSim.Input;
 
 namespace NGSim.Graphics
@@ -34,6 +35,24 @@ namespace NGSim.Graphics
 			if (InputManager.IsKeyDown(Keys.E))
 				cam.Distance -= (float)gameTime.ElapsedGameTime.TotalSeconds * 25f;
 			cam.Distance += InputManager.GetScrollDelta() * 0.005f;
+		}
+	}
+
+
+	public class EntityFollowBehavior : ArcBallCameraBehavior
+	{
+		public Entity Entity;
+		public string Choice; //Might not need if I can get Entity to work
+
+		public override void Update(GameTime gameTime, Camera camera)
+		{
+			base.Update(gameTime, camera);
+
+			ArcBallCamera cam = camera as ArcBallCamera;
+			if (cam == null)
+				return;
+
+			cam.Target = (Entity != null) ? new Vector3(Entity.Position.X / 10, 0, Entity.Position.Y / 10) : Vector3.Zero;
 		}
 	}
 }

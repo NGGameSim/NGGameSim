@@ -353,7 +353,8 @@ namespace NGSim
 
 		private void ResetButton_Click(object sender, EventArgs e)
 		{
-			//Zoom out and reset
+			EnableTranslate();
+			// Zoom out and reset
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 			ArcBallCameraBehavior beh = new ArcBallCameraBehavior();
 			cam.Pitch = 45f;
@@ -361,13 +362,14 @@ namespace NGSim
 			cam.Distance = 200f;
 			cam.Target = new Vector3(0, 0, 0);
 			CameraManager.ActiveBehavior = new ArcBallCameraBehavior();
+			ZeroZoomControls();
 		}
 
 		private void FreeCameraButton_Click(object sender, EventArgs e)
 		{
 			EnableTranslate();
 			// Set target to current posititon (stop following entity)
-			//Zoom out and reset
+			// Zoom out and reset
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 			ArcBallCameraBehavior beh = new ArcBallCameraBehavior();
 			cam.Pitch = 45f;
@@ -375,6 +377,7 @@ namespace NGSim
 			cam.Distance = 200f;
 			cam.Target = new Vector3(0, 0, 0);
 			CameraManager.ActiveBehavior = new ArcBallCameraBehavior();
+			ZeroZoomControls();
 		}
 
 		private void RedTankButton_Click(object sender, EventArgs e)
@@ -384,6 +387,7 @@ namespace NGSim
 			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
 			entityBeh.Choice = "Team1.Tank";
 			CameraManager.ActiveBehavior = entityBeh;
+			UpdateZoomControlsTank();
 		}
 
 		private void RedUAVButton_Click(object sender, EventArgs e)
@@ -393,6 +397,7 @@ namespace NGSim
 			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
 			entityBeh.Choice = "Team1.UAV";
 			CameraManager.ActiveBehavior = entityBeh;
+			UpdateZoomControlsUAV();
 		}
 
 		private void BlueTankButton_Click(object sender, EventArgs e)
@@ -402,6 +407,7 @@ namespace NGSim
 			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
 			entityBeh.Choice = "Team2.Tank";
 			CameraManager.ActiveBehavior = entityBeh;
+			UpdateZoomControlsTank();
 		}
 
 		private void BlueUAVButton_Click(object sender, EventArgs e)
@@ -411,6 +417,7 @@ namespace NGSim
 			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
 			entityBeh.Choice = "Team2.UAV";
 			CameraManager.ActiveBehavior = entityBeh;
+			UpdateZoomControlsUAV();
 		}
 
 		private void EnableTranslate()
@@ -477,6 +484,24 @@ namespace NGSim
 		{
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
 			cam.Distance = ZoomSlider_.Value*(-1.5f) + 200 ;
+		}
+
+		private void ZeroZoomControls()
+		{
+			ZoomSlider_.Value = 0;
+			ZoomTextBox_.Text = "0";
+		}
+
+		private void UpdateZoomControlsUAV()
+		{
+			ZoomSlider_.Value = 80;
+			ZoomTextBox_.Text = "80";
+		}
+
+		private void UpdateZoomControlsTank()
+		{
+			ZoomSlider_.Value = 100;
+			ZoomTextBox_.Text = "100";
 		}
 
 		// Right Group

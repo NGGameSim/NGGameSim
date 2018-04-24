@@ -15,9 +15,24 @@ namespace NGSim
 			get { return (uint)_server.Statistics.SentMessages; }
 		}
 
+		public uint TotalReceivedMessages
+		{
+			get { return (uint)_server.Statistics.ReceivedMessages; }
+		}
+
 		public uint TotalSentBytes
 		{
 			get { return (uint)_server.Statistics.SentBytes; }
+		}
+
+		public uint TotalReceivedBytes
+		{
+			get { return (uint)_server.Statistics.ReceivedBytes; }
+		}
+
+		public uint TotalSentPackets
+		{
+			get { return (uint)_server.Statistics.SentPackets; }
 		}
 
 		public bool isConnected
@@ -32,7 +47,6 @@ namespace NGSim
 			Instance = this;
 
 			_config.Port = 8100;
-			_config.LocalAddress = new System.Net.IPAddress(new byte[] { 127, 0, 0, 1 });
 			_config.MaximumConnections = 5;
 		}
 
@@ -64,9 +78,10 @@ namespace NGSim
 		}
 
 		// Sends a prepared message to all connections
-		public void SendMessage(NetOutgoingMessage msg)
+		public int SendMessage(NetOutgoingMessage msg)
 		{
 			_server.SendToAll(msg, NetDeliveryMethod.ReliableOrdered);
+			return msg.LengthBytes;
 		}
 
 		public void Update()

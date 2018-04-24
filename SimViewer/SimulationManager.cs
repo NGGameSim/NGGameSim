@@ -37,6 +37,8 @@ namespace NGSim
 		private Vector2 origin = new Vector2(0, 0);
 		int gameResult;
 
+		EntityFollowBehavior _entityFollow;
+		internal bool clientJoined = false;
 
 		public SimulationManager(GraphicsDevice device, ContentManager content)
 		{
@@ -60,6 +62,8 @@ namespace NGSim
 			_lRect = new Rectangle(0, 0, 130, 70);
 
 			Simulation = new Simulation();
+
+			_entityFollow = new EntityFollowBehavior();
 		}
 
 		// Reads information for an entity update packet (opcode 1)
@@ -69,13 +73,26 @@ namespace NGSim
 			Simulation.Team1.Tank.CurrentHeading = msg.ReadSingle();
 			Simulation.Team1.UAV.Position = new Position(msg.ReadSingle(), msg.ReadSingle());
 			Simulation.Team1.UAV.CurrentHeading = msg.ReadSingle();
+
 			Simulation.Team2.Tank.Position = new Position(msg.ReadSingle(), msg.ReadSingle());
 			Simulation.Team2.Tank.CurrentHeading = msg.ReadSingle();
 			Simulation.Team2.UAV.Position = new Position(msg.ReadSingle(), msg.ReadSingle());
 			Simulation.Team2.UAV.CurrentHeading = msg.ReadSingle();
+
 			Simulation.Team1.Tank.MisslesLeft = msg.ReadByte();
 			Simulation.Team2.Tank.MisslesLeft = msg.ReadByte();
+
 			gameResult = msg.ReadByte();
+
+			//if (clientJoined)
+			//{
+				System.Windows.Application.Current.Dispatcher.Invoke(() =>
+				{
+					SimViewerWindow.MyStateInfoTextArea.MyTankXY = Simulation.Team1.Tank.Position;
+					SimViewerWindow.MyStateInfoTextArea.MyUAVXY = Simulation.Team1.UAV.Position;
+					SimViewerWindow.MyStateInfoTextArea.MyMissilesRemaining = Simulation.Team1.Tank.MisslesLeft;
+				});
+			//}
 		}
 
 		// Reads information for a missile update packet (opcode 2)
@@ -97,6 +114,38 @@ namespace NGSim
 
 		public void Render()
 		{
+			//Checks to see if Active Camera is going to follow an entity.
+			if(CameraManager.ActiveBehavior is EntityFollowBehavior)
+			{
+				ArcBallCamera _entityCamera = CameraManager.ActiveCamera as ArcBallCamera;
+				EntityFollowBehavior EntityBeh = CameraManager.ActiveBehavior as EntityFollowBehavior;
+				//_entityCamera.Distance = 20f; //Zoom into the entity.
+				if (EntityBeh.Choice == "Team1.Tank")
+				{
+					_entityFollow.Entity = Simulation.Team2.Tank;
+					_entityCamera.Distance = 20f;
+				}
+				else if (EntityBeh.Choice == "Team1.UAV")
+				{
+					_entityFollow.Entity = Simulation.Team2.UAV;
+					_entityCamera.Distance = 80f;
+					_entityCamera.Pitch = 45f;
+				}
+				else if (EntityBeh.Choice == "Team2.Tank")
+				{
+					_entityFollow.Entity = Simulation.Team1.Tank;
+					_entityCamera.Distance = 20f;
+				}
+				else if (EntityBeh.Choice == "Team2.UAV")
+				{
+					_entityFollow.Entity = Simulation.Team1.UAV;
+					_entityCamera.Distance = 80f;
+					_entityCamera.Pitch = 45f;
+				}
+				//else { throw new NotSupportedException(); }
+				CameraManager.Set(_entityCamera, _entityFollow);
+			}
+
 			// Draw the world
 			Camera camera = CameraManager.ActiveCamera;
 			_world.Draw(_device, camera);
@@ -154,7 +203,17 @@ namespace NGSim
 				{
 					_sb.DrawString(_font, $"Both tanks destroyed. It's a draw!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 				}
-				_sb.DrawString(_font, $"Team {gameResult} Wins!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+				else
+				{
+					if(gameResult == 1)
+					{
+						_sb.DrawString(_font, $"Blue Team Wins!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+					}
+					else if(gameResult == 2)
+					{
+						_sb.DrawString(_font, $"Red Team Wins!", new Vector2(100, 200), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+					}
+				}
 			}
 			_sb.End();
 		}

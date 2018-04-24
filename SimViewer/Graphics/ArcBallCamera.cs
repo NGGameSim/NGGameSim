@@ -140,11 +140,13 @@ namespace NGSim.Graphics
 
 		protected virtual void updatePosition()
 		{
-			Vector3 diff = Vector3.Backward * _distance;
-			Matrix rotMat;
-			Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(_yaw), MathHelper.ToRadians(-_pitch), 0.0f, out rotMat);
-			Vector3.Transform(ref diff, ref rotMat, out diff);
-			Position = Target + diff;
+			float cp = (float)Math.Cos(MathHelper.ToRadians(_pitch));
+			float sy = (float)Math.Sin(MathHelper.ToRadians(_yaw));
+			float cy = (float)Math.Cos(MathHelper.ToRadians(_yaw));
+			float sp = (float)Math.Sin(MathHelper.ToRadians(_pitch));
+
+			Vector3 pos = new Vector3(cp * sy, sp, cp * cy);
+			Position = Target + (Distance * pos);
 		}
 	}
 }

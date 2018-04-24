@@ -2,9 +2,12 @@
 using Eto.Forms;
 using Eto.Drawing;
 using NLog;
+using NGAPI;
 using NGSim.Graphics;
 using System.IO;
 using System.Reflection;
+using Microsoft.Xna.Framework;
+using XnaMatrix = Microsoft.Xna.Framework.Matrix;
 
 namespace NGSim
 {
@@ -39,7 +42,7 @@ namespace NGSim
 		private TextBox ZoomTextBox_;
 		private TableCell ZoomTextBox;
 
-		private StateInfoTextArea MyStateInfoTextArea;
+		public static StateInfoTextArea MyStateInfoTextArea;
 
 		// Main Window contains 
 		public SimViewerWindow()
@@ -68,11 +71,11 @@ namespace NGSim
 			// Create Buttons to add to cells
 			var BlueUAVButton_ = new Button { Text = "BLUE UAV" };
 			BlueUAVButton_.Click += BlueUAVButton_Click;
-			var BlueTankButton_ = new Button { Text = "BLUE Tank" };
+			var BlueTankButton_ = new Button { Text = "BLUE TANK" };
 			BlueTankButton_.Click += BlueTankButton_Click;
-			var RedUAVButton_ = new Button { Text = "Red UAV" };
+			var RedUAVButton_ = new Button { Text = "RED UAV" };
 			RedUAVButton_.Click += RedUAVButton_Click;
-			var RedTankButton_ = new Button { Text = "Red Tank" };
+			var RedTankButton_ = new Button { Text = "RED TANK" };
 			RedTankButton_.Click += RedTankButton_Click;
 			var FreeCameraButton_ = new Button { Text = "FREE CAMERA" };
 			FreeCameraButton_.Click += FreeCameraButton_Click;
@@ -239,7 +242,7 @@ namespace NGSim
 			ZoomSlider_ = new Slider();
 			ZoomSlider_.Orientation = Orientation.Vertical;
 			ZoomSlider_.Height = 100;
-			ZoomSlider_.Value = 100;
+			ZoomSlider_.Value = 0;
 			ZoomSlider_.ValueChanged += ZoomSliderValueChanged;
 			ZoomSlider = new TableCell(ZoomSlider_, false);
 
@@ -312,68 +315,125 @@ namespace NGSim
 
 		private void TranslateDownButton_Click(object sender, EventArgs e)
 		{
-			// Target y -= 5
-			throw new NotImplementedException();
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			Vector3 dfvect = new Vector3(0, -1, 0);
+			cam.Target += dfvect;
 		}
 
 		private void TranslateUpButton_Click(object sender, EventArgs e)
 		{
-			// Target y += 5
-			throw new NotImplementedException();
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			Vector3 dfvect = new Vector3(0, 1, 0);
+			cam.Target += dfvect;
 		}
 
 		private void TranslateLeftButton_Click(object sender, EventArgs e)
 		{
-			// Target x -= 5
-			throw new NotImplementedException();
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+
+			XnaMatrix rotationmatrix = XnaMatrix.CreateRotationY(MathHelper.ToRadians(cam.Yaw));
+
+			Vector3 dfvect = new Vector3(-1, 0, 0); //Shift the camera Left
+			Vector3 dfTransVect = Vector3.Transform(dfvect, rotationmatrix);
+			
+			cam.Target += dfTransVect;
 		}
 
 		private void TranslateRightButton_Click(object sender, EventArgs e)
 		{
-			// Target x += 5
-			throw new NotImplementedException();
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+
+			XnaMatrix rotationmatrix = XnaMatrix.CreateRotationY(MathHelper.ToRadians(cam.Yaw));
+
+			Vector3 dfvect = new Vector3(1, 0, 0); //Shift the camera Right
+			Vector3 dfTransVect = Vector3.Transform(dfvect, rotationmatrix);
+
+			cam.Target += dfTransVect;
 		}
 
 		private void ResetButton_Click(object sender, EventArgs e)
 		{
+			EnableTranslate();
+			// Zoom out and reset
 			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			ArcBallCameraBehavior beh = new ArcBallCameraBehavior();
 			cam.Pitch = 45f;
 			cam.Yaw = 0f;
+			cam.Distance = 200f;
+			cam.Target = new Vector3(0, 0, 0);
+			CameraManager.ActiveBehavior = new ArcBallCameraBehavior();
+			ZeroZoomControls();
 		}
 
 		private void FreeCameraButton_Click(object sender, EventArgs e)
 		{
-			// Enable translate buttons
-			// Set target to current posititon (stop following entity
-			throw new NotImplementedException();
+			EnableTranslate();
+			// Set target to current posititon (stop following entity)
+			// Zoom out and reset
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			ArcBallCameraBehavior beh = new ArcBallCameraBehavior();
+			cam.Pitch = 45f;
+			cam.Yaw = 0f;
+			cam.Distance = 200f;
+			cam.Target = new Vector3(0, 0, 0);
+			CameraManager.ActiveBehavior = new ArcBallCameraBehavior();
+			ZeroZoomControls();
 		}
 
 		private void RedTankButton_Click(object sender, EventArgs e)
 		{
-			// Disable translate buttons
+			DisableTranslate();
 			// Set target to red tank
-			throw new NotImplementedException();
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team1.Tank";
+			CameraManager.ActiveBehavior = entityBeh;
+			UpdateZoomControlsTank();
 		}
 
 		private void RedUAVButton_Click(object sender, EventArgs e)
 		{
-			// Disable translate buttons
+			DisableTranslate();
 			// Set target to red uav
-			throw new NotImplementedException();
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team1.UAV";
+			CameraManager.ActiveBehavior = entityBeh;
+			UpdateZoomControlsUAV();
 		}
 
 		private void BlueTankButton_Click(object sender, EventArgs e)
 		{
-			// Disable translate buttons
+			DisableTranslate();
 			// Set target to blue tank
-			throw new NotImplementedException();
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team2.Tank";
+			CameraManager.ActiveBehavior = entityBeh;
+			UpdateZoomControlsTank();
 		}
 
 		private void BlueUAVButton_Click(object sender, EventArgs e)
 		{
-			// Disable translate buttons
+			DisableTranslate();
 			// Set target to blue uav
-			throw new NotImplementedException();
+			EntityFollowBehavior entityBeh = new EntityFollowBehavior();
+			entityBeh.Choice = "Team2.UAV";
+			CameraManager.ActiveBehavior = entityBeh;
+			UpdateZoomControlsUAV();
+		}
+
+		private void EnableTranslate()
+		{
+			TranslateDownButton.Enabled = true;
+			TranslateUpButton.Enabled = true;
+			TranslateLeftButton.Enabled = true;
+			TranslateRightButton.Enabled = true;
+		}
+
+		private void DisableTranslate()
+		{
+			TranslateDownButton.Enabled = false;
+			TranslateUpButton.Enabled = false;
+			TranslateLeftButton.Enabled = false;
+			TranslateRightButton.Enabled = false;
 		}
 
 		private void DecreaseZoomButton__Click(object sender, EventArgs e)
@@ -383,6 +443,7 @@ namespace NGSim
 				ZoomSlider_.Value -= 1;
 			}
 			// Update camera distance
+			UpdateZoom();
 		}
 
 		private void IncreaseZoomButton__Click(object sender, EventArgs e)
@@ -392,12 +453,13 @@ namespace NGSim
 				ZoomSlider_.Value += 1;
 			}
 			// Update camera distance
+			UpdateZoom();
 		}
 
 		private void ZoomSliderValueChanged(object sender, EventArgs e)
 		{
 			ZoomTextBox_.Text = ZoomSlider_.Value.ToString();
-			// Update camera distance
+			UpdateZoom();
 		}
 
 		private void ZoomTextBoxValueChanged(object sender, EventArgs e)
@@ -405,9 +467,41 @@ namespace NGSim
 			var parseResult = 0;
 			if (Int32.TryParse(ZoomTextBox_.Text, out parseResult))
 			{
-				ZoomSlider_.Value = parseResult;
+				if (parseResult <= 100 && parseResult >= 0)
+				{
+					ZoomSlider_.Value = parseResult;
+				} else
+				{
+					if (parseResult > 100) { ZoomTextBox_.Text = "100"; }
+					if (parseResult < 0) { ZoomTextBox_.Text = "0"; }
+				}
 			}
-			// Update camera distance
+			ZoomTextBox_.Selection = new Range<Int32>(3,4);
+			UpdateZoom();
+		}
+
+		private void UpdateZoom()
+		{
+			ArcBallCamera cam = CameraManager.ActiveCamera as ArcBallCamera;
+			cam.Distance = ZoomSlider_.Value*(-1.5f) + 200 ;
+		}
+
+		private void ZeroZoomControls()
+		{
+			ZoomSlider_.Value = 0;
+			ZoomTextBox_.Text = "0";
+		}
+
+		private void UpdateZoomControlsUAV()
+		{
+			ZoomSlider_.Value = 80;
+			ZoomTextBox_.Text = "80";
+		}
+
+		private void UpdateZoomControlsTank()
+		{
+			ZoomSlider_.Value = 100;
+			ZoomTextBox_.Text = "100";
 		}
 
 		// Right Group
@@ -437,7 +531,5 @@ namespace NGSim
 			group.Content = layout;
 			return group;
 		}
-
 	}
-
 }

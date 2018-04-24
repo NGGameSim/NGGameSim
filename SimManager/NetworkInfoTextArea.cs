@@ -81,6 +81,7 @@ namespace NGSim
 
 			Control.AppendText("BitRate: \t");
 			Control.AppendText(BitRate);
+			Control.AppendText(" bytes/second");
 			Control.AppendText("\n");
 
 			Control.AppendText("Connection Status: \t");

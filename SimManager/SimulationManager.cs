@@ -44,7 +44,11 @@ namespace NGSim
 		private int numberOfVictoriesTeam2;
 		private int numberOfDraws;
 
+		// Statistics
 		private Stopwatch myStopwatch = new Stopwatch();
+		private int sentBytesInitial = 0;
+		private int totalSentBytes = 0;
+		private int bytesPerSecond = 0;
 
 		public SimulationManager()
 		{
@@ -275,19 +279,22 @@ namespace NGSim
 			runUserAlgorithms();
 
 			// Send network update packets with timing
-			var sentBytesInitial = Server.Instance.TotalSentBytes;
-			myStopwatch.Start();
+
+			if (!myStopwatch.IsRunning)
+			{
+				myStopwatch.Reset();
+				myStopwatch.Start();
+				sentBytesInitial = totalSentBytes;
+			}
+			else
+			{
+				if (myStopwatch.ElapsedMilliseconds >= 1000) // After 1 second, check the bytes sent
+				{
+					bytesPerSecond = totalSentBytes - sentBytesInitial;
+					myStopwatch.Stop();
+				}
+			}
 			sendNetworkPackets();
-			myStopwatch.Stop();
-			//Console.WriteLine(Server.Instance.TotalSentBytes);
-			var bytesSent = Convert.ToDouble(Server.Instance.TotalSentBytes - sentBytesInitial);
-			var elapsedSeconds = myStopwatch.ElapsedMilliseconds / 1000.0;
-			//Console.WriteLine(elapsedSeconds);
-			//Console.WriteLine(bytesSent);
-
-			var bytesPerSecond = bytesSent / elapsedSeconds;
-
-			//Console.WriteLine(bytesPerSecond);
 
 			// Write relevant information to the TextAreas
 			writeNetworkInfo(bytesPerSecond);
@@ -330,15 +337,6 @@ namespace NGSim
 					SimManagerWindow.MyStateInfoTextArea.WinPercent = 0;
 				}
 				SimManagerWindow.MyStateInfoTextArea.GamesRun = CurrentGameNumber + 1;
-
-				if (Simulation.Team1.Missiles.Count > 0)
-				{
-					SimManagerWindow.MyStateInfoTextArea.RedMissileXY = Simulation.Team1.Missiles[0].CurrentPostion;
-				}
-				if (Simulation.Team2.Missiles.Count > 0)
-				{
-					SimManagerWindow.MyStateInfoTextArea.BlueMissileXY = Simulation.Team2.Missiles[0].CurrentPostion;
-				}
 			});
 		}
 
@@ -374,8 +372,8 @@ namespace NGSim
 			}
 
 			// Send the packets
-			Server.Instance.SendMessage(entityPacket);
-			Server.Instance.SendMessage(missilePacket);
+			totalSentBytes += Server.Instance.SendMessage(entityPacket);
+			totalSentBytes += Server.Instance.SendMessage(missilePacket);
 		}
 
 		private void runUserAlgorithms()

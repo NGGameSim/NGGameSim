@@ -38,18 +38,6 @@ namespace NGSim
 			set { Handler.BlueTankXY = value; }
 		}
 
-		public Position RedMissileXY
-		{
-			get { return Handler.RedMissileXY; }
-			set { Handler.RedMissileXY = value; }
-		}
-
-		public Position BlueMissileXY
-		{
-			get { return Handler.BlueMissileXY; }
-			set { Handler.BlueMissileXY = value; }
-		}
-
 		public int RedMissilesRemaining
 		{
 			get { return Handler.RedMissilesRemaining; }
@@ -116,8 +104,6 @@ namespace NGSim
 			Position BlueUAVXY { get; set; }
 			Position RedTankXY { get; set; }
 			Position BlueTankXY { get; set; }
-			Position RedMissileXY { get; set; }
-			Position BlueMissileXY { get; set; }
 			int RedMissilesRemaining { get; set; }
 			int BlueMissilesRemaining { get; set; }
 			Position LastKnownRedTankXY { get; set; }
@@ -140,7 +126,6 @@ namespace NGSim
 			string text = String.Format("{0,35} {1,35}", "Red Team", "Blue Team\n");
 			text += String.Format("{0,-18} {1,13} {2,40}\n", "UAV Position:", RedUAVXY, BlueUAVXY);
 			text += String.Format("{0,-18} {1,14} {2,40}\n", "Tank Position:", RedTankXY, BlueTankXY);
-			text += String.Format("{0,-18} {1,13} {2,40}\n", "Missile Position:", RedMissileXY, BlueMissileXY);
 			text += String.Format("{0,-18} {1,18} {2,42}\n", "Missiles Left:", RedMissilesRemaining, BlueMissilesRemaining);
 			text += String.Format("{0,-18} {1,10} {2,40}\n\n", "Enemy Last Seen:", LastKnownBlueTankXY, LastKnownRedTankXY);
 			text += String.Format("Game #{0}\n", GamesRun);
@@ -164,7 +149,6 @@ namespace NGSim
 			string text = String.Format("{0,35} {1,35}", "Red Team", "Blue Team\n");
 			text += String.Format("{0,-18} {1,13} {2,40}\n", "UAV Position:", RedUAVXY, BlueUAVXY);
 			text += String.Format("{0,-18} {1,14} {2,40}\n", "Tank Position:", RedTankXY, BlueTankXY);
-			text += String.Format("{0,-18} {1,13} {2,40}\n", "Missile Position:", RedMissileXY, BlueMissileXY);
 			text += String.Format("{0,-18} {1,18} {2,42}\n", "Missiles Left:", RedMissilesRemaining, BlueMissilesRemaining);
 			text += String.Format("{0,-18} {1,10} {2,40}\n\n", "Enemy Last Seen:", LastKnownBlueTankXY, LastKnownRedTankXY);
 			text += String.Format("Game #{0}\n", GamesRun);
@@ -189,8 +173,6 @@ namespace NGSim
 			blueUAVXY = zeroPosition;
 			redTankXY = zeroPosition;
 			blueTankXY = zeroPosition;
-			redMissileXY = zeroPosition;
-			blueMissileXY = zeroPosition;
 			lastKnownRedTankXY = zeroPosition;
 			lastKnownBlueTankXY = zeroPosition;
 
@@ -236,20 +218,6 @@ namespace NGSim
 		{
 			get { return blueTankXY; }
 			set { blueTankXY = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private Position redMissileXY;
-		public Position RedMissileXY
-		{
-			get { return redMissileXY; }
-			set { redMissileXY = value; OnPropertyChanged(EventArgs.Empty); }
-		}
-
-		private Position blueMissileXY;
-		public Position BlueMissileXY
-		{
-			get { return blueMissileXY; }
-			set { blueMissileXY = value; OnPropertyChanged(EventArgs.Empty); }
 		}
 
 		private int redMissilesRemaining;

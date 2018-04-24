@@ -108,7 +108,7 @@ namespace NGSim
 			Control.AppendText("\n");
 			Control.AppendText("Game #1\n");
 			Control.AppendText("Turns Elapsed: 0\n");
-			Control.AppendText("Win %: 50%\t Lose %: 50%\n");
+			Control.AppendText("Win %: 50%\n");
 			Control.AppendText("\n");
 			Control.AppendText("Warnings:\n");
 			PropertyChanged += UpdateText;
@@ -116,54 +116,24 @@ namespace NGSim
 
 		private void UpdateText(object sender, EventArgs e)
 		{
-			Console.WriteLine("A field was changed...");
 			Control.Clear();
-			Control.AppendText("UAV Position:\t");
-			Control.AppendText(MyUAVXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(MyUAVXY.Y.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Tank Position:\t");
-			Control.AppendText(MyTankXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(MyTankXY.Y.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Missile Position:\t");
-			Control.AppendText(MyMissileXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(MyMissileXY.Y.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Missiles Left:\t");
-			Control.AppendText(MyMissilesRemaining.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Enemy Last Seen:\t");
-			Control.AppendText(lastKnownEnemyTankXY.X.ToString());
-			Control.AppendText(",");
-			Control.AppendText(lastKnownEnemyTankXY.Y.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("\n");
-			Control.AppendText("Game #");
-			Control.AppendText(GamesRun.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Turns Elapsed: ");
-			Control.AppendText(TurnsElapsed.ToString());
-			Control.AppendText("\n");
-
-			Control.AppendText("Win %: ");
-			Control.AppendText(WinPercent.ToString());
-			Control.AppendText("%\t Lose %: ");
-			Control.AppendText((100 - WinPercent).ToString());
-			Control.AppendText("%\n");
-
-			Control.AppendText("\n");
-			Control.AppendText("Warnings:\n");
-			Control.AppendText(Warnings);
+			string text = String.Format("{0,35}", "State Information\n");
+			text += String.Format("{0,-18} {1,13}\n", "UAV Position:", MyUAVXY);
+			text += String.Format("{0,-18} {1,14}\n", "Tank Position:", MyTankXY);
+			text += String.Format("{0,-18} {1,18}\n", "Missiles Left:", MyMissilesRemaining);
+			text += String.Format("{0,-18} {1,10}\n\n", "Enemy Last Seen:", LastKnownEnemyTankXY);
+			text += String.Format("Game #{0}\n", GamesRun);
+			text += String.Format("Turns Elapsed: {0}\n", TurnsElapsed);
+			if (GamesRun <= 1)
+			{
+				text += String.Format("Win Percent: {0,10}%\n", "0");
+			}
+			else
+			{
+				text += String.Format("Win Percent: {0,10}%\n", WinPercent);
+			}
+			text += String.Format("\nWarnings:\n{0}", Warnings);
+			Control.AppendText(text);
 		}
 
 		public event EventHandler PropertyChanged;

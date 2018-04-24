@@ -15,6 +15,8 @@ namespace NGSim
 		private Client _client;
 		private SimulationManager _simManager;
 
+		public event EventHandler JoinSuccess;
+
 		public SimViewer() :
 			base()
 		{
@@ -41,13 +43,39 @@ namespace NGSim
 			// Create the camera
 			CameraManager.Set(new ArcBallCamera(GraphicsDevice, distance: 200f, yaw: 45f, pitch: 35f), new ArcBallCameraBehavior());
 			(CameraManager.ActiveCamera as ArcBallCamera).MinDistance = 50f;
-	  
+
 			// Setup the network stuff
 			_client = new Client();
-			_client.Connect();
 
 			// Create the simulation
 			_simManager = new SimulationManager(GraphicsDevice, Content);
+			
+		}
+
+		public virtual void OnJoinSuccess(EventArgs e)
+		{
+			if (JoinSuccess != null)
+			{
+				JoinSuccess(this, e);
+			}
+		}
+
+		public void connectClient()
+		{
+			Console.WriteLine("Attempting to join the server...");
+			// if IP present, use it to connect
+			// otherwise use the default connection
+			if (SimViewerStartupWindow.IPTextBox.Text != "ENTER YOUR IP")
+			{
+				Console.WriteLine("Using IP: " + SimViewerStartupWindow.IPTextBox.Text);
+				_client.Connect(SimViewerStartupWindow.IPTextBox.Text);
+			}
+			else
+			{
+				_client.Connect();
+			}
+
+			OnJoinSuccess(new EventArgs()); 
 		}
 
 		protected override void LoadContent()

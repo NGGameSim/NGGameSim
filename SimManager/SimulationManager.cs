@@ -360,6 +360,24 @@ namespace NGSim
 			entityPacket.Write((byte)Simulation.Team1.Tank.MisslesLeft);
 			entityPacket.Write((byte)Simulation.Team2.Tank.MisslesLeft);
 			entityPacket.Write((byte)gameResult);
+			// Last Known Positions
+			entityPacket.Write(Simulation.Team1.UAV.LastKnownPosition.X);
+			entityPacket.Write(Simulation.Team1.UAV.LastKnownPosition.Y);
+			entityPacket.Write(Simulation.Team2.UAV.LastKnownPosition.X);
+			entityPacket.Write(Simulation.Team2.UAV.LastKnownPosition.Y);
+			// Game information
+			entityPacket.Write(numMoves); // Turns Elapsed
+			// Win Percent
+			if (CurrentGameNumber != 0)
+			{
+				entityPacket.Write(numberOfVictoriesTeam1 / (CurrentGameNumber + 1));
+			}
+			else
+			{
+				entityPacket.Write(0);
+			}
+			// GamesRun
+			entityPacket.Write(CurrentGameNumber + 1);
 
 			// Missile update packet
 			var missilePacket = Server.Instance.CreateMessage(2);

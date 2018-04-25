@@ -4,6 +4,7 @@ using System;
 using NLog;
 using System.Windows.Threading;
 using System.Diagnostics;
+using System.Net;
 
 namespace NGSim
 {
@@ -309,7 +310,7 @@ namespace NGSim
 				SimManagerWindow.MyNetworkInfoTextArea.BitRate = bytesPerSec.ToString();
 				SimManagerWindow.MyNetworkInfoTextArea.ConnectionStatus = Server.Instance.isConnected;
 				SimManagerWindow.MyNetworkInfoTextArea.View = "Normal";
-				//SimManagerWindow.MyNetworkInfoTextArea.Warnings
+				SimManagerWindow.MyNetworkInfoTextArea.Warnings = "";
 			});
 		}
 

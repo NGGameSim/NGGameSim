@@ -84,13 +84,25 @@ namespace NGSim
 
 			gameResult = msg.ReadByte();
 
+			Simulation.Team1.UAV.LastKnownPosition = new Position(msg.ReadFloat(), msg.ReadFloat());
+			Simulation.Team2.UAV.LastKnownPosition = new Position(msg.ReadFloat(), msg.ReadFloat());
+
+			var TurnsElapsed = msg.ReadInt32();
+			var WinPercent = msg.ReadSingle();
+			var GamesRun = msg.ReadInt32();
+
 			//if (clientJoined)
 			//{
-				System.Windows.Application.Current.Dispatcher.Invoke(() =>
+			System.Windows.Application.Current.Dispatcher.Invoke(() =>
 				{
 					SimViewerWindow.MyStateInfoTextArea.MyTankXY = Simulation.Team1.Tank.Position;
 					SimViewerWindow.MyStateInfoTextArea.MyUAVXY = Simulation.Team1.UAV.Position;
 					SimViewerWindow.MyStateInfoTextArea.MyMissilesRemaining = Simulation.Team1.Tank.MisslesLeft;
+					SimViewerWindow.MyStateInfoTextArea.LastKnownEnemyTankXY = Simulation.Team1.UAV.LastKnownPosition;
+					SimViewerWindow.MyStateInfoTextArea.TurnsElapsed = Convert.ToInt32(TurnsElapsed);
+					SimViewerWindow.MyStateInfoTextArea.WinPercent = WinPercent;
+					SimViewerWindow.MyStateInfoTextArea.GamesRun = Convert.ToInt32(GamesRun);
+
 				});
 			//}
 		}

@@ -145,8 +145,7 @@ namespace NGSim
 			{
 				if (ip.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
 				{
-					myIP = ip.ToString();
-					break;
+					myIP = myIP + "\t" + ip.ToString();
 				}
 			}
 

@@ -4,6 +4,7 @@ using System;
 using NLog;
 using System.Windows.Threading;
 using System.Diagnostics;
+using System.Net;
 
 namespace NGSim
 {
@@ -309,7 +310,12 @@ namespace NGSim
 				SimManagerWindow.MyNetworkInfoTextArea.BitRate = bytesPerSec.ToString();
 				SimManagerWindow.MyNetworkInfoTextArea.ConnectionStatus = Server.Instance.isConnected;
 				SimManagerWindow.MyNetworkInfoTextArea.View = "Normal";
-				//SimManagerWindow.MyNetworkInfoTextArea.Warnings
+				SimManagerWindow.MyNetworkInfoTextArea.Warnings = "";
+
+				string hostName = Dns.GetHostName();
+				var host = Dns.GetHostEntry(hostName);
+				string myIP = host.AddressList[host.AddressList.Length - 1].ToString();
+				SimManagerWindow.MyNetworkInfoTextArea.IP = myIP;
 			});
 		}
 

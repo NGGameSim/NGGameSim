@@ -37,7 +37,13 @@ namespace NGSim
 		public string Warnings
 		{
 			get { return Handler.Warnings; }
-			set { Handler.Warnings = value; OnPropertyChanged(EventArgs.Empty); }
+			set { Handler.Warnings = value; }
+		}
+
+		public string IP
+		{
+			get { return Handler.IP; }
+			set { Handler.IP = value; }
 		}
 
 		public event EventHandler PropertyChanged;
@@ -54,6 +60,7 @@ namespace NGSim
 			string BitRate { get; set; }
 			bool ConnectionStatus { get; set; }
 			string Warnings { get; set; }
+			string IP { get; set; }
 			event EventHandler PropertyChanged;
 			void OnPropertyChanged(EventArgs e);
 		}
@@ -66,7 +73,8 @@ namespace NGSim
 			Control = new System.Windows.Controls.TextBox{ IsReadOnly = true };
 			Control.AppendText("View: \tNormal\n");
 			Control.AppendText("BitRate: \t0 bytes/second\n");
-			Control.AppendText("Connection Status: \tN/A");
+			Control.AppendText("Connection Status: \tN/A\n");
+			Control.AppendText("Server IP: \tN/A\n");
 			Control.AppendText("\n");
 			Control.AppendText("Warnings:\n");
 			PropertyChanged += UpdateText;
@@ -93,7 +101,10 @@ namespace NGSim
 				Control.AppendText("Not Connected\n");
 			}
 
-			Control.AppendText("\n");
+			Control.AppendText("Server IP: \t");
+			Control.AppendText(IP);
+
+			Control.AppendText("\n\n");
 			Control.AppendText("Warnings:\n");
 			Control.AppendText(Warnings);
 		}
@@ -130,6 +141,13 @@ namespace NGSim
 		{
 			get { return warnings; }
 			set { warnings = value; OnPropertyChanged(EventArgs.Empty); }
+		}
+
+		private string ip;
+		public string IP
+		{
+			get { return ip; }
+			set { ip = value; OnPropertyChanged(EventArgs.Empty); }
 		}
 	}
 }

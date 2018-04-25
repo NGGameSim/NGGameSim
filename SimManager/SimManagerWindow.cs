@@ -4,6 +4,7 @@ using Eto.Drawing;
 using Eto;
 using NLog;
 using NGAPI;
+using System.Net;
 
 namespace NGSim
 {
@@ -136,6 +137,20 @@ namespace NGSim
 
 			MyStateInfoTextArea = new StateInfoTextArea();
 			MyNetworkInfoTextArea = new NetworkInfoTextArea();
+
+			string hostName = Dns.GetHostName();
+			var host = Dns.GetHostEntry(hostName);
+			string myIP = "";
+			foreach (IPAddress ip in host.AddressList)
+			{
+				if (ip.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
+				{
+					myIP = ip.ToString();
+					break;
+				}
+			}
+
+			MyNetworkInfoTextArea.IP = myIP;
 
 			PlayPauseButton = new Button { Text = "PLAY/PAUSE", Height = 30 };
 			GodModeButton = new Button { Text = "GODMODE", Height = 30 };

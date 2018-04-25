@@ -311,11 +311,6 @@ namespace NGSim
 				SimManagerWindow.MyNetworkInfoTextArea.ConnectionStatus = Server.Instance.isConnected;
 				SimManagerWindow.MyNetworkInfoTextArea.View = "Normal";
 				SimManagerWindow.MyNetworkInfoTextArea.Warnings = "";
-
-				string hostName = Dns.GetHostName();
-				var host = Dns.GetHostEntry(hostName);
-				string myIP = host.AddressList[host.AddressList.Length - 1].ToString();
-				SimManagerWindow.MyNetworkInfoTextArea.IP = myIP;
 			});
 		}
 

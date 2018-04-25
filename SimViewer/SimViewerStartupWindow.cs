@@ -45,6 +45,7 @@ namespace NGSim
 
 			IPTextBox = new TextBox { Text = "ENTER YOUR IP" };
 			IDTextBox = new TextBox { Text = "ENTER YOUR ID" };
+
 			JoinSimButton = new Button { Text = "JOIN" };
 
 			JoinSimButton.Click += JoinSimButton_Click;
@@ -72,6 +73,7 @@ namespace NGSim
 			// Start the mainWindow with the correct view mode 
 
 			// Trigger event to tell main to run game
+
 			OnJoinAttempt(new EventArgs());
 			
 		}

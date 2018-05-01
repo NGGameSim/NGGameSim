@@ -36,9 +36,21 @@ namespace NGSim
 
 		private Vector2 origin = new Vector2(0, 0);
 		int gameResult;
+		string teamLogin = SimViewerStartupWindow.IDTextBox.Text;
+		int id;
 
 		EntityFollowBehavior _entityFollow;
 		internal bool clientJoined = false;
+
+		public void CheckLogin(string login)
+		{
+			login = SimViewerStartupWindow.IDTextBox.Text;
+			if (login == "blue") { id = 1; }
+			else if (login == "red") { id = 2; }
+			else if (login == "god") { id = 3; }
+			else { id = 0; }
+			Console.WriteLine("Login is read as {teamLogin}");
+		}
 
 		public SimulationManager(GraphicsDevice device, ContentManager content)
 		{
@@ -161,6 +173,7 @@ namespace NGSim
 			// Draw the world
 			Camera camera = CameraManager.ActiveCamera;
 			_world.Draw(_device, camera);
+			CheckLogin(teamLogin);
 
 			// Draw the entities
 			Position t1 = Simulation.Team1.Tank.Position;
@@ -171,10 +184,40 @@ namespace NGSim
 			float t2h = Simulation.Team2.Tank.CurrentHeading;
 			float u1h = Simulation.Team1.UAV.CurrentHeading;
 			float u2h = Simulation.Team2.UAV.CurrentHeading;
-			_tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Blue);
-			_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t2h, Color.Red);
-			_uavModel.TextureRender(camera, new Vector3(u1.X / 10, 20, u1.Y / 10), u1h);
-			_uavModel.TextureRender(camera, new Vector3(u2.X / 10, 20, u2.Y / 10), u2h);
+
+			if (id != 0)
+			{
+				if(id == 1)
+				{
+					_tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Blue);
+					_uavModel.TextureRender(camera, new Vector3(u1.X / 10, 20, u1.Y / 10), u1h);
+
+					_cone.Render(_device, new Vector2(u1.X / 10, u1.Y / 10), camera, 1, Simulation.Team1.UAV.DetectedTankThisTurn);
+					_ring.Render(_device, new Vector2(t1.X / 10, t1.Y / 10), camera, 1);
+
+				}
+				else if(id == 2)
+				{
+					_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t2h, Color.Red);
+					_uavModel.TextureRender(camera, new Vector3(u2.X / 10, 20, u2.Y / 10), u2h);
+
+					_cone.Render(_device, new Vector2(u2.X / 10, u2.Y / 10), camera, 2, Simulation.Team2.UAV.DetectedTankThisTurn);
+					_ring.Render(_device, new Vector2(t2.X / 10, t2.Y / 10), camera, 2);
+				}
+				else if(id == 3)
+				{
+					_tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Blue);
+					_uavModel.TextureRender(camera, new Vector3(u1.X / 10, 20, u1.Y / 10), u1h);
+					_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t2h, Color.Red);
+					_uavModel.TextureRender(camera, new Vector3(u2.X / 10, 20, u2.Y / 10), u2h);
+
+					_cone.Render(_device, new Vector2(u1.X / 10, u1.Y / 10), camera, 1, Simulation.Team1.UAV.DetectedTankThisTurn);
+					_ring.Render(_device, new Vector2(t1.X / 10, t1.Y / 10), camera, 1);
+					_cone.Render(_device, new Vector2(u2.X / 10, u2.Y / 10), camera, 2, Simulation.Team2.UAV.DetectedTankThisTurn);
+					_ring.Render(_device, new Vector2(t2.X / 10, t2.Y / 10), camera, 2);
+				}   
+			}
+			
 
 			//Draw all missiles
 			for (int i = 0; i < mposList.Count; i++)
@@ -190,14 +233,6 @@ namespace NGSim
 				_tankModel.Render(camera, new Vector3(t1.X / 10, 0, t1.Y / 10), t1h, Color.Transparent);
 				_tankModel.Render(camera, new Vector3(t2.X / 10, 0, t2.Y / 10), t1h, Color.Transparent);
 			}
-			
-		
-
-			_cone.Render(_device, new Vector2(u1.X / 10, u1.Y / 10), camera, 1, Simulation.Team1.UAV.DetectedTankThisTurn);
-			_cone.Render(_device, new Vector2(u2.X / 10, u2.Y / 10), camera, 2, Simulation.Team2.UAV.DetectedTankThisTurn);
-
-			_ring.Render(_device, new Vector2(t1.X / 10, t1.Y / 10), camera, 1);
-			_ring.Render(_device, new Vector2(t2.X / 10, t2.Y / 10), camera, 2);
 
 			// Draw legend
 			_sb.Begin();

@@ -13,7 +13,7 @@ namespace NGSim
 	{
 		private GraphicsDeviceManager _graphics;
 		private Client _client;
-		private SimulationManager _simManager;
+		public SimulationManager _simManager;
 
 		public event EventHandler JoinSuccess;
 
